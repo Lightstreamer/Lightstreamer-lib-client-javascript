@@ -62,6 +62,12 @@ Below is the complete JavaScript code embedded in an HTML page:
 </html>
 ```
 
+## npm Packages ##
+
+- [NPM Web Package](https://www.npmjs.com/package/lightstreamer-client-web)
+
+- [NPM Node.js Package](https://www.npmjs.com/package/lightstreamer-client-node)
+
 ## Building ##
 
 To build the library, enter the directory *tools* and run the command *node build.js*.
@@ -90,10 +96,6 @@ The library requires Server 7.1 and breaks the compatibility with Server version
 ## Documentation
 
 - [Live demos](https://demos.lightstreamer.com/)
-
-- [NPM Web Package](https://www.npmjs.com/package/lightstreamer-client-web)
-
-- [NPM Node.js Package](https://www.npmjs.com/package/lightstreamer-client-node)
 
 - [Web API Reference](https://lightstreamer.com/api/ls-web-client/latest/)
 
