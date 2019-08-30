@@ -64,9 +64,9 @@ Below is the complete JavaScript code embedded in an HTML page:
 
 ## npm Packages ##
 
-- [NPM Web Package](https://www.npmjs.com/package/lightstreamer-client-web)
+- [npm Web Package](https://www.npmjs.com/package/lightstreamer-client-web)
 
-- [NPM Node.js Package](https://www.npmjs.com/package/lightstreamer-client-node)
+- [npm Node.js Package](https://www.npmjs.com/package/lightstreamer-client-node)
 
 ## Building ##
 
