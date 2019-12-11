@@ -166,8 +166,11 @@ import Assertions from "../utils/Assertions";
     
     /*public*/ messageError: function(listenerProg,_code,msg) {
       var listener = this.getListener(listenerProg);
-      
-      this.fireEvent("onError",listener,[this.getOriginalMessage(listenerProg)]);
+      if (_code != 32 && _code != 33) {
+          /* errors 32 and 33 must not be notified to the user
+           * because they are due to late responses of the server */
+          this.fireEvent("onError",listener,[this.getOriginalMessage(listenerProg)]);
+      }
       
       this.clean(listenerProg);
     },

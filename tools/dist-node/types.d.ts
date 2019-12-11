@@ -142,10 +142,10 @@ export class ConnectionDetails {
      * internally converted to match the related WebSocket protocol
      * (i.e. http becomes ws while https becomes wss).
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> HTTPS is an optional
+     * <p class="edition-note"><B>Edition Note:</B> HTTPS is an optional
      * feature, available depending on Edition and License Type.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
     
      *
@@ -311,10 +311,10 @@ export class ConnectionDetails {
      * internally converted to match the related WebSocket protocol
      * (i.e. http becomes ws while https becomes wss).
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
      * an optional feature, available depending on Edition and License Type.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="lifecycle"><b>Lifecycle:</b> The method gives a meaningful answer only when
      * a session is currently active.</p>
@@ -343,10 +343,10 @@ export class ConnectionDetails {
      * when a Server cluster is in place and particular configurations for the
      * load balancer are used.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
      * an optional feature, available depending on Edition and License Type.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="lifecycle"><b>Lifecycle:</b> The method gives a meaningful answer only when
      * a session is currently active.</p>
@@ -553,10 +553,10 @@ export class ConnectionOptions {
      * Lightstreamer Server. A limit on bandwidth may already be posed by the Metadata Adapter, but the client can
      * furtherly restrict this limit. The limit applies to the bytes received in each streaming or polling connection.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Bandwidth Control is
+     * <p class="edition-note"><B>Edition Note:</B> Bandwidth Control is
      * an optional feature, available depending on Edition and License Type.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> "unlimited".</p>
      *
@@ -1023,10 +1023,10 @@ export class ConnectionOptions {
      * environment, if the Server address specified is actually a local address
      * to a specific Server instance in the cluster.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
      * an optional feature, available depending on Edition and License Type.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> false.</p>
      *
@@ -1120,10 +1120,10 @@ export class ConnectionOptions {
      * viceversa it should be set to true if such elements are not set on
      * the target server(s) configuration.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
      * an optional feature, available depending on Edition and License Type.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> false.</p>
      *
@@ -3491,11 +3491,11 @@ export class Subscription {
      * requests may be refused if any frequency limit is posed on the server
      * side for some item.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> A further global frequency limit could also
+     * <p class="edition-note"><B>Edition Note:</B> A further global frequency limit could also
      * be imposed by the Server, depending on Edition and License Type; this specific limit also applies to RAW mode
      * and to unfiltered dispatching.
      * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> null, meaning to lean on the Server default based on the subscription
      * mode. This consists, for all modes, in not applying any frequency

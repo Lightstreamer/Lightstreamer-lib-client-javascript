@@ -401,10 +401,10 @@ END_NODE_JSDOC_EXCLUDE
      * Lightstreamer Server. A limit on bandwidth may already be posed by the Metadata Adapter, but the client can 
      * furtherly restrict this limit. The limit applies to the bytes received in each streaming or polling connection.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Bandwidth Control is
+     * <p class="edition-note"><B>Edition Note:</B> Bandwidth Control is
 	 * an optional feature, available depending on Edition and License Type.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> "unlimited".</p>
      * 
@@ -999,10 +999,10 @@ END_NODE_JSDOC_EXCLUDE
      * environment, if the Server address specified is actually a local address
      * to a specific Server instance in the cluster.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
 	 * an optional feature, available depending on Edition and License Type.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> false.</p>
      * 
@@ -1123,10 +1123,10 @@ END_WEB_JSDOC_EXCLUDE
      * viceversa it should be set to true if such elements are not set on
      * the target server(s) configuration.
      * 
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
 	 * an optional feature, available depending on Edition and License Type.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> false.</p>
      * 
@@ -1551,7 +1551,8 @@ END_NODE_JSDOC_EXCLUDE
     },
     
     /**
-     * @private (used by LightstreamerClient)
+     * (used by LightstreamerClient)
+     * @private
      */
     installRemoteAdapterStatusObserver: function(metadataErrorCode, dataAdapterName, statusItemName, reconnectMaxDelay) {
         this.remoteAdapterStatusObserver = {

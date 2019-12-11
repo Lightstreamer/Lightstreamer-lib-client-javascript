@@ -72,13 +72,13 @@ import Executor from "../../src-tool/Executor";
     },
 
     onSessionEnd: function(ph) {
+      this.sessionPhase = ph;
       if (this.sessionAlive) {
         this.sessionEnd(ph);
       }
     },
 
     sessionEnd: function(ph) {
-      this.sessionPhase = ph;
       this.sessionAlive = false;
       this.client.sessionEnd();
     },

@@ -949,11 +949,31 @@ import Assertions from "../utils/Assertions";
       },
       
       /*public*/ sendUnsubscription: function(tableNum,delBody,ppHandler,retrying,tutor) {
-        this.controlHandler.addRequest(tableNum,delBody,ControlRequest.REMOVE, tutor, retrying);
+          var requestListener = {
+                  onREQOK: function(LS_window) {
+                      // nothing to do: expecting UNSUB
+                  },
+
+                  onREQERR: function(LS_window, phase, errorCode, errorMsg) {
+                      tutor.discard();
+                      sessionLogger.logError("unsubscription request " + printObj(delBody) + " caused the error: ", errorCode, errorMsg);
+                  }
+          };
+          this.controlHandler.addRequest(tableNum,delBody,ControlRequest.REMOVE, tutor, retrying, requestListener);
       },
       
       /*public*/ sendSubscriptionChange: function(tableNum,changeBody,tutor) {
-        this.controlHandler.addRequest(tableNum,changeBody,ControlRequest.CHANGE_SUB,tutor);
+          var requestListener = {
+                  onREQOK: function(LS_window) {
+                      // nothing to do: expecting CONF
+                  },
+
+                  onREQERR: function(LS_window, phase, errorCode, errorMsg) {
+                      tutor.discard();
+                      sessionLogger.logError("configuration request [" + printObj(changeBody) + "] caused the error: " + errorCode + " " + errorMsg);
+                  }
+          };
+          this.controlHandler.addRequest(tableNum,changeBody,ControlRequest.CHANGE_SUB,tutor,null,requestListener);
       },
       
       //not exactly part of this group, but close enough
@@ -1079,6 +1099,15 @@ import Assertions from "../utils/Assertions";
       }
       
   };
+  
+  function printObj(obj) {
+      var s = "{";
+      for (var p in obj) {
+          s += p + "=" + obj[p] + " ";
+      }
+      s += "}";
+      return s;
+  }
 
   
   SessionHandler.prototype["unloadEvent"] = SessionHandler.prototype.unloadEvent;

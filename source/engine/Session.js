@@ -518,6 +518,7 @@ import Environment from "../../src-tool/Environment";
       },
       
       /*public*/ closeSession: function(closeReason,alreadyClosedOnServer,noRecoveryScheduled) {
+        sessionLogger.logInfo("Closing session",this,closeReason);
         if (this.phase != _OFF && this.phase != CREATING && this.phase != SLEEP) {
           this.handler.onObsoleteControlLink(this.getPushServerAddress());
           
@@ -531,16 +532,7 @@ import Environment from "../../src-tool/Environment";
           this.connectionBean.simpleSetter("serverSocketName",null);
           this.connectionBean.simpleSetter("serverInstanceAddress",null);
 
-          this.resetTimers();
-          
-          sessionLogger.logInfo("Closing session",this,closeReason);
-          
-        } else if (this.recoveryBean.isRecovery()) {
-            /*
-             * This branch is run when the recovery fails.
-             * We need to make some clean up so that the next session creation
-             * is executed in a clean environment.
-             */
+        } else {
             this.handlerPhase = this.handler.onSessionClose(this.handlerPhase,noRecoveryScheduled);
         }
 
@@ -649,7 +641,8 @@ import Environment from "../../src-tool/Environment";
 
         } else if (this.phase == CREATED || this.phase == BINDING || this.phase == _STALLED || this.phase == SLEEP) {
           if (this.slowRequired || this.switchRequired) {
-            this.handler.createMachine(this.handlerPhase,tCause+".switch",this.switchForced);
+              sessionLogger.logDebug("Timeout: switch transport");
+              this.handler.createMachine(this.handlerPhase,tCause+".switch",this.switchForced);
           } else if (!this.isPolling || this.forced) {
               if (this.preparingRecovery) {
                   /*
@@ -670,8 +663,19 @@ import Environment from "../../src-tool/Environment";
               }
           } else {
               /*
-               * Branch reserved for polling (I suppose...)
+               * Branch reserved for polling.
+               * 
+               * NOTE 
+               * In the past, when an error occurred during polling, the new session was created not in polling
+               * but in streaming (probably because polling was seen as sub-optimal transport).
+               * With the introduction of the recovery, we are faced with 3 options:
+               * 1) recovering the session in polling
+               * 2) recovering the session in streaming
+               * 3) creating a new session in streaming.
+               * The second option is probably the best one, but, since the client falls-back rarely to polling,
+               * in order to ease the implementation, I have decided to follow the third path.
                */
+              sessionLogger.logDebug(this.preparingRecovery ? "Timeout: switch transport from polling (ignore recovery)" : "Timeout: switch transport from polling");
               this.handler.createMachine(this.handlerPhase,tCause,false);
           }
 
@@ -1392,14 +1396,21 @@ import Environment from "../../src-tool/Environment";
           } else if (errorCode == 11) {
               // error 11 is managed as CONERR 21
               this.onFatalError(21, errorMsg);              
-          } else if (listenerCallback != null) {
-              // since there is a listener, don't fall-back to fatal error case
+          } else if (listenerCallback != null && errorCode != 65 /*65 is a fatal error*/) {
+              /*
+               * since there is a listener (because it is a REQERR message), 
+               * don't fall-back to fatal error case
+               */
               try {
                   listenerCallback();
               } catch (e) {
                   this.handler.onFatalError(e);
               }
           } else {
+              /*
+               * fall-back case handles fatal errors, i.e. ERROR messages: 
+               * close current session, don't create a new session, notify client listeners
+               */
               this.onFatalError(errorCode, errorMsg);
           }
       },
@@ -1558,7 +1569,17 @@ import Environment from "../../src-tool/Environment";
         //this is used to retry force_bind requests in case they fail to reach the server
         var tutor = new ForceRebindTutor(rebindCause,this,this.push_phase,this.policyBean);
         
-        this.controlHandler.addRequest(this.sessionId, _data, ControlRequest.FORCE_REBIND, tutor);
+        var requestListener = {
+                onREQOK: function(LS_window) {
+                    // nothing to do: expecting CONS
+                },
+
+                onREQERR: function(LS_window, phase, errorCode, errorMsg) {
+                    tutor.discard();
+                    sessionLogger.logError("force_rebind request caused the error: " + errorCode + " " + errorMsg + " - The error will be silently ignored.");
+                }
+        };
+        this.controlHandler.addRequest(this.sessionId, _data, ControlRequest.FORCE_REBIND, tutor, null, requestListener);
         
       },
       
@@ -1572,7 +1593,16 @@ import Environment from "../../src-tool/Environment";
         
         var _data = RequestsHelper.getDestroyParams(this.sessionId,reason);
         
-        this.forwardDestroyRequestToTransport(this.sessionId, _data, ControlRequest.DESTROY,null,this.getPushServerAddress());
+        var requestListener = {
+                onREQOK: function(LS_window) {
+                    // nothing to do
+                },
+
+                onREQERR: function(LS_window, phase, errorCode, errorMsg) {
+                    sessionLogger.logError("destroy request caused the error: " + errorCode + " " + errorMsg + " - The error will be silently ignored.");
+                }
+        };
+        this.forwardDestroyRequestToTransport(this.sessionId, _data, ControlRequest.DESTROY,null,this.getPushServerAddress(),requestListener);
       },
       
       changeBandwidth: function() {
@@ -1588,7 +1618,16 @@ import Environment from "../../src-tool/Environment";
         }
         var query = RequestsHelper.getConstraintParams(this.policyBean);
         
-        this.controlHandler.addRequest(null, query, ControlRequest.CONSTRAINT, null);
+        var requestListener = {
+                onREQOK: function(LS_window) {
+                    // nothing to do: expecting CONS
+                },
+
+                onREQERR: function(LS_window, phase, errorCode, errorMsg) {
+                    sessionLogger.logError("constrain request " + printObj(query) + " caused the error: ", errorCode, errorMsg);
+                }
+        };
+        this.controlHandler.addRequest(null, query, ControlRequest.CONSTRAINT, null, null, requestListener);
       },
       
       onServerName: function(name) {
@@ -1607,7 +1646,7 @@ import Environment from "../../src-tool/Environment";
        * when the session is closing, WebSocket can delivery the request synchronously 
        * while HTTP has to delivery the request asynchronously.</i> 
        */
-      forwardDestroyRequestToTransport: function(sessionId, request, type, related, retryingOrHost) {
+      forwardDestroyRequestToTransport: function(sessionId, request, type, related, retryingOrHost, requestListener) {
           throw new Error("abstract method");
       },
       
@@ -1643,6 +1682,15 @@ import Environment from "../../src-tool/Environment";
           return this.policyBean.currentRetryDelay;
       }
   };
+  
+  function printObj(obj) {
+      var s = "{";
+      for (var p in obj) {
+          s += p + "=" + obj[p] + " ";
+      }
+      s += "}";
+      return s;
+  }
 
   export default Session;
   

@@ -228,10 +228,10 @@ export default /*@__PURE__*/(function() {
              * named arguments are always mapped to its corresponding indexed argument, even if originally the notification format used a named argument.<BR>
              * Note: the content of this property may be subject to length restrictions (See the "General Concepts" document for more information).
              *
-             * @lifecycle This method can only be called while the MpnSubscription instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>notification_format</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>notification_format</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {String} format the JSON structure to be used as the format of push notifications.
              * @throws IllegalStateException if the MpnSubscription is currently "active".
@@ -275,10 +275,10 @@ export default /*@__PURE__*/(function() {
              * named arguments are always mapped to its corresponding indexed argument, even if originally the trigger expression used a named argument.<BR>
              * Note: the content of this property may be subject to length restrictions (See the "General Concepts" document for more information).
              *
-             * @lifecycle This method can only be called while the MpnSubscription instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>trigger</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>trigger</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {boolean} expr the boolean expression that acts as a trigger to deliver the push notification.
              * @throws IllegalStateException if the MpnSubscription is currently "active".
@@ -296,7 +296,7 @@ export default /*@__PURE__*/(function() {
              * The status of an MpnSubscription is changed to "active" through the {@link LightstreamerClient#subscribeMpn} method and back to "inactive"
              * through the {@link LightstreamerClient#unsubscribeMpn} and {@link LightstreamerClient#unsubscribeMpnSubscriptions} ones.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {boolean}true if the MpnSubscription is currently "active", false otherwise.
              *
@@ -315,7 +315,7 @@ export default /*@__PURE__*/(function() {
              * {@link LightstreamerClient#unsubscribeMpn} or {@link LightstreamerClient#unsubscribeMpnSubscriptions} calls, and server sent
              * unsubscription events.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {boolean} true if the MpnSubscription has been successfully subscribed on the server, false otherwise.
              *
@@ -334,7 +334,7 @@ export default /*@__PURE__*/(function() {
              * {@link LightstreamerClient#subscribeMpn} call on a copy of it, deleted with {@link LightstreamerClient#unsubscribeMpn} or
              * {@link LightstreamerClient#unsubscribeMpnSubscriptions} calls, and server sent subscription events.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {boolean} true if the MpnSubscription's trigger expression has been evaluated to true at least once, false otherwise.
              *
@@ -360,7 +360,7 @@ export default /*@__PURE__*/(function() {
              * the trigger expression has been evaluated to true at least once. In this status {@link MpnSubscription#isActive}, {@link MpnSubscription#isSubscribed} and {@link MpnSubscription#isTriggered} are all true.</li>
              * </ul>
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the status of the subscription.
              *
@@ -375,10 +375,10 @@ export default /*@__PURE__*/(function() {
             /**
              * The server-side timestamp of the subscription status.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>status_timestamp</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>status_timestamp</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @return {Number} The server-side timestamp of the subscription status, expressed as a Java time.
              *
@@ -394,11 +394,11 @@ export default /*@__PURE__*/(function() {
              * Any call to this method will override any "Item List" or "Item Group"
              * previously specified.
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>group</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>group</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {String[]} items an array of items to be subscribed to through the server.
              * @throws IllegalArgumentException if any of the item names in the "Item List"
@@ -419,8 +419,8 @@ export default /*@__PURE__*/(function() {
              * Note: if the MpnSubscription has been created by the client, such as when obtained through {@link LightstreamerClient#getMpnSubscriptions},
              * items are always expressed with an "Item Group"", even if originally the MPN subscription used an "Item List".
              *
-             * @lifecycle This method can only be called if the MpnSubscription has been initialized
-             * with an "Item List".
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called if the MpnSubscription has been initialized
+             * with an "Item List".</p>
 
              * @return {String[]} the "Item List" to be subscribed to through the server.
              *
@@ -439,11 +439,11 @@ export default /*@__PURE__*/(function() {
              * Any call to this method will override any "Item List" or "Item Group"
              * previously specified.
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>group</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>group</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {String} groupName A String to be expanded into an item list by the
              * Metadata Adapter.
@@ -460,8 +460,8 @@ export default /*@__PURE__*/(function() {
              * Note: if the MpnSubscription has been created by the client, such as when obtained through {@link LightstreamerClient#getMpnSubscriptions},
              * items are always expressed with an "Item Group"", even if originally the MPN subscription used an "Item List".
              *
-             * @lifecycle This method can only be called if the MpnSubscription has been initialized
-             * using an "Item Group"
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called if the MpnSubscription has been initialized
+             * using an "Item Group"</p>
              *
              * @return {String} the "Item Group" to be subscribed to through the server.
              *
@@ -480,11 +480,11 @@ export default /*@__PURE__*/(function() {
              * Any call to this method will override any "Field List" or "Field Schema"
              * previously specified.
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>schema</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>schema</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {String[]} fields an array of fields to be subscribed to through the server.
              * @throws IllegalArgumentException if any of the field names in the list
@@ -503,8 +503,8 @@ export default /*@__PURE__*/(function() {
              * Note: if the MpnSubscription has been created by the client, such as when obtained through {@link LightstreamerClient#getMpnSubscriptions},
              * fields are always expressed with a "Field Schema"", even if originally the MPN subscription used a "Field List".
              *
-             * @lifecycle  This method can only be called if the MpnSubscription has been initialized
-             * using a "Field List".
+             * <p class="lifecycle"><b>Lifecycle:</b>  This method can only be called if the MpnSubscription has been initialized
+             * using a "Field List".</p>
              *
              * @return {String[]} the "Field List" to be subscribed to through the server.
              *
@@ -523,11 +523,11 @@ export default /*@__PURE__*/(function() {
              * Any call to this method will override any "Field List" or "Field Schema"
              * previously specified.
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>schema</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>schema</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {String} schemaName A String to be expanded into a field list by the
              * Metadata Adapter.
@@ -545,8 +545,8 @@ export default /*@__PURE__*/(function() {
              * Note: if the MpnSubscription has been created by the client, such as when obtained through {@link LightstreamerClient#getMpnSubscriptions},
              * fields are always expressed with a "Field Schema"", even if originally the MPN subscription used a "Field List".
              *
-             * @lifecycle This method can only be called if the MpnSubscription has been initialized
-             * using a "Field Schema"
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called if the MpnSubscription has been initialized
+             * using a "Field Schema"</p>
              *
              * @return {String} the "Field Schema" to be subscribed to through the server.
 
@@ -572,14 +572,14 @@ export default /*@__PURE__*/(function() {
              * items of the set in a single MpnSubscription. Multiple MpnSubscriptions
              * have to be defined.
              *
-             * @default The default Data Adapter for the Adapter Set,
-             * configured as "DEFAULT" on the Server.
+             * <p class="default-value"><b>Default value:</b> The default Data Adapter for the Adapter Set,
+             * configured as "DEFAULT" on the Server.</p>
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>adapter</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>adapter</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param {String} dataAdapter the name of the Data Adapter. A null value
              * is equivalent to the "DEFAULT" name.
@@ -597,7 +597,7 @@ export default /*@__PURE__*/(function() {
              * Inquiry method that can be used to read the name of the Data Adapter specified for this
              * MpnSubscription through {@link MpnSubscription#setDataAdapter}.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the name of the Data Adapter; returns null if no name has been configured,
              * so that the "DEFAULT" Adapter Set is used.
@@ -614,16 +614,16 @@ export default /*@__PURE__*/(function() {
              * despite of bandwidth or frequency limits.<BR>
              * Note that the Server may pose an upper limit on the size of its internal buffers.
              *
-             * @default null, meaning to lean on the Server default based on the subscription
+             * <p class="default-value"><b>Default value:</b> null, meaning to lean on the Server default based on the subscription
              * mode. This means that the buffer size will be 1 for MERGE
              * subscriptions and "unlimited" for DISTINCT subscriptions. See
-             * the "General Concepts" document for further details.
+             * the "General Concepts" document for further details.</p>
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>requested_buffer_size</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>requested_buffer_size</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param size  An integer number, representing the length of the internal queuing buffers
              * to be used in the Server. If the string "unlimited" is supplied, then no buffer
@@ -662,7 +662,7 @@ export default /*@__PURE__*/(function() {
              * {@link MpnSubscription#setRequestedBufferSize}, to be requested to the Server for
              * this MpnSubscription.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {Number|String} An integer number, representing the buffer size to be requested to the server,
              * or the string "unlimited", or null.
@@ -684,21 +684,21 @@ export default /*@__PURE__*/(function() {
              * server side and this request can only be issued in order to further
              * reduce the frequency, not to rise it beyond these limits.
              *
-             * @general_edition_note A further global frequency limit could also be imposed by the Server,
+             * <p class="edition-note"><B>Edition Note:</B> A further global frequency limit could also be imposed by the Server,
              * depending on Edition and License Type.
              * To know what features are enabled by your license, please see the License tab of the
-             * Monitoring Dashboard (by default, available at /dashboard).
+             * Monitoring Dashboard (by default, available at /dashboard).</p>
              *
-             * @default null, meaning to lean on the Server default based on the subscription
+             * <p class="default-value"><b>Default value:</b> null, meaning to lean on the Server default based on the subscription
              * mode. This consists, for all modes, in not applying any frequency
              * limit to the subscription (the same as "unlimited"); see the "General Concepts"
-             * document for further details.
+             * document for further details.</p>
              *
-             * @lifecycle This method can only be called while the MpnSubscription
-             * instance is in its "inactive" state.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can only be called while the MpnSubscription
+             * instance is in its "inactive" state.</p>
              *
-             * @notification A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
-             * with argument <code>requested_max_frequency</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.
+             * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to {@link MpnSubscriptionListener#onPropertyChanged}
+             * with argument <code>requested_max_frequency</code> on any {@link MpnSubscriptionListener} listening to the related MpnSubscription.</p>
              *
              * @param freq  A decimal number, representing the maximum update frequency (expressed in updates
              * per second) for each item in the Subscription; for instance, with a setting
@@ -742,7 +742,7 @@ export default /*@__PURE__*/(function() {
              * through {@link MpnSubscription#setRequestedMaxFrequency}, to be requested to the
              * Server for this MpnSubscription.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {Number|String} A decimal number, representing the max frequency to be requested to the server
              * (expressed in updates per second), or the string "unlimited", or null.
@@ -761,7 +761,7 @@ export default /*@__PURE__*/(function() {
              * Inquiry method that can be used to read the mode specified for this
              * MpnSubscription.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the MpnSubscription mode specified in the constructor.
              */
@@ -780,7 +780,7 @@ export default /*@__PURE__*/(function() {
              * Two MpnSubscription objects with the same subscription ID always represent the same server-side MPN subscription. It is the client's duty to keep the status
              * and properties of these objects up to date and aligned.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the MPN subscription ID.
              */

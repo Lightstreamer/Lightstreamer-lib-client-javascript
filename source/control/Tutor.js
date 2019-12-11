@@ -3,6 +3,7 @@ import Executor from "../../src-tool/Executor";
   var MIN_TIMEOUT = 4000;
   
   var Tutor = function(connOptions,currentTimeout) {
+    this.discarded = false;
     this.connOptions = connOptions;
     this.timeoutMs = this.getFixedTimeout ? this.getFixedTimeout() : (currentTimeout ? currentTimeout*2 : MIN_TIMEOUT);
   };
@@ -19,9 +20,13 @@ import Executor from "../../src-tool/Executor";
     },
     
     /*private*/ onTimeout: function() {
-      if (!this.verifySuccess()) {
+      if (!(this.discarded || this.verifySuccess())) {
         this.doRecovery();
       } 
+    },
+    
+    discard: function() {
+        this.discarded = true;
     }
     
     /*abstract function verifySuccess()*/

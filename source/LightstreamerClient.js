@@ -1088,11 +1088,11 @@ END_NODE_JSDOC_EXCLUDE
        * Operation method that registers the MPN device on the server's MPN Module.<BR>
        * By registering an MPN device, the client enables MPN functionalities such as {@link LightstreamerClient#subscribeMpn}.
        *
-       * @general_edition_note MPN is an optional feature, available depending on Edition and License Type.
+       * <p class="edition-note"><B>Edition Note:</B> MPN is an optional feature, available depending on Edition and License Type.
        * To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
-       * available at /dashboard).
+       * available at /dashboard).</p>
        *
-       * @lifecycle An {@link MpnDevice} can be registered at any time. The registration will be notified through a {@link MpnDeviceListener#onRegistered} event.
+       * <p class="lifecycle"><b>Lifecycle:</b> An {@link MpnDevice} can be registered at any time. The registration will be notified through a {@link MpnDeviceListener#onRegistered} event.</p>
        *
        * @param device An {@link MpnDevice} instance, carrying all the information about the MPN device.
        * @throws IllegalArgumentException if the specified device is null.
@@ -1126,15 +1126,15 @@ END_NODE_JSDOC_EXCLUDE
        * the same subscriptions have been activated before or not. In fact, since MPN subscriptions are persistent, if they are activated every time the app starts and
        * the <code>coalescing</code> flag is not set, every activation is a <i>new</i> MPN subscription, leading to multiple push notifications for the same event.
        *
-       * @general_edition_note MPN is an optional feature, available depending on Edition and License Type.
+       * <p class="edition-note"><B>Edition Note:</B> MPN is an optional feature, available depending on Edition and License Type.
        * To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
-       * available at /dashboard).
+       * available at /dashboard).</p>
        *
-       * @lifecycle An MpnSubscription can be given to the LightstreamerClient once an MpnDevice registration has been requested. The MpnSubscription
+       * <p class="lifecycle"><b>Lifecycle:</b> An MpnSubscription can be given to the LightstreamerClient once an MpnDevice registration has been requested. The MpnSubscription
        * immediately enters the "active" state.<BR>
        * Once "active", an MpnSubscription instance cannot be provided again to an LightstreamerClient unless it is first removed from the "active" state through
        * a call to {@link #unsubscribeMpn}.<BR>
-       * A successful subscription to the server will be notified through an {@link MpnSubscriptionListener#onSubscription} event.
+       * A successful subscription to the server will be notified through an {@link MpnSubscriptionListener#onSubscription} event.</p>
        *
        * @param subscription An MpnSubscription object, carrying all the information to route real-time data via push notifications.
        * @param coalescing A flag that specifies if the MPN subscription must coalesce with any pre-existing MPN subscription with the same Adapter Set, Data Adapter,
@@ -1177,12 +1177,12 @@ END_NODE_JSDOC_EXCLUDE
        * Operation method that unsubscribes an MpnSubscription from the server's MPN Module.<BR>
        * This operation removes the MpnSubscription from the list of "active" subscriptions.
        *
-       * @general_edition_note MPN is an optional feature, available depending on Edition and License Type.
+       * <p class="edition-note"><B>Edition Note:</B> MPN is an optional feature, available depending on Edition and License Type.
        * To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
-       * available at /dashboard).
+       * available at /dashboard).</p>
        *
-       * @lifecycle An MpnSubscription can be unsubscribed from at any time. Once done the MpnSubscription immediately exits the "active" state.<BR>
-       * The unsubscription will be notified through an {@link MpnSubscriptionListener#onUnsubscription} event.
+       * <p class="lifecycle"><b>Lifecycle:</b> An MpnSubscription can be unsubscribed from at any time. Once done the MpnSubscription immediately exits the "active" state.<BR>
+       * The unsubscription will be notified through an {@link MpnSubscriptionListener#onUnsubscription} event.</p>
        *
        * @param subscription An "active" MpnSubscription object.
        * @throws IllegalStateException if the given MPN subscription is not active.
@@ -1208,12 +1208,12 @@ END_NODE_JSDOC_EXCLUDE
        * By specifying a status filter it is possible to unsubscribe multiple MPN subscriptions at once. E.g. by passing <code>TRIGGERED</code> it is possible
        * to unsubscribe all triggered MPN subscriptions. This operation removes the involved MPN subscriptions from the list of "active" subscriptions.
        *
-       * @general_edition_note MPN is an optional feature, available depending on Edition and License Type.
+       * <p class="edition-note"><B>Edition Note:</B> MPN is an optional feature, available depending on Edition and License Type.
        * To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
-       * available at /dashboard).
+       * available at /dashboard).</p>
        *
-       * @lifecycle Multiple unsubscription can be requested at any time. Once done the involved MPN subscriptions immediately exit the "active" state.<BR>
-       * The unsubscription will be notified through an {@link MpnSubscriptionListener#onUnsubscription} event to all involved MPN subscriptions.
+       * <p class="lifecycle"><b>Lifecycle:</b> Multiple unsubscription can be requested at any time. Once done the involved MPN subscriptions immediately exit the "active" state.<BR>
+       * The unsubscription will be notified through an {@link MpnSubscriptionListener#onUnsubscription} event to all involved MPN subscriptions.</p>
        *
        * @param filter A status name to be used to select the MPN subscriptions to unsubscribe. If null all existing MPN subscriptions
        * are unsubscribed. Possible filter values are:<ul>
@@ -1246,12 +1246,12 @@ END_NODE_JSDOC_EXCLUDE
        * {@link MpnSubscription#getSubscriptionId} value to verify the equivalence of two MpnSubscription objects. Substitutions may happen
        * when an MPN subscription is modified, or when it is coalesced with a pre-existing subscription.
        *
-       * @general_edition_note MPN is an optional feature, available depending on Edition and License Type.
+       * <p class="edition-note"><B>Edition Note:</B> MPN is an optional feature, available depending on Edition and License Type.
        * To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
-       * available at /dashboard).
+       * available at /dashboard).</p>
        *
-       * @lifecycle The collection is available once an MpnDevice registration has been requested, but reflects the actual server's collection only
-       * after an {@link MpnDeviceListener#onSubscriptionsUpdated} event has been notified.
+       * <p class="lifecycle"><b>Lifecycle:</b> The collection is available once an MpnDevice registration has been requested, but reflects the actual server's collection only
+       * after an {@link MpnDeviceListener#onSubscriptionsUpdated} event has been notified.</p>
        *
        * @param {String} filter An MPN subscription status name to be used to select the MPN subscriptions to return. If null all existing MPN subscriptions
        * are returned. Possible filter values are:<ul>
@@ -1286,9 +1286,9 @@ END_NODE_JSDOC_EXCLUDE
        * {@link MpnSubscription#getSubscriptionId} value to verify the equivalence of two MpnSubscription objects. Substitutions may happen
        * when an MPN subscription is modified, or when it is coalesced with a pre-existing subscription.
        *
-       * @general_edition_note MPN is an optional feature, available depending on Edition and License Type.
+       * <p class="edition-note"><B>Edition Note:</B> MPN is an optional feature, available depending on Edition and License Type.
        * To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
-       * available at /dashboard).
+       * available at /dashboard).</p>
        *
        * @param {String} subscriptionId The subscription ID to search for.
        * @return {MpnSubscription} the MpnSubscription with the specified ID, or null if not found.
@@ -1341,6 +1341,7 @@ END_NODE_JSDOC_EXCLUDE
    * Enable WS if disabled.
    */
   LightstreamerClient["__restoreWs"] = WebSocketConnection.restoreClass;
+  LightstreamerClient["__disableWs"] = WebSocketConnection.disableClass;
 
   /*
    * TEST-ONLY METHOD.

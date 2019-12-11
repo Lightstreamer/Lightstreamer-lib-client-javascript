@@ -61,7 +61,16 @@ export default /*@__PURE__*/(function() {
         //  on recent browsers we send a post message and trigger the doTick when we receive such message
         if (Environment.isBrowserDocument() && typeof postMessage != "undefined") {
           generateTickExecution = function() {
-            window.postMessage("Lightstreamer.run",origin);
+              try {
+                  window.postMessage("Lightstreamer.run",origin);                    
+              } catch (e) {
+                  // sometimes on IE postMessage fails mysteriously but, if repeated, works
+                  try {
+                      window.postMessage("Lightstreamer.run",origin);
+                  } catch (e) {
+                      // await next tick (at most 50ms on foreground page and 1s in background pages)
+                  }
+              }
           };
           
           var postMessageHandler = function(event){

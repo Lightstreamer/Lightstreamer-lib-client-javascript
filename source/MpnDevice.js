@@ -112,7 +112,7 @@ export default /*@__PURE__*/(function() {
             /**
              * The platform identifier of this MPN device. It equals <code>Google</code> or <code>Apple</code> and is used by the server as part of the device identification.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the MPN device platform.
              */
@@ -123,7 +123,7 @@ export default /*@__PURE__*/(function() {
             /**
              * The application ID of this MPN device. It is used by the server as part of the device identification.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the MPN device application ID.
              */
@@ -135,7 +135,7 @@ export default /*@__PURE__*/(function() {
              * The device token of this MPN device. It is passed during creation and
              * is used by the server as part of the device identification.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the MPN device token.
              */
@@ -148,7 +148,7 @@ export default /*@__PURE__*/(function() {
              * localStorage during creation and is used by the server to restore MPN subscriptions associated with this previous token. May be null if
              * no MPN device has been registered yet on the application.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the previous MPN device token, or null if no MPN device has been registered yet.
              */
@@ -160,7 +160,7 @@ export default /*@__PURE__*/(function() {
              * Checks whether the MPN device object is currently registered on the server or not.<BR>
              * This flag is switched to true by server sent registration events, and back to false in case of client disconnection or server sent suspension events.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {boolean} true if the MPN device object is currently registered on the server.
              *
@@ -175,7 +175,7 @@ export default /*@__PURE__*/(function() {
              * An MPN device may be suspended if errors occur during push notification delivery.<BR>
              * This flag is switched to true by server sent suspension events, and back to false in case of client disconnection or server sent resume events.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {boolean} true if the MPN device object is currently suspended on the server.
              *
@@ -195,7 +195,7 @@ export default /*@__PURE__*/(function() {
              * {@link MpnDevice#isRegistered} and {@link MpnDevice#isSuspended} are both true.</li>
              * </ul>
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the status of the device.
              *
@@ -209,7 +209,7 @@ export default /*@__PURE__*/(function() {
             /**
              * The server-side timestamp of the device status.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {Number} The server-side timestamp of the device status.
              *
@@ -226,7 +226,7 @@ export default /*@__PURE__*/(function() {
              * Note: a device token change, if the previous device token was correctly stored on localStorage, does not cause the device ID to change: the
              * server moves previous MPN subscriptions from the previous token to the new one and the device ID remains unaltered.
              *
-             * @lifecycle This method can be called at any time.
+             * <p class="lifecycle"><b>Lifecycle:</b> This method can be called at any time.</p>
              *
              * @return {String} the MPN device ID.
              */

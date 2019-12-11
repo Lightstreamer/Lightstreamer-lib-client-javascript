@@ -122,10 +122,10 @@ END_NODE_JSDOC_EXCLUDE
      * internally converted to match the related WebSocket protocol
      * (i.e. http becomes ws while https becomes wss).
      * 
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> HTTPS is an optional
+     * <p class="edition-note"><B>Edition Note:</B> HTTPS is an optional
 	 * feature, available depending on Edition and License Type.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      * 
 START_NODE_JSDOC_EXCLUDE
      * <p class="default-value"><b>Default value:</b> the address of the server
@@ -346,10 +346,10 @@ END_NODE_JSDOC_EXCLUDE
      * internally converted to match the related WebSocket protocol
      * (i.e. http becomes ws while https becomes wss).
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
 	 * an optional feature, available depending on Edition and License Type.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="lifecycle"><b>Lifecycle:</b> The method gives a meaningful answer only when
      * a session is currently active.</p>
@@ -385,10 +385,10 @@ END_NODE_JSDOC_EXCLUDE
      * when a Server cluster is in place and particular configurations for the
      * load balancer are used.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> Server Clustering is
+     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
      * an optional feature, available depending on Edition and License Type.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="lifecycle"><b>Lifecycle:</b> The method gives a meaningful answer only when
      * a session is currently active.</p>

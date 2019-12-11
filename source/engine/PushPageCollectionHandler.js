@@ -318,6 +318,7 @@ import SubscriptionChangeTutor from "../control/SubscriptionChangeTutor";
 
       var tutor = new UnsubscribeTutor(this.options,tableNum,this,effort,currentTimeout);
       var deleteBody = this.subscriptions[tableNum].deleteBody;
+      deleteBody['LS_reqId'] = Utils.nextRequestId();
       this.engine.sessionHandler.sendUnsubscription(tableNum,deleteBody,this,effort >= 2,tutor);
 
     },

@@ -918,11 +918,11 @@ export default /*@__PURE__*/(function() {
      * requests may be refused if any frequency limit is posed on the server
      * side for some item.
      *
-     * <ALLEGRO_EDITION_NOTE><p class="edition-note"><B>Edition Note:</B> A further global frequency limit could also
+     * <p class="edition-note"><B>Edition Note:</B> A further global frequency limit could also
 	 * be imposed by the Server, depending on Edition and License Type; this specific limit also applies to RAW mode
 	 * and to unfiltered dispatching.
 	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p></ALLEGRO_EDITION_NOTE>
+	 * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> null, meaning to lean on the Server default based on the subscription
      * mode. This consists, for all modes, in not applying any frequency 
@@ -1795,11 +1795,10 @@ export default /*@__PURE__*/(function() {
     addSubTable: function(_item,_key) {
       var st = new Subscription(this.subMode);
       st.makeSubTable(this);
-      
-      this.subTables.insert(st,_item,_key);
-      
+            
       try {
         st.setItems([_key]);
+        this.subTables.insert(st,_item,_key);
       } catch(e) {
         this.dispatchEvent("onCommandSecondLevelSubscriptionError", [14, INVALID_SECOND_LEVEL_KEY, _key]);
         return;

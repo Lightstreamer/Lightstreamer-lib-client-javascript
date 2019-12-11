@@ -361,8 +361,8 @@ import Utils from "../Utils";
       },
       
       /**@override*/
-      forwardDestroyRequestToTransport: function(sessionId, request, type, related, retryingOrHost) {
-          this.controlHandler.addSyncRequest(sessionId, request, type, related, retryingOrHost);
+      forwardDestroyRequestToTransport: function(sessionId, request, type, related, retryingOrHost, requestListener) {
+          this.controlHandler.addSyncRequest(sessionId, request, type, related, retryingOrHost, requestListener);
       }
   };
   
