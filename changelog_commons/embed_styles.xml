@@ -1,0 +1,65 @@
+<project name="embed_styles" default="embed">
+	<description>Ant script that replaces a link to the companion styles.css in an inline declaration</description>
+
+    <!-- importiamo le variabili di ambiente, che vedremo come env.xxxxx -->
+    <property environment="env"/>
+
+    <property name="stylesheet_file" location="styles.css" />
+
+    <target name="embed_changelog">
+        <loadfile property="style_content" srcFile="${stylesheet_file}" />
+        <!-- testa anche l'esistenza del file -->
+
+        <replace file="${changelog_file}" failOnNoReplacements="true"
+            token="&lt;link rel=&quot;stylesheet&quot; href=&quot;${stylesheet_dir}/styles.css&quot; /&gt;" >
+            <replacevalue><![CDATA[
+    <style type="text/css">
+STYLESHEET CONTENTS HERE
+    </style>]]></replacevalue>
+        </replace>
+
+        <replace file="${changelog_file}" failOnNoReplacements="true"
+            token="STYLESHEET CONTENTS HERE"
+            value="${style_content}" />
+
+        <replace file="${changelog_file}" failOnNoReplacements="true"
+            value="" >
+            <replacetoken><![CDATA[<!-- to be expanded inline by the build script -->]]></replacetoken>
+        </replace>
+    </target>
+
+    <target name="check_changelog" depends="embed_changelog">
+        <echo>
+Looking for incomplete parts (xxx):
+        </echo>
+        <replace file="${changelog_file}" summary="true"
+                token="xxx"
+                value=" MISSING " />
+        <input>
+Check the outcome of the changelog transformation.
+First of all, ensure that the last replacement didn't find anything.
+
+Now the changelog in ${changelog_file} will be shown; check it, then close the browser page.
+
+Press Enter to continue.
+        </input>
+
+        <!-- executed only if not already set by the caller: -->
+        <condition property="browser_for_docs" value="${env.BROWSER_FOR_DOCS}">
+            <isset property="env.BROWSER_FOR_DOCS" />
+        </condition>
+        <!-- executed only if still not supplied: -->
+        <property name="browser_for_docs" value="firefox" />
+
+        <exec executable="${browser_for_docs}">
+            <arg value="file://${changelog_file}" />
+        </exec>
+        <input>
+Ensure that you have closed the changelog page.
+Then press Enter to continue.
+        </input>
+    </target>
+
+    <target name="embed" depends="check_changelog" />
+
+</project>

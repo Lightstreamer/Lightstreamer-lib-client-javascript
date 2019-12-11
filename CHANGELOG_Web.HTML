@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lightstreamer Changelog</title>
+    <link rel="stylesheet" href="changelog_commons/styles.css" />
+        <!-- to be expanded inline by the build script -->
+</head>
+
+<body>
+<div id="wrap">
+<div id="title">LIGHTSTREAMER CHANGELOG</div>
+<div id="summary">
+   <ul>
+      <li><a href="#web_client">SDK for Web Clients (Unified API)</a></li>
+   </ul>
+</div>
+
+
+<!-- ======================================================================================== -->
+<!-- ======================================================================================== -->
+<!-- ======================================================================================== -->
+
+
+
+<a name="web_client"></a>
+<div class="box">
+<div class="component">SDK for Web Clients (Unified API)</div>
+
+
+<div class="version">8.0.2 build 1797</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="date">Released on 11 Dec 2019</div>
+
+<p id="3094">Fixed a bug on IE11 which could have caused an exception with the message
+"Operation aborted" when invoking the method LightstreamerClient.sendMessage.
+In some cases, the message could have been still sent successfully.</p>
+
+<p id="3100">Revised the policy of reconnection attempts to reduce the attempt frequency
+in case of repeated failure of the first bind request, which could be due to issues
+in accessing the "control link" (when configured).</p>
+
+
+<div class="version">8.0.1 build 1784</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="date">Released on 9 October 2019</div>
+
+<p id="3078">Fixed a bug which could have caused the client to ignore a call to 
+LightstreamerClient.disconnect, when it was invoked while the client was reconnecting,
+that is, when LightstreamerClient.getStatus was equal to DISCONNECTED:WILL-RETRY or
+DISCONNECTED:TRYING-RECOVERY.</p>
+
+<p id="3082">Fixed a bug which could have caused the ClientListener.onStatusChange callback
+to notify the status DISCONNECTED:WILL-RETRY as the first status instead of CONNECTING.
+The anomaly could be triggered by invoking LightstreamerClient.disconnect while the client
+was trying to recover the session, and then invoking LightstreamerClient.connect.</p>
+
+<p id="3076"> 
+Fixed a bug which could have caused the client to disconnect abruptly when the server signaled 
+a harmless error message.</p>
+
+<p>Revised and improved the layout of the jsdocs.</p>
+
+
+<div class="version">8.0.0 build 1781.1015</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">No longer compatible with the SDK for Flash Clients;
+   see compatibility notes below.</div>
+<div class="date">Released on 30 August 2019</div>
+
+<p>Introduced the support for Mobile Push Notifications. It consists in
+   new methods in the LightstreamerClient class together with new dedicated
+   classes. See the API documentation for details.<br/>
+   An MPN subscription is backed by a real-time subscription, from which it may take
+   any field value. Unlike the usual real-time subscriptions, MPN subscriptions are persistent:
+   they survive the session and are identified by a permanent, global, unique key provided
+   by the Server at time of activation.<br/>
+   The notifications are managed by third-party services supported by the Server,
+   which determine the notification characteristics and the supported devices.<br/>
+   <span class="compatibility">COMPATIBILITY NOTE: The extension requires Server 7.1
+   and breaks the compatibility with Server version 7.0. However, if MPN support
+   is not used, compatibility with Server version 7.0 is still ensured.</span></p>
+
+<p>Replaced the "maxBandwidth" property of the ConnectionOptions bean with two
+   distinct properties: "requestedMaxBandwidth" and the read-only "realMaxBandwidth",
+   so that the setting is made with the former, while the value applied by
+   the Server is only reported by the latter, now including changes during session
+   life. The extension affects the getter and setter names and also the invocations
+   of onPropertyChange on the ClientListener (see the docs for details).
+   <span class="compatibility">COMPATIBILITY NOTE: Custom code using "maxBandwidth"
+   in any of the mentioned forms has to be ported.</span></p>
+
+<p>Introduced a new callback, "onRealMaxFrequency", to the SubscriptionListener,
+   to report the frequency constraint on the subscription as determined by the
+   Server and its changes during subscription life. See the docs for details
+   and special cases.</p>
+
+<p id="3042">Fixed a bug introduced with the session recovery mechanism,
+   which, under certain conditions, could have caused the client to ignore
+   the setForcedTransport setting after a recovery attempt, even a successful one.</p>
+
+<p id="3063">Removed a spurious notification of the DISCONNECTED:WILL-RETRY
+   state that could occur when invoking connect() after receiving an invocation
+   of onServerError(). The bug was harmless.</p>
+
+<p>Introduced a new property, "clientIp", in the ConnectionDetails bean;
+   it is a read-only property with the related getter and keyword for
+   onPropertyChange (see the docs for details).</p>
+
+<p>Reduced the support for very old browsers, depending on the deployment scenario,
+   with regard to the access urls for static pages and Lightstreamer Server.
+   In particular:
+   </p><ul>
+       <li>Dropped support for cross-protocol (i.e. http vs https) scenarios on various old browsers.</li>
+       <li>Dropped support for cross-site scenarios on various old browsers.</li>
+       <li>Dropped streaming capability (long polling still available) for old IE versions and similar browsers.</li>
+   </ul><p>
+   In many of these cases, the new limitation only occurs when
+   setCookieHandlingRequired(true) is invoked by the application.<br/>
+   More details on the current support level are provided in the
+   "Deployment Config Matrix". See paragraph 2.1.1 in the
+   Web Client Guide document included in the SDK.<br/>
+   Note that, as a consequence, if clients based on older versions of this SDK
+   are no longer in use, the Server's &lt;use_protected_js&gt; configuration flag
+   can be forced to N.</p>
+
+<p>Slightly delayed the availability of the "serverSocketName" property of the
+   ConnectionDetails bean, which was already valued upon session start.
+   <span class="compatibility">COMPATIBILITY NOTE: Custom code using
+   getServerSocketName right after a session start, should ensure that
+   onPropertyChange for "serverSocketName" gets invoked first.</span></p>
+   
+<p>Removed useless requests to the Server for bandwidth change when the Server
+   is not configured for bandwidth management.</p>
+   
+<p>Added the error code 21 in onServerError, that can be received upon some failed
+   requests, to inform that not only the current session was not found but it is also likely
+   that the request was routed to the wrong Server instance. Previously, in the same cases,
+   the SDK library would not invoke onServerError and would open a new session instead.
+   <span class="compatibility">COMPATIBILITY NOTE: If using an existing application, you should
+   check how it would handle the new (and unexpected) error code. A reconnection attempt would
+   ensure the previous behavior, although this is no longer the suggested action.</span></p>
+
+<p>Added new error codes 66 and 68 to onServerError, onSubscriptionError, and
+   onSecondLevelSubscriptionError, to report server-side issues; previously,
+   upon such problems, the connection was just interrupted.<br/>
+   Added new error code 61 to onServerError, to report unexpected client-side issues;
+   previously, upon such problems, the connection was just interrupted.<br/>
+   Removed error code 20 from onSubscriptionError and onSecondLevelSubscriptionError
+   documentation; when a subscription request cannot find the session,
+   the session is just closed and replaced immediately.</p>
+
+<p>Reduced reconnection time in case the browser detects the online status.</p>
+
+<p id="3031">By-passed the "retry delay" setting when recovering from a closed session.
+   This may speedup the recovery process.</p>
+
+<p>Clarified in the docs the role of the delayTimeout in sendMessage.</p>
+
+<p>Discontinued the support for the SDK for Flash Clients.
+   <span class="compatibility">COMPATIBILITY NOTE: Existing clients using the Flash Client SDK
+   should not be ported: they have to stick to Web Client SDK library version 7.2.0.</span></p>
+
+<p>Incremented the minor version number.
+   <span class="compatibility">COMPATIBILITY NOTE: If running the Server with a license
+   of "file" type which enables Web Client SDK up to version 7.2 or earlier, clients based
+   on this new version will not be accepted by the Server: a license upgrade will be needed.</span></p>
+
+
+<div class="version">7.2.0 build 1777</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 3 Apr 2019</div>
+
+<p>Fixed a bug in the recently revised policy of reconnection attempts upon failed
+   or unresponsive requests. In case of multiple failed attempts on unresponsive connections
+   the retry delay was increased dynamically, but was not restored to the configured
+   value after a successful connection. As a consequence, after a server or network
+   unavailability lasting for a couple of minutes, further cases of server or network
+   unavailability would be recovered in about one minute, even if much shorter.</p>
+
+<p>Fixed an annoying formatting issue in the jsdoc page for ConnectionOptions.</p>
+
+
+<div class="version">7.2.0 build 1776</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 15 Mar 2019</div>
+
+<p>Fixed a bug causing the conversion into numbers of user-supplied string parameters 
+   (e.g. in settings in ConnectionDetails and ConnectionOptions) which can be interpreted
+   as numbers. For example a user name of the form '1e2' could have been converted into
+   the number 100, then used as the string '100'.</p>
+
+<p>Fixed several bugs in the session recovery mechanism:
+   </p><ul>
+   <li>Fixed a bug which could have caused, in case of a recovery failure
+   due to the elapsing of the recently added "SessionRecoveryTimeout" setting, 
+   the failure of the first subsequent attempt to create a new session.</li>
+   <li>Fixed a bug causing the client to always try a recovery when the ReconnectTimeout
+   expired on a stalled session, regardless that the SessionRecoveryTimeout could be set
+   as 0 to disable session recovery.</li>
+   <li>Fixed a bug that could have caused the silent discarding of control requests (e.g. subscriptions
+   or messages) when the client was attempting the recovery of the current session.</li>
+   <li>Fixed a bug that could have caused session recovery to fail if preceded by a previous
+   successful session recovery on the same session by more than a few seconds.</li>
+   <li>Fixed a bug triggered by a call to connect() or setForcedTransport() issued while the client
+   was attempting the recovery of the current session. This caused the recovery to fail,
+   but, then, the library might not reissue the current subscriptions on the newly created session.</li>
+   </ul>
+
+<p>Fixed a bug preventing the sharing of the connection among LightstreamerClient objects
+   created on the same page.</p>
+
+<p>Fixed a bug due to a race condition between a subscribe and a concurrent disconnect
+   in a connection sharing scenario,
+   which could have caused the subscription to be skipped upon a subsequent connect.</p>
+
+<p>Modified the implementation of connect() when issued while the state is either
+   DISCONNECTED:WILL-RETRY or DISCONNECTED:TRYING-RECOVERY. The call will no longer interrupt
+   the pending reconnection attempt, but it will be ignored, to lean on the current attempt.
+   Note that a pending reconnection attempt can still be interrupted by issuing disconnect() first.<br/>
+   Modified in a similar way the implementation of setForcedTransport(); when issued
+   while the state is either DISCONNECTED:WILL-RETRY or DISCONNECTED:TRYING-RECOVERY,
+   the call will no longer interrupt the pending reconnection attempt, but it will apply
+   to the outcome of that connection attempt.</p>
+
+<p>Wholly revised the policy of reconnection attempts upon failed or unresponsive requests.
+   Now the only property related with this policy is "RetryDelay", which now affects both
+   (1) the minimum time to wait before trying a new connection to the Server in case the previous one failed 
+   for any reason and (2) the maximum time to wait for a response to a request before dropping the connection 
+   and trying with a different approach.<br/>
+   Previously, point (2) was related with the "ConnectTimeout" and "CurrentConnectTimeout" properties.
+   Now, in case of multiple failed attempts on unresponsive connections (i.e. while in CONNECTING state),
+   the timeout used may still be increased dynamically and can still be inspected through
+   getCurrentConnectTimeout, but this behavior is no longer configurable.
+   <span class="compatibility">COMPATIBILITY NOTE: Existing code that tries to take control of the
+   connection timeouts will no longer be obeyed, but we assume that the new policy will bring
+   an overall improvement. Note that, when in CONNECTING state, the current timeout can be restored
+   by issuing disconnect() and then connect().</span>
+   As a result of the change, methods setConnectTimeout, getConnectTimeout and setCurrentConnectTimeout 
+   of ConnectionOptions have been deprecated, as the setters have no effect and the getter
+   is now equivalent to getRetryDelay.<br/>
+   Also changed the default value of the "RetryDelay" property from 2 seconds to 4 seconds.</p>
+
+<p>Changed the default value of the "EarlyWSOpenEnabled" property from true to false 
+   (see ConnectionOptions.setEarlyWSOpenEnabled). This removes a potential incompatibility
+   with cookie-based Load Balancers, at the expense of a possible slight delay in session startup.</p>
+
+<p>Changed the default value of the "SlowingEnabled" property from true to false 
+   (see ConnectionOptions.setSlowingEnabled).</p>
+
+<p>Fixed a mistake in the supplied generator.html page, whereby the "Include Promise polyfill"
+   checkbox was only shown while one of the AMD options was selected. Actually, the checkbox
+   was still obeyed, as expected, even when not visible.</p>
+
+<p>Incremented the minor version number.
+   <span class="compatibility">COMPATIBILITY NOTE: If running the Server with a license
+   of "file" type which enables Web Client SDK up to version 7.1 or earlier, clients based
+   on this new version will not be accepted by the Server: a license upgrade will be needed.</span></p>
+
+
+<div class="version">7.1.3 build 1767</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 14 Jun 2018</div>
+
+<p>Introduced a maximum time on attempts to recover the current session, after which
+   a new session will be opened. The default is 15 seconds, but it can be customized
+   with the newly added "SessionRecoveryTimeout" property in ConnectionOptions.
+   This fixes a potential case of permanently unsuccessful recovery, if the
+   &lt;control_link_address&gt; setting were leveraged in a Server cluster and a Server
+   instance happened to leave a cluster and were not automatically restarted.</p>
+
+<p>Fixed a bug in the recently introduced session recovery mechanism triggered
+   by the use of the &lt;control_link_address&gt; setting on the Server,
+   which could have caused feasible recovery attempts to fail.</p>
+
+<p>Fixed a bug in the recently introduced session recovery mechanism, by which,
+   a sendMessage request issued while a recovery operation was in place,
+   could have never been notified to the listener until the end of the session
+   (at which point an "abort" notification would have been issued to the listener),
+   even in case the recovery was successful.</p>
+
+<p>Fixed a race condition, mostly possible while a session recovery was being
+   attempted, which could have caused the delay of subscription requests
+   due to a wrong request to the Server.</p>
+   
+<p>Addressed various issues related with connection sharing:
+   </p><ul>
+   <li>Improved the connection sharing mechanism, which, in some complex contexts where
+   a page was unable to connect to a master, could have kept trying unsuccessfully.
+   Now it would give up and open a separate connection.</li>
+   <li>Removed sharing restrictions on Firefox 57 and above, introduced in version 7.1.0.
+   Now, sharing will be available as soon as it is allowed by the browser.</li>
+   <li>On the other hand, discontinued connection sharing support on browsers that don't provide
+   the "shared worker" feature. However, on most of these browsers, connection sharing
+   already failed for other reasons; it could have succeeded mainly on very old browsers.
+   This fixes an issue with some browsers, like Chrome for Android, in which the attempt
+   (bound to fail) to share the connection could have caused a spurious popup to appear
+   or a blocked popup notification to be issued.</li>
+   <li>Disabled sharing on UC Browser. This fixes compatibility issues which, in case
+   of sharing configured, might have caused any connection attempt to fail.</li>
+   </ul>
+
+<p>Addressed a particular case of session interruption that was still not supported
+   by the session recovery feature.</p>
+
+
+<div class="version">7.1.2 build 1749</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 23 Mar 2018</div><
+
+<p>Fixed a severe bug in the recently introduced session recovery mechanism, by which,
+   after the creation of a new session because of network issues, it was possible
+   that subsequent successful session recovery would cause data loss.</p>
+
+<p>Fixed a bug in the recently introduced session recovery mechanism, which,
+   upon particular kinds of network issues and if the creation of a new session
+   had been necessary, could have caused the client to skip the resuming of the
+   active subscriptions.</p>
+
+<p>Fixed an annoying typo in the documentation of onStatusChange regarding the
+   "DISCONNECTED:TRYING-RECOVERY" status.</p> 
+
+<p>Improved the library log by splitting the "lightstreamer.subscriptions" category in three,
+   with the introduction of "lightstreamer.messages" and "lightstreamer.requests".
+   See setLoggerProvider in LightstreamerClient for details.
+   <span class="compatibility">COMPATIBILITY NOTE: Existing code that collects log
+   from the "lightstreamer.subscriptions" category should be ported. This obviously
+   is not expected to affect production code.</span></p>
+
+
+<div class="version">7.1.1 build 1745</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 28 Feb 2018</div>
+
+<p>Added the error code 21 in onServerError, that can be received upon failed bind
+   requests, to inform that not only the current session was not found but it is also likely
+   that the request was routed to the wrong Server instance. Previously, in the same cases,
+   the SDK library would not invoke onServerError and would open a new session instead.
+   <span class="compatibility">COMPATIBILITY NOTE: In these cases, existing applications
+   will no longer benefit from the automatic recovery, unless they are extended to handle
+   the new event properly.</span><br/>
+   Likewise, added the error code 11 in onSubscriptionError and onCommandSecondLevelSubscriptionError,
+   that can be received instead of code 20, to inform that not only the current session
+   was not found but it is also likely that the request was routed to the wrong Server instance.
+   <span class="compatibility">COMPATIBILITY NOTE: Existing applications which handle
+   error code 20, should ensure that the new error code 11 is also handled properly.</span></p>
+
+<p>Modified the default value of the "RetryDelay" property from 5000 to 2000 ms.
+   This should help recovering from network outages of a few seconds, typical, for
+   instance, of wifi/mobile network switches on mobile phones.</p>
+
+<p>Extended the recovery mechanism to stalled sessions. Now, when the ReconnectTimeout
+   expires, an attempt to recover the current session will be performed first.</p>
+
+<p>Fixed a race condition, introduced in the previous build 1737, which could have caused
+   the delay of subscription requests issued on a websocket session startup
+   due to a wrong request to the Server.</p>
+
+<p>Improved compatibility with the latest versions of Edge and Safari. This required
+   disabling connection sharing.</p>
+
+<p>Improved the notification of closed sessions to the Server, to enforce a cleanup
+   when a browser tab is closing.</p>
+
+
+<div class="version">7.1.0 build 1737</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 7.0 b2.</div>
+<div class="compatibility">May not be compatible with code developed with the previous version;
+   see compatibility notes below.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 20 Dec 2017</div>
+
+<p>Added automatic recovery of sessions upon unexpected socket interruption during
+   streaming or long polling. Now the library will perform an attempt to resume
+   the session from the interruption point. The attempt may or may not succeed,
+   also depending on the Server configuration of the recovery capability.<br/>
+   As a consequence, introduced a new status, namely DISCONNECTED:TRYING-RECOVERY,
+   to inform the application when a recovery attempt is being performed; hence,
+   onStatusChange and getStatus can provide the new status.
+   <span class="compatibility">COMPATIBILITY NOTE: Existing code that uses the status
+   names received via onStatusChange or getStatus may have to be aligned.</span></p>
+
+<p>Added the onServerKeepalive callback in the ClientListener. See the JSDocs for details.</p>
+
+<p>Extended the reverse heartbeat mechanism, governed by the "ReverseHeartbeatInterval"
+   property. Now, it will also allow the Server to detect when a client has abandoned
+   a session although the socket remains open.<br/>
+   Fixed a bug on sending reverse heartbeats to the Server, which, sometimes, could
+   have caused the Server to report a syntax error.</p>
+
+<p>Added the error codes 60 and 71 to "onServerError", to report cases in which the
+   Server license does not allow the client version.</p>
+
+<p>Fixed a bug which caused the invocations to the "setReconnectTimeout" method
+   in ConnectionOptions to be ignored.</p>
+
+<p>Fixed a bug on the recovery of control requests upon session close and replacement,
+   which, through a rare race condition, could have caused the block of all subsequent
+   control requests.</p>
+
+<p>Fixed a bug that could affect the sorting of grid widgets requested through 
+   setSort method in case of large numbers (greater that 1 million) and comma as
+   thousands separator.</p>
+
+<p>Fixed the documentation of the "ContentLength", "KeepaliveInterval", and
+   "ReverseHeartbeatInterval" properties of ConnectionOptions, to clarify that
+   a zero value is not allowed in the first and it is allowed in the others.</p>
+   
+<p>Put a workaround for a known issue with shared workers in Firefox 57 and above,
+   which could have caused misbehavior in case of connection sharing.
+   As a consequence, the support for connection sharing may be limited.</p>
+
+<p>Aligned the "Web Client Guide" document with regard to the referred
+   "Deployment Config Matrix", which had remained obsolete.</p>
+
+<p>Improved subscription requests on WebSockets by removing unnecessary parts.</p>
+
+<p>Improved the messages shown by the provided StatusWidget.</p>
+
+<p>Aligned the documentation to comply with current licensing policies.</p>
+
+<!-- <p>Incremented the minor version number.
+   Anyway, if running the Server with a license file that supports
+   Web Client SDK up to version 7.0 or earlier, you must be running
+   Server version 6.x; hence, to use this new Web Client SDK version,
+   you already have to upgrade the Server and get the new kind of license
+   for 7.0, which implies support for Web Client SDK 7.1.</p> -->
+
+
+<div class="version">7.0.4 build 1721</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 23 Jan 2017</div>
+
+<p>Removed a restriction on field names that can be supplied to a Subscription object
+   within a "field list"; names made by numbers are now allowed. This includes the
+   specification of field names as "data-field" attributes in DOM cells to be
+   handled by StaticGrid or DynaGrid.
+   Obviously, the final validation on field names is made by the Metadata Adapter.</p>
+
+<p>Fixed a bug introduced in version 6.1 which prevented the "slowing algorithm"
+   (see setSlowingEnabled) from working.</p>
+
+<p>Fixed a bug in setRequestedBufferSize, which caused the value "unlimited" to be
+   ignored for subscriptions in MERGE mode, which would stick to the default buffer
+   size of 1.</p>
+
+<p>Revised the sendMessage implementation in the HTTP case, to limit recovery actions
+   when messages are not to be ordered and a listener is not provided.<br/>
+   Revised sendMessage to accept 0 as a legal value for the "delayTimeout" argument.</p>
+
+<p>Revised the default setting for the "ContentLength" property of ConnectionOptions,
+   to allow the library to set it to the best value.</p>
+
+<p>Clarified in the documentation the meaning of null in setRequestedMaxFrequency
+   and setRequestedBufferSize. Extended setRequestedMaxFrequency to allow the setting
+   also when the subscription is "active" and the current value is null.</p>
+
+<p>Revised the documentation of possible subscription error codes.</p>
+
+<p>Fixed the Documentation of the FlashBridge class, which included spurious entries
+   for names "onBridgeReadyCalled" and "callBridgeReady".</p>
+
+
+<div class="version">7.0.4 build 1718</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+
+<p>Fixed a bug that could prevent the transition to "cold" style of a cell in a grid,
+   hence leaving it in "hot" state. This was only possible if the Server's
+   &lt;delta_delivery&gt; setting had been forced to N.</p>
+
+<p>Addressed a compatibility issue with the new Safari 10, which, on some environments,
+   caused the cells associated with StaticGrid or DynaGrid objects not to be detected.</p>
+
+<p>Fixed the handling of wrong calls to getFields and getFieldSchema on Subscription.
+   In some cases, an exception different from the IllegalStateException was thrown.</p>
+
+<p>Fixed a bug that could affect connection sharing on old browsers when equipped
+   with Norton Internet Security.</p>
+
+<p>Fixed a bug in the logging support, which caused the setUseInnerHtml method of the
+   DOMAppender to be ineffective (false was always meant).</p>
+
+<p>Fixed the log produced by the library, as, between the window name (when available)
+   and the timestamp a space was missing.</p>
+
+
+<div class="version">7.0.4 build 1717</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+
+<p>Fixed a bug that, under conditions of client machine overloaded or badly responsive,
+   could have caused a successful subscription, together with the related updates,
+   not to be notified to the application. The bug only affected slave pages when
+   connection sharing was enabled.</p>
+
+
+<div class="version">7.0.3 build 1713</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 5 Sep 2016</div>
+   
+<p>Fixed a bug that could have led, under certain circumstances, to an endless loop
+of connection and disconnection when two or more pages were trying to share the
+connection.</p>
+
+<p>Added clarification details in the documentation of setCookieHandlingRequired
+   and enableSharing.</p>
+
+
+<div class="version">7.0.2 build 1710</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">May not be compatible with code developed with the previous version;
+   see compatibility notes below.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 10 May 2016</div>
+   
+<p>Renamed the SDK, which was named "SDK for JavaScript Clients". The new name
+   also emphasizes that it is based on the Unified APIs, like an increasing
+   number of other Client SDKs.</p>
+
+<p>Discontinued the documentation of the use of this library in a Node.js environment.
+   Now the new SDK for Node.js Clients (Unified API) is available, with dedicated
+   documentation and instructions on how to acquire the library from the npm service.</p>
+
+<p>Discontinued the supply of the alternative versions of the library, which,
+   however, can still be created with Generator.html. Also moved Generator.html
+   under the lib folder. <br/>Note that the library version
+   for Node.js was in AMD format and required to be included in a custom source
+   together with RequireJS. The use of the library version available through the
+   npm service (see the new Node.js Client SDK) is recommended instead.</p>
+
+<p>Changed the names of some properties in the ConnectionOptions bean. To resume:
+   </p><ul>
+       <li>keepaliveMillis has become keepaliveInterval</li>
+       <li>idleMillis has become idleTimeout</li>
+       <li>pollingMillis has become pollingInterval</li>
+       <li>reverseHeartbeatMillis has become reverseHeartbeatInterval</li>
+   </ul><p>
+   This affects the getter and setter names and also the invocations of
+   onPropertyChange on the ClientListener. <span class="compatibility">COMPATIBILITY NOTE:
+   Custom code using getters and setters for any of the specified properties should be
+   ported, but the old getters and setters are still supported. On the other hand,
+   custom code which defines onPropertyChange on a ClientListener and mentions any
+   of the specified properties has to be ported to the new property names.</span></p>
+
+<p>Separated the ConnectionSharing class from the LightstreamerClient: this means the class and its dependencies
+can now be excluded using the Generator.html. 
+Hence, the API and usage for this class have changed:
+  <code>
+    clientInstance.connectionSharing.enableSharing(...);
+    clientInstance.connectionSharing.isMaster();
+  </code>
+  becomes
+  <code>
+    clientInstance.enableSharing(new ConnectionSharing(...));
+    clientInstance.isMaster();
+  </code>
+  where the parameters of the old enableSharing method and the new ConnectionSharing constructor are still the same.
+<span class="compatibility">COMPATIBILITY NOTE: existing code leveraging enableSharing
+should be ported, although old code still works for now (provided that the ConnectionSharing
+class is not excluded via Generator.html); if no sharing at all is configured,
+the enableSharing call can also be removed.</span>
+When connection sharing is enabled, it is now possible to force the LightstreamerClient
+to release sharing-related resources by using the enableSharing(null) call while DISCONNECTED.</p>
+
+<p>Fixed a bug introduced on version 6.2.6: the bug prevented the use of WebSockets
+in some cases in which the user connection was switched from a non-WS-enabling
+network to a WS-enabling one.</p>
+
+<p>Fixed a bug: in case of a Subscription Error the client would still try to subscribe the Subscription again,
+until a manual unsubscribe call was performed.</p>
+
+<p>Fixed a bug which prevented the invalid-license error from being notified on Node.js.</p>
+
+<p>Changed the behavior of getConnectTimeout/setConnectTimeout. This setting now accepts the "auto" value. 
+If "auto" is specified, the timeout will be chosen (and possibly changed overtime) 
+by the library itself. Note that "auto" is also the new default value.
+To check and/or modify the current timeout a new getter/setter pair is exposed: 
+getCurrentConnectTimeout/setCurrentConnectTimeout.
+<span class="compatibility">COMPATIBILITY NOTE: If the getConnectTimeout method is called by the client code 
+its receiving variable may now contain the string "auto"; moreover it is likely that getConnectTimeout calls 
+should be replaced by getCurrentConnectTimeout ones.</span>
+See the docs for further details.</p>
+
+<p>Slightly changed the reconnection policy upon unexpected errors affecting an active session.
+In some known cases, the reconnection will no longer be immediate (with the risk of a fast
+reconnection loop), but the configured retry delay will be applied.</p>
+
+<p>Improved the support for connection sharing by taking advantage of the SharedWorker class,
+where supported by the browser. As a consequence, sharing will now succeed in some
+contexts in which it used not to take place.</p>
+
+<p>Introduced a Promise polyfill (https://github.com/jakearchibald/es6-promise). The polyfill is optional 
+and can be excluded using the Generator.html; in this case the library expects to find the Promise
+class in the environment.</p>
+
+<p>Fixed a wrong argument type in the docs for class FunctionAppender.<br/>
+Fixed the documentation of onServerError and onStatusChange, to specify that onServerError
+is always preceded, not followed, by onStatusChange with DISCONNECTED.<br/>
+Fixed various links in the JSDocs. Also slightly revised the style of the JSDocs.</p>
+
+<p>Fixed the documentation of the DOMAppender and FunctionAppender constructors,
+which indicated optional arguments before a mandatory argument. Actually,
+an argument qualified as optional can omitted only if not followed by further
+arguments, hence arguments preceding a mandatory one are mandatory as well.<br/>
+Aligned the documentation of all Appenders by removing the optionality attributes
+to their common constructor arguments.<span class="compatibility">COMPATIBILITY NOTE:
+No change is needed to existing code, because each of these arguments can still
+be omitted, as long as no subsequent arguments are supplied.</span>
+Clarified the policy for optional function arguments in the docs introduction.</p>
+
+<p>Removed from the documentation various classes that are not related
+with the interface, but used to be provided as utilities.
+The whole set of utility classes can be found on GitHub at the following address:
+https://github.com/Lightstreamer/utility-toolkit-javascript<br/>
+Removed also some log-related classes that are not needed for setting up the
+library log, but used to be provided to offer a full reusable logging system.
+The whole logging system can be found on GitHub at the following address:
+https://github.com/Lightstreamer/utility-logging-javascript<br/>
+<span class="compatibility">COMPATIBILITY NOTE: These classes are still included
+in the library as part of the implementation, so application code exploiting them
+will keep working. However, any future changes related with these classes
+will not be reported.</span></p>
+
+<p>Incremented the major version number.
+<span class="compatibility">COMPATIBILITY NOTE: If running the Server with a license
+file that supports Web Client SDK up to version 6.x or earlier, clients based on
+this new version will not be accepted by the Server.</span></p>
+
+
+<div class="version">6.2.7 build 1679.2</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+
+<p>Fixed a bug introduced on version 6.1.4 which only affected the use on Node.js;
+the effect was that, when the Server was unavailable, no more connection attempts
+were tried.</p>
+
+<p>Fixed an error in the JSDocs, where SimpleLoggerProvider was documented
+as a module (with static methods); actually, it is a class, with instance
+methods and an empty constructor.</p>
+
+
+<div class="version">6.2.6 build 1678</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">May not be compatible with code developed with the previous version;
+   see compatibility notes below.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 16 Jul 2015</div>
+
+<p>Fixed a bug: when using the SDK library inside a WebWorker, setting the setCookieHandlingRequired flag
+to true prevented the library from connecting.</p>
+
+<p>Fixed a bug on the onClearSnapshot implementation of the DynaGrid/StaticGrid/Chart classes,
+which caused it to have no effect.</p>
+
+<p>Fixed a bug in the SimpleLoggerProvider.removeLoggerAppender method.</p>
+
+<p>Fixed an error in the JSDoc: in the ClientListener.onStatusChange the status "CONNECTED:STREAM-SENSING"
+was erroneously reported as "CONNECTED:STREAM-SENSE".</p>
+
+<p>Prevented a serious error, on the opening of a WebSocket to a certain host, from blocking other
+WebSockets connections to different hosts.</p>
+
+<p>Changed the behavior of the addListener method for the LightstreamerClient, Subscription, Chart,
+DynaGrid and StaticGrid classes: adding a second time the same listener instance now has no effect.
+<span class="compatibility">COMPATIBILITY NOTE: if in existing code a same listener
+was added two times to a certain instance, it will no longer receive the events twice;
+moreover, upon the first invocation of removeListener it will be removed and it will stop
+receiving events. Hence such code may need to be revised.</span></p>
+
+<p>Introduced work-around for early XDomainRequest failures related to specific proxies.</p>
+
+<p>Introduced partial compatibility with React Native: at the moment the Client can only connect
+ in HTTP-POLLING mode.</p>
+
+<p>Clarified in the docs that the RemoteAppender does not support log of "INFO" and "DEBUG" levels.</p>
+ 
+<p>Changed the value of the LightstreamerClient.LIB_NAME static property to "javascript_client".</p>
+
+<p>Changed the default value for the ConnectionOptions.setContentLength setting.</p>
+
+
+<div class="version">6.2.5 build 1669</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 13 Feb 2015</div>
+
+<p>Introduced support for the new error related to the expiration of an active session on Lightstreamer Server
+(error 48). The error is not forwarded to the ClientListener, a reconnection is performed instead.</p>
+
+<p>Improved support for stickiness expiration on load balancers: if a client request pertaining to
+the current session is sent to the wrong instance of Lightstreamer Server, the Client automatically terminates the current session
+and opens a new one.</p>
+
+<p>Fixed the Chart and ChartLine classes: positionXAxis and positionYAxis were supposed to accept
+   negative values, but such values were explicitly blocked by their implementation.</p>
+
+<p>Fixed a typo in the documentation of the "preventCrossWindowShare" parameter of "enableSharing".</p>
+
+<p>Fixed the fade effect on IE&lt;=8 for cases where the end color is "transparent": in these cases
+the fade effect will not be applied and a discrete switch will occur (previously there was no change
+at all and the starting color was left).</p>
+
+<p>Fixed the "inherited methods" section of the JSDocs: some methods were missing, others were pointing
+to the wrong location. Also improved the readability of such list.</p>
+
+<p>Fixed a bug that, under rare circumstances, could have triggered a non-strict
+   loop of requests for the xhr.html file.</p>
+
+
+<div class="version">6.2.2 build 1664</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 6.0.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 21 Jan 2015</div>
+
+<p>Added the error code 30 in onServerError; the case is only predisposed for future special
+   licenses.<span class="compatibility">COMPATIBILITY NOTE: custom clients which
+   check the possible error outcomes don't have to be updated, as long as there is
+   no change in license terms.</span></p>
+
+<p>Extended the sendMessage with a new flag that permits to queue messages while the Client is offline.</p>
+
+<p>Renamed the setRetryTimeout and getRetryTimeout methods into setRetryDelay and getRetryDelay.
+   The old names are kept as aliases to mantain backward compatibility with previously written code.
+   The behavior of the associated value is also changed: while the delay was previously started
+   from the failure of the connection, it is now calculated from the start of the connection,
+   thus absorbing any round-trip or timeout between the start of the connection and its failure.</p>
+
+<p>Introduced the setFirstRetryMaxDelay and getFirstRetryMaxDelay settings. The actual delay
+   is a randomized value between 0 and the value set on the property associated with the new
+   methods. The randomization might help avoid a load spike on the cluster due to simultaneous
+   reconnections, should one of the active servers be stopped.
+   Previous versions of the SDK library had an hardcoded 0 value for this setting, the new 100ms
+   default value should not introduce a noticeable difference.</p>
+
+<p>Fixed the management of invalid key values when two-level push is active.
+   Now an invalid key no longer causes the session to fail, but only a notification
+   to onCommandSecondLevelSubscriptionError with the new code 14 is issued.<br/>
+   Fixed the documentation of two-level push, to specify the implicit conditions
+   that determine the (unlikely) cases in which a key value is invalid.</p>
+
+<p>Fixed an error in the obfuscation process which, under rare circumstances,
+   could have caused a "OpenAjax is not defined" exception.</p>
+
+<p>Introduced the support for the new client identification mechanism.</p>
+
+<p>Removed the examples, which are now only hosted on GitHub and managed through
+   the new "demos" site. Provided suitable references to find the examples there.
+   Example code for normal html pages should also be found on GitHub; the source
+   code of the preinstalled welcome page is no longer meant as a reference.</p>
+
+<p>Introduced the new setHttpExtraHeadersOnSessionCreationOnly/isHttpExtraHeadersOnSessionCreationOnly
+   in the the ConnectionOptions class. Unlike with setHttpExtraHeaders,
+   extra http headers will not be sent on all connections, but only during
+   session creation; this still ensures that the headers will reach notifyUser
+   and does not disable WebSocket connections.</p>
+
+<p>Introduced the support for io.js.</p>
+
+<p>Fixed a bug that might have occasionally caused an error to be shown on the browser
+   console (the text of the error was: 'Uncaught Executor error time: NaN').</p>
+
+<p>Incremented the minor version number.
+<span class="compatibility">COMPATIBILITY NOTE: If running the Server with a license
+file that supports Web Client SDK up to version 6.1 or earlier, clients based on
+this new version will not be accepted by the Server.</span></p>
+
+
+<div class="version">6.1.4 build 1640.11</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.1.2.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 22 Jul 2014</div>
+
+<p>Introduced the new setHttpExtraHeaders/getHttpExtraHeaders in the the ConnectionOptions class. It
+is now possible to add extra http headers to the requests sent to Lightstreamer Server.
+NOTE: Setting a non null value for this setting disables WebSockets.</p>
+
+<p>Improved compatibility with redirect-based authentication mode used by some proxies.</p>
+
+<p>Fixed a bug in the autoscroll behavior of the DynaGrid class: it was adhering to the documentation only if
+listening to a DISTINCT Subscription.</p>
+
+<p>Fixed a bug affecting IE8: if many Subscriptions were subscribed/unsubscribed to the LightstreamerClient in
+a strict loop a "Stack overflow at line: 0" error might have been generated.</p>
+
+<p>Fixed an incompatibility with phonegap applications running on Windows Phone 8.</p>
+
+<p>Fixed a bug affecting Chrome, and potentially other browsers, that prevented the SDK library from working
+correctly if, depending on the case, "Block sites from setting any data" or "Block third-party cookies and site data"
+was selected on the Content settings.</p>
+
+<p>Fixed a bug introduced on version 6 that might have prevented the SDK library to behave correctly if
+Websockets were not used (because of configuration or network/browser/intermediaries capabilities)
+and a load balancer using cookie stickiness was placed between the Client and the servers.</p>
+
+
+<div class="version">6.1.1 build 1640</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 10 Mar 2014</div>
+
+<p>Fixed an issue with Chrome 33 and greater, where a harmless request
+   for a page named "null" was performed to the web server.</p>
+
+<p>Fixed an issue, introduced on version 6.1, with the Rekonq browser,
+   that prevented the SDK library from correctly starting up.</p>
+
+<p>Fixed a bug that in rare cases could have prevented the recovery of a shared
+connection in case of closure of the "master" Client.</p>
+
+<p>Fixed an issue with Node.js on Linux that was observed in particular
+   scenarios and, in these cases, prevented the connection.</p>
+
+
+<div class="version">6.1 build 1634</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.1.</div>
+<div class="compatibility">May not be compatible with code developed with the previous version;
+   see compatibility notes below.</div>
+<div class="compatibility">Not compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 19 Feb 2014</div>
+
+<p>Removed the need of cookie usage in most situations.</p>
+
+<p>Added a onClearSnapshot callback to the SubscriptionListener.
+The callback will be invoked upon a corresponding invocation of "clearSnapshot"
+on the Adapter side for one of the subscribed items (provided that the Subscription
+is for DISTINCT or COMMAND mode) with the request to accomplish the specified action.
+Note that the "clearSnapshot" invocation is not available for Servers lower than version 6.0.
+<span class="compatibility">COMPATIBILITY NOTE: Existing code will keep
+working as long as, on the Adapter side, "clearSnapshot" is not used for items
+in DISTINCT or COMMAND mode; otherwise, the item state on the Client may become
+inconsistent, hence implementing the new callback would be mandatory.</span></p>
+
+<p>Added a default handling of the onClearSnapshot event in the AbstractGrid class
+that's thus reflected on subclasses:<br/>
+All the rows/charts associated to an item receiveng the onClearSnapshot event are
+removed from the widget.</p>
+
+<p>Fixed a bug that in rare cases could have made the Client send wrong-composed
+requests to Lightstreamer Server. The bug had two effects, none of which caused any actual issue:
+the Client may have sent extra useless requests; in response to such requests the
+Server would have logged error messages in the log.</p>
+
+<p>Fixed a bug that prevented the correct execution of VisualUpdate.setCellValue calls
+having null as second parameter.</p>
+
+<p>Expand the ConnectionOptions.setForcedTransport method to accept "HTTP" and "WS"
+values. These new values force the Client to only use the related transport without
+forcing it into using a fixed connection method (i.e.: POLLING or STREAMING).</p>
+
+<p>Fix a bug on the StaticGrid. Once sorted it may have routed updates to the wrong
+rows.</p>
+
+<p>Extended the Chart implementation to accept nulls as chart values. Nulls have
+now special meanings: a single null (either on the X or Y axis) will make the Chart
+ignore the update, a double null (on both the X and Y axis) will clear the involved
+ChartLine.
+<span class="compatibility">COMPATIBILITY NOTE: existing code will keep working as
+long as the rule imposing to only feed the Chart with valid numbers was respected.
+If not it is possible to leverage parsers for the Chart.setXAxis and Chart.addYAxis
+methods to prevent nulls to reach the internal Chart engine.</p>
+
+<p>Improved Node.js compatibility.</p>
+
+<p>Revised the directory structure of the included examples.</p>
+
+<p>Clarified the license terms for the included example source code.</p>
+
+<p>Incremented the minor version number.
+<span class="compatibility">COMPATIBILITY NOTE: If running Lightstreamer Server with a license
+file that supports Web Client SDK up to version 6.0 or earlier, clients based on
+this new version will not be accepted by the Server.</span></p>
+
+
+<div class="version">6.0.1 build 1603</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 31 Jan 2013</div>
+
+<p>Improved the Chart class: now charts are printed using the &lt;canvas&gt; element. If &lt;canvas&gt; is not
+available the SDK library will switch to the previous behavior.</p>
+
+<p>Fixed an issue that may crash IE7 in case the SDK library needs to fallback to the "Unoptimized HTTP Polling".</p>
+
+<p>Improved compatibility between Opera and the "Unoptimized HTTP Polling".</p>
+
+<p>Fixed a bug on the StaticGrid class: if the grid was bound to a COMMAND or DISTINCT Subscription and there were
+more cells bound to the same field then the grid would have stopped showing updates on the HTML after a
+clean or scroll operation.</p>
+
+
+<div class="version">6.0.1 build 1599</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 10 Jan 2013</div>
+
+<p>Fixed a bug introduced on build 1595: UNORDERED messages may have been repeated if the session
+connection was "Unoptimized Polling over HTTP" (see http://goo.gl/kwREX for reference).</p>
+
+
+<div class="version">6.0.1 build 1595</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.1.</div>
+<div class="compatibility">Compatible with code developed with the previous version.</div>
+<div class="compatibility">Compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 20 Dec 2012</div>
+
+<p>Removed a potential memory leak: the disposal of a LightstreamerClient instance was leaving some resources behind.</p>
+
+<p>Fixed generator.html to work on browsers when/where the console instance is not available.</p>
+
+<p>Introduced a better handling of proxies that can forward the WebSocket handshake but can't properly handle the open WebSocket.</p>
+
+<p>Fixed an issue with Firefox that might have caused a reconnection attempt to hang
+   for many seconds after Lightstreamer Server had been unavailable for a while.</p>
+
+<p>Fixed handling of string parameters entered in the ConnectionDetails and ConnectionOptions objects: a parameter
+supposed to be a string may have been mistakenly parsed as a number resulting in heading 0 and . to be removed.</p>
+
+<p>Improved style of the StatusWidget appearance by replacing any globally set BackgroundColor with a transparent one.</p>
+
+<p>Added some missing [optional] flags to the documentation.</p>
+
+<p>Fixed a bug in the Subscription class: when used in COMMAND mode, the "key" field of a "row" might have been mistakenly empty
+if such "row" was removed (via a DELETE command) and then added again (via an ADD command) by the adapter.</p>
+
+<p>Fixed a bug in the ItemUpdate.isValueChanged method: when used against a second-level field an erroneous true was returned.</p>
+
+<p>Removed a 100/200 ms delay on subscriptions and messages that was erroneously introduced client-side. In case of file:///
+executions the delay may also have been suffered during the dequeuing of received updates.</p>
+
+<p>Improved send message performances.</p>
+
+<p>Improved fallback mechanisms for Android stock browser.</p>
+
+<p>Extended the supplied Monitor Demo with the newly available message-related statistics.</p>
+
+<p>Added an example of integration with the Dojo libraries.
+   Actually the example is hosted on GitHub and only a link is provided.</p>
+
+<p>Included in the Client Guide document notes on how to configure the RequireJS
+   optimization tool for use with a code including the JavaScript Client SDK library.</p>
+
+
+<div class="version">6.0 build 1576</div>
+<div class="compatibility">Compatible with Lightstreamer Server since 5.0.</div>
+<div class="compatibility">Not compatible with code developed with the old SDK for HTML Clients.</div>
+<div class="compatibility">Not compatible with the previous version of the SDK for Flash Clients.</div>
+<div class="date">Released on 3 Aug 2012</div>
+
+<p>Introduced the new JavaScript Client SDK, which replaces the old HTML Client SDK
+   with a brand new, fully redesigned, API and extended features, including:</p>
+   <ul>
+   <li>full support for WebSockets</li>
+   <li>single-js-file library</li>
+   <li>AMD-based modularization</li>
+   <li>generator tool for deployment of library subsets (based on modules)</li>
+   <li>support for out-of-browser apps (Node.js, PhoneGap, etc.)</li>
+   <li>faster Stream-Sense algorithm</li>
+   <li>support for cross-origin connections</li>
+   <li>new logging facility and error handling</li>
+   <li>new ready-made widgets, including a status indicator</li>
+   </ul>
+   <p>See the included documentation for any details.<br/>
+   The HTML Client SDK library shipped with the previous versions of Lightstreamer is still
+   supported by Lightstreamer Server since Server version 4.0.</p>
+
+
+</div>
+
+
+
+</div>
+</body>
+</html>
