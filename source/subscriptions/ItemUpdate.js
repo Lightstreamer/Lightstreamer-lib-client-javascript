@@ -117,7 +117,7 @@ import Constants from "../Constants";
         * possible value for a field;</li>
         * <li>no value has been received for the field yet;</li>
         * <li>the item is subscribed to with the COMMAND mode and a DELETE command 
-        * is received (only the fields used to carry key and command informations 
+        * is received (only the fields used to carry key and command information 
         * are valued).</li>
         * </ul>
         * 
@@ -176,7 +176,7 @@ import Constants from "../Constants";
         * Subscription). Snapshot events are sent only if snapshot information
         * was requested for the items through {@link Subscription#setRequestedSnapshot}
         * and precede the real time events. 
-        * Snapshot informations take different forms in different subscription
+        * Snapshot information take different forms in different subscription
         * modes and can be spanned across zero, one or several update events. 
         * In particular:
         * <ul>

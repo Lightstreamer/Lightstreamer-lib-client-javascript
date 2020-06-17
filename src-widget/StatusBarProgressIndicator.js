@@ -42,7 +42,7 @@ export default /*@__PURE__*/(function() {
    * starting over. If not specified will default to 3.
    * 
    * @class This class is a simple implementation of the {@link ClientListener}
-   * interface that will print informations about the status of the connection
+   * interface that will print information about the status of the connection
    * in the status bar of the browser.
    * 
    * @extends ClientListener
