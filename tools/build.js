@@ -15,6 +15,7 @@ const replace = require('rollup-plugin-replace');
 const alias = require('rollup-plugin-alias');
 const path = require('path');
 const MagicString = require('magic-string');
+const fs = require('fs');
 
 const argv = require('minimist')(process.argv.slice(2), {
     alias: {
@@ -107,7 +108,7 @@ function web_esm() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
-                extractLogsPlugin(),
+                extractLogsPlugin(config.web.esm),
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
@@ -137,7 +138,7 @@ function web_cjs() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
-                extractLogsPlugin(),
+                extractLogsPlugin(config.web.cjs),
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
@@ -167,7 +168,7 @@ function web_umd() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
-                extractLogsPlugin(),
+                extractLogsPlugin(config.web.umd),
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
@@ -199,7 +200,7 @@ function web_umd_min() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
-                extractLogsPlugin(),
+                extractLogsPlugin(config.web.umd_min),
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
@@ -239,7 +240,7 @@ function node_cjs() {
             input: 'virtual-entrypoint',
             external: ['faye-websocket', 'xmlhttprequest-cookie', 'url'],
             plugins: [
-                extractLogsPlugin(),
+                extractLogsPlugin(config.node.cjs),
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
@@ -270,7 +271,7 @@ function node_cjs_min() {
             input: 'virtual-entrypoint',
             external: ['faye-websocket', 'xmlhttprequest-cookie', 'url'],
             plugins: [
-                extractLogsPlugin(),
+                extractLogsPlugin(config.node.cjs_min),
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
@@ -323,7 +324,7 @@ ${modules.map(m => `'${path.basename(m)}': ${path.basename(m)}`).join(',\n')}
 };`
 }
 
-function extractLogsPlugin() {
+function extractLogsPlugin(outFilePath) {
     const extractedLogs = [];
     return {
         name: 'rollup-plugin-log-extractor',
@@ -346,6 +347,12 @@ function extractLogsPlugin() {
                         i, 
                         i + placeholder.length, 
                         `messageStrings = [${extractedLogs.join()}];`);
+            } else {
+                fs.writeFileSync(outFilePath + ".logmap", `
+var ls_messageStrings=[${extractedLogs.join(',\n')}];
+if (typeof module === 'object' && module.exports) {
+    module.exports = ls_messageStrings;
+}`);
             }
             /* */
             const result = { code: newCode.toString() };
