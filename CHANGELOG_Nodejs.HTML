@@ -1,30 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lightstreamer Changelog</title>
+    <title>Lightstreamer SDK for Node.js Clients (Unified API) Changelog</title>
     <link rel="stylesheet" href="changelog_commons/styles.css" />
         <!-- to be expanded inline by the build script -->
 </head>
 
 <body>
 <div id="wrap">
-<div id="title">LIGHTSTREAMER CHANGELOG</div>
-<div id="summary">
-   <ul>
-      <li><a href="#nodejs_client">SDK for Node.js Clients (Unified API)</a></li>
-   </ul>
-</div>
-
-
-<!-- ======================================================================================== -->
-<!-- ======================================================================================== -->
-<!-- ======================================================================================== -->
-
-
-
-<a name="nodejs_client"></a>
 <div class="box">
-<div class="component">SDK for Node.js Clients (Unified API)</div>
+<div id="title" style="font-size: 36px;">SDK for Node.js Clients (Unified API) CHANGELOG</div>
+
+
+<!-- ======================================================================================== -->
+<!-- ======================================================================================== -->
+<!-- ======================================================================================== -->
 
 
 <div class="version">8.0.2 build 1784</div>
@@ -32,9 +22,13 @@
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 11 Dec 2019</div>
 
+<div class="text">
+
 <p id="3100">Revised the policy of reconnection attempts to reduce the attempt frequency
 in case of repeated failure of the first bind request, which could be due to issues
 in accessing the "control link" (when configured).</p>
+
+</div>
 
 
 <div class="version">8.0.1 build 1774</div>
@@ -42,27 +36,60 @@ in accessing the "control link" (when configured).</p>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 9 October 2019</div>
 
-<p id="3078">Fixed a bug which could have caused the client to ignore a call to 
-LightstreamerClient.disconnect, when it was invoked while the client was reconnecting,
+<div class="text">
+
+<p id="3078">Fixed a bug which could have caused the Client to ignore a call to 
+LightstreamerClient.disconnect, when it was invoked while the Client was reconnecting,
 that is, when LightstreamerClient.getStatus was equal to DISCONNECTED:WILL-RETRY or
 DISCONNECTED:TRYING-RECOVERY.</p>
 
 <p id="3082">Fixed a bug which could have caused the ClientListener.onStatusChange callback
 to notify the status DISCONNECTED:WILL-RETRY as the first status instead of CONNECTING.
-The anomaly could be triggered by invoking LightstreamerClient.disconnect while the client
+The anomaly could be triggered by invoking LightstreamerClient.disconnect while the Client
 was trying to recover the session, and then invoking LightstreamerClient.connect.</p>
 
 <p id="3076"> 
-Fixed a bug which could have caused the client to disconnect abruptly when the server signaled 
+Fixed a bug which could have caused the Client to disconnect abruptly when the Server signaled 
 a harmless error message.</p>
 
 <p>Revised and improved the layout of the jsdocs.</p>
+
+</div>
 
 
 <div class="version">8.0.0 build 1771.1012</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 30 August 2019</div>
+
+<div class="text">
+
+<p>Made the library available on the public npm service, at the following address:<br/>
+   <a href="https://www.npmjs.com/package/lightstreamer-client-node">
+   https://www.npmjs.com/package/lightstreamer-client-node</a>
+   Previously the library was available with name "lightstreamer-client".<br/>
+   Moreover, the library is now open source, available on GitHub at the following address:<br/>
+   <a href="https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript">
+   https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript</a>.<br/>
+   Hence, the non-minified version of the library is also provided.<br/>
+   The way the deliverables are provided has also changed:
+   the library module name is now "lightstreamer-client-node" for the
+   non-minified version and "lightstreamer-client-node/lightstreamer-node.min"
+   for the minified version. See the instructions on the npm page for details.
+   <span class="compatibility">COMPATIBILITY NOTE: If upgrading an existing
+   application (by changing the package.json file), the library module name to be
+   specified in require() is no longer "lightstreamer-client" and should be modified
+   to refer to the minified version. Referring to the non-minified version is also
+   possible, but then the application startup may become slower.</span></p>
+
+<p>Improved the communication with the Server by adopting the public TLCP protocol.
+   Moreover, the internal protocol based on javascript commands is no longer used;
+   hence, the "eval" function is no longer invoked within the library.</p>
+
+<p>Added the support for TypeScript through the declaration file <i>types.d.ts</i>.</p>
+
+<p>Discontinued the support for React Native, which is now provided by the
+   Web Client SDK 8.0.0.</p>
 
 <p>Replaced the "maxBandwidth" property of the ConnectionOptions bean with two
    distinct properties: "requestedMaxBandwidth" and the read-only "realMaxBandwidth",
@@ -79,7 +106,7 @@ a harmless error message.</p>
    and special cases.</p>
 
 <p id="3042">Fixed a bug introduced with the session recovery mechanism,
-   which, under certain conditions, could have caused the client to ignore
+   which, under certain conditions, could have caused the Client to ignore
    the setForcedTransport setting after a recovery attempt, even a successful one.</p>
 
 <p id="3063">Removed a spurious notification of the DISCONNECTED:WILL-RETRY
@@ -99,14 +126,6 @@ a harmless error message.</p>
 <p>Removed useless requests to the Server for bandwidth change when the Server
    is not configured for bandwidth management.</p>
    
-<p>Added the error code 21 in onServerError, that can be received upon some failed
-   requests, to inform that not only the current session was not found but it is also likely
-   that the request was routed to the wrong Server instance. Previously, in the same cases,
-   the SDK library would not invoke onServerError and would open a new session instead.
-   <span class="compatibility">COMPATIBILITY NOTE: If using an existing application, you should
-   check how it would handle the new (and unexpected) error code. A reconnection attempt would
-   ensure the previous behavior, although this is no longer the suggested action.</span></p>
-
 <p>Added new error codes 66 and 68 to onServerError, onSubscriptionError, and
    onSecondLevelSubscriptionError, to report server-side issues; previously,
    upon such problems, the connection was just interrupted.<br/>
@@ -121,16 +140,20 @@ a harmless error message.</p>
 
 <p>Clarified in the docs the role of the delayTimeout in sendMessage.</p>
 
-<p>Incremented the minor version number.
-   <span class="compatibility">COMPATIBILITY NOTE: If running the Server with a license
+<p>Incremented the major version number.
+   <span class="compatibility">COMPATIBILITY NOTE: If running Lightstreamer Server with a license
    of "file" type which enables Node.js Client SDK up to version 7.3 or earlier, clients based
    on this new version will not be accepted by the Server: a license upgrade will be needed.</span></p>
+
+</div>
 
 
 <div class="version">7.3.1 build 1767</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 3 Apr 2019</div>
+
+<div class="text">
 
 <p>Fixed a bug in the recently revised policy of reconnection attempts upon failed
    or unresponsive requests. In case of multiple failed attempts on unresponsive connections
@@ -141,11 +164,15 @@ a harmless error message.</p>
 
 <p>Fixed an annoying formatting issue in the jsdoc page for ConnectionOptions.</p>
 
+</div>
+
 
 <div class="version">7.3.0 build 1766</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 14 Mar 2019</div>
+
+<div class="text">
 
 <p>Fixed a bug causing the conversion into numbers of user-supplied string parameters 
    (e.g. in settings in ConnectionDetails and ConnectionOptions) which can be interpreted
@@ -153,21 +180,21 @@ a harmless error message.</p>
    the number 100, then used as the string '100'.</p>
 
 <p>Fixed several bugs in the session recovery mechanism:
-   </p><ul>
+   <ul>
    <li>Fixed a bug which could have caused, in case of a recovery failure
    due to the elapsing of the recently added "SessionRecoveryTimeout" setting, 
    the failure of the first subsequent attempt to create a new session.</li>
-   <li>Fixed a bug causing the client to always try a recovery when the ReconnectTimeout
+   <li>Fixed a bug causing the Client to always try a recovery when the ReconnectTimeout
    expired on a stalled session, regardless that the SessionRecoveryTimeout could be set
    as 0 to disable session recovery.</li>
    <li>Fixed a bug that could have caused the silent discarding of control requests (e.g. subscriptions
-   or messages) when the client was attempting the recovery of the current session.</li>
+   or messages) when the Client was attempting the recovery of the current session.</li>
    <li>Fixed a bug that could have caused session recovery to fail if preceded by a previous
    successful session recovery on the same session by more than a few seconds.</li>
-   <li>Fixed a bug triggered by a call to connect() or setForcedTransport() issued while the client
+   <li>Fixed a bug triggered by a call to connect() or setForcedTransport() issued while the Client
    was attempting the recovery of the current session. This caused the recovery to fail,
    but, then, the library might not reissue the current subscriptions on the newly created session.</li>
-   </ul>
+   </ul></p>
 
 <p>Fixed a bug due to a race condition between a subscribe and a concurrent disconnect,
    which could have caused the subscription to be skipped upon a subsequent connect.</p>
@@ -207,15 +234,19 @@ a harmless error message.</p>
    (see ConnectionOptions.setSlowingEnabled).</p>
 
 <p>Incremented the minor version number.
-   <span class="compatibility">COMPATIBILITY NOTE: If running the Server with a license
+   <span class="compatibility">COMPATIBILITY NOTE: If running Lightstreamer Server with a license
    of "file" type which enables Node.js Client SDK up to version 7.2 or earlier, clients based
    on this new version will not be accepted by the Server: a license upgrade will be needed.</span></p>
+
+</div>
 
 
 <div class="version">7.2.4 build 1757</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 7 Jun 2018</div>
+
+<div class="text">
 
 <p>Introduced a maximum time on attempts to recover the current session, after which
    a new session will be opened. The default is 15 seconds, but it can be customized
@@ -225,17 +256,21 @@ a harmless error message.</p>
    instance happened to leave a cluster and were not automatically restarted.</p>
 
 <p>Fixed a bug in the recently introduced session recovery mechanism triggered
-   by the use of the &lt;control_link_address&gt; setting on the Server,
+   by the use of the &lt;control_link_address&gt; setting on Lightstreamer Server,
    which could have caused feasible recovery attempts to fail.</p>
 
 <p>Fixed a harmless bug, introduced in the previous version, which could have caused
    a Server warning for "duplicated LS_session" on some client requests.</p>
+
+</div>
 
 
 <div class="version">7.2.3 build 1750</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 17 Apr 2018</div>
+
+<div class="text">
 
 <p>Fixed a bug in the recently introduced session recovery mechanism, by which,
    a sendMessage request issued while a recovery operation was in place,
@@ -250,11 +285,28 @@ a harmless error message.</p>
 <p>Addressed a particular case of session interruption that was still not supported
    by the session recovery feature.</p>
 
+</div>
+
 
 <div class="version">7.2.2 build 1747</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 23 Mar 2018</div>
+
+<div class="text">
+
+<p>Added the error code 21 in onServerError, that can be received upon some failed
+   requests, to inform that not only the current session was not found but it is also likely
+   that the request was routed to the wrong Server instance. Previously, in the same cases,
+   the SDK library would not invoke onServerError and would open a new session instead.
+   <span class="compatibility">COMPATIBILITY NOTE: If using an existing application, you should
+   check how it would handle the new (and unexpected) error code. A reconnection attempt would
+   ensure the previous behavior, although this is no longer the suggested action.</span>
+   Likewise, added the error code 11 in onSubscriptionError and onCommandSecondLevelSubscriptionError,
+   that can be received instead of code 20, to inform that not only the current session
+   was not found but it is also likely that the request was routed to the wrong Server instance.
+   <span class="compatibility">COMPATIBILITY NOTE: Existing applications which handle
+   error code 20, should ensure that the new error code 11 is also handled properly.</span></p>
 
 <p>Fixed a severe bug in the recently introduced session recovery mechanism, by which,
    after the creation of a new session because of network issues, it was possible
@@ -262,11 +314,11 @@ a harmless error message.</p>
 
 <p>Fixed a bug in the recently introduced session recovery mechanism, which,
    upon particular kinds of network issues and if the creation of a new session
-   had been necessary, could have caused the client to skip the resuming of the
+   had been necessary, could have caused the Client to skip the resuming of the
    active subscriptions.</p>
 
 <p>Fixed an annoying typo in the documentation of onStatusChange regarding the
-   "DISCONNECTED:TRYING-RECOVERY" status.</p> 
+   "DISCONNECTED:TRYING-RECOVERY" status.</p>
 
 <p>Improved the library log by splitting the "lightstreamer.subscriptions" category in three,
    with the introduction of "lightstreamer.messages" and "lightstreamer.requests".
@@ -275,24 +327,15 @@ a harmless error message.</p>
    from the "lightstreamer.subscriptions" category should be ported. This obviously
    is not expected to affect production code.</span></p>
 
+</div>
+
 
 <div class="version">7.2.1 build 1745</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0 b2.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 22 Feb 2018</div>
 
-<p>Added the error code 21 in onServerError, that can be received upon failed bind
-   requests, to inform that not only the current session was not found but it is also likely
-   that the request was routed to the wrong Server instance. Previously, in the same cases,
-   the SDK library would not invoke onServerError and would open a new session instead.
-   <span class="compatibility">COMPATIBILITY NOTE: In these cases, existing applications
-   will no longer benefit from the automatic recovery, unless they are extended to handle
-   the new event properly.</span><br/>
-   Likewise, added the error code 11 in onSubscriptionError and onCommandSecondLevelSubscriptionError,
-   that can be received instead of code 20, to inform that not only the current session
-   was not found but it is also likely that the request was routed to the wrong Server instance.
-   <span class="compatibility">COMPATIBILITY NOTE: Existing applications which handle
-   error code 20, should ensure that the new error code 11 is also handled properly.</span></p>
+<div class="text">
 
 <p>Modified the default value of the "RetryDelay" property from 5000 to 2000 ms.
    This should help recovering from network outages of a few seconds, typical, for
@@ -307,12 +350,16 @@ a harmless error message.</p>
 
 <p>Improved the notification of closed sessions to the Server.</p>
 
+</div>
+
 
 <div class="version">7.2.0 build 1743</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 7.0 b2.</div>
 <div class="compatibility">May not be compatible with code developed with the previous version;
    see compatibility notes below.</div>
 <div class="date">Released on 20 Dec 2017</div>
+
+<div class="text">
 
 <p>Added automatic recovery of sessions upon unexpected socket interruption during
    streaming or long polling. Now the library will perform an attempt to resume
@@ -323,7 +370,7 @@ a harmless error message.</p>
    onStatusChange and getStatus can provide the new status.
    <span class="compatibility">COMPATIBILITY NOTE: Existing code that uses the status
    names received via onStatusChange or getStatus may have to be aligned.</span></p>
-   
+
 <p>Extended the reverse heartbeat mechanism, governed by the "ReverseHeartbeatInterval"
    property. Now, it will also allow the Server to detect when a client has abandoned
    a session although the socket remains open.<br/>
@@ -341,22 +388,30 @@ a harmless error message.</p>
 
 <p>Aligned the documentation to comply with current licensing policies.</p>
 
+</div>
+
 
 <div class="version">7.1.1 build 1732.7</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 6.0.2.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 20 Nov 2017</div>
 
-<p>Removed all the occurrences of the deprecated "with" statement, erroneously 
+<div class="text">
+
+<p>Removed all the occurrences of the deprecated "with" statement, erroneously
    reintroduced in version 7.1.0.</p>
 
 <p>Ensured source compatibility with React Native up to version 0.49.</p>
+
+</div>
 
 
 <div class="version">7.1.0 build 1732</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 6.0.2.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 25 May 2017</div>
+
+<div class="text">
 
 <p>Fixed the recently added support for cookie handling on WebSocket connections,
    to be fully compliant in the determination of outgoing cookies.</p>
@@ -365,11 +420,15 @@ a harmless error message.</p>
    to simplify the sharing of cookies between Server connections operated by
    the SDK library and the rest of the application.</p>
 
+</div>
+
 
 <div class="version">7.0.9 build 1729</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 6.0.2.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 15 May 2017</div>
+
+<div class="text">
 
 <p>Improved the handling of cookies, by adding support of the WebSocket case.
    Now, the invocation of setCookieHandlingRequired(true) no longer causes the
@@ -378,11 +437,13 @@ a harmless error message.</p>
    and inquired, which is also how cookies set by other sites can be supplied.</p>
 
 <p>Added the error code 60 to "onServerError", to report cases in which the
-   Server license does not allow the client version.</p>
+   Server license does not allow the Client SDK version.</p>
 
 <p>Fixed a bug on the recovery of control requests upon session close and replacement,
    which, through a rare race condition, could have caused the block of all subsequent
    control requests.</p>
+
+</div>
 
 
 <div class="version">7.0.7 build 1722</div>
@@ -390,8 +451,12 @@ a harmless error message.</p>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 17 Mar 2017</div>
 
-<p>Removed all the occurrences of the deprecated "with" statement in order to ensure 
+<div class="text">
+
+<p>Removed all the occurrences of the deprecated "with" statement in order to ensure
 Javascript strict mode compatibility.</p>
+
+</div>
 
 
 <div class="version">7.0.6 build 1719</div>
@@ -399,11 +464,15 @@ Javascript strict mode compatibility.</p>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 7 Mar 2017</div>
 
+<div class="text">
+
 <p>Fixed a bug which caused the invocations to the "setReconnectTimeout" method
    in ConnectionOptions to be ignored.</p>
 
 <p>Removed the polyfill of the Promise, which is no longer needed, yet it might
    have caused compatibility issues in some environments.</p>
+
+</div>
 
 
 <div class="version">7.0.5 build 1718</div>
@@ -411,15 +480,21 @@ Javascript strict mode compatibility.</p>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 16 Jan 2017</div>
 
+<div class="text">
+
 <p>Removed a restriction on field names that can be supplied to a Subscription object
    within a "field list"; names made by numbers are now allowed.
    Obviously, the final validation on field names is made by the Metadata Adapter.</p>
+
+</div>
 
 
 <div class="version">7.0.4 build 1717</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 6.0.2.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 9 Jan 2017</div>
+
+<div class="text">
 
 <p>Fixed a bug introduced in version 6.1 which prevented the "slowing algorithm"
    (see setSlowingEnabled) from working.</p>
@@ -449,24 +524,28 @@ Javascript strict mode compatibility.</p>
 
 <p>Added clarification details in the documentation of setCookieHandlingRequired.</p>
 
+</div>
+
 
 <div class="version">7.0.3 build 1712</div>
 <div class="compatibility">Compatible with Lightstreamer Server since 6.0.2.</div>
 <div class="compatibility">Compatible with code developed with the previous version.</div>
 <div class="date">Released on 10 May 2016</div>
-   
+
+<div class="text">
+
 <p>Introduced the new Node.js SDK. See the "sdk_client_nodejs_unified" folder.<br/>
    Previously, the Node.js library was available as part of the SDK for JavaScript Clients,
    now called SDK for Web Clients (Unified API).<br/>
    Note that the library was released in two different versions: as a "flavour" of the
-   JavaScript Client Library and through the npm service. This SDK only refers to the library
-   deployed via npm. However, currently, the use of the Web (Unified API) Client Library in the
+   JavaScript Client SDK library and through the npm service. This SDK only refers to the library
+   deployed via npm. However, currently, the use of the Web (Unified API) Client SDK library in the
    Node.js flavour, which is based on AMD, is not recommended.<br/>
-   The Client Library has the same characteristics of the library in the current
+   The SDK library has the same characteristics of the library in the current
    SDK for Web Clients (Unified API) version 7.0.2 and you can refer to that SDK for the
    changelog with respect to previous versions (although some topics in that changelog,
    obviously, don't pertain to Node.js), with the following additions:
-   </p><ul>
+   <ul>
    <li>There is no licensing restriction on the library version
    in use when a license file is configured on the Server. But note that if trying to access
    a Server with Server version earlier than 6.0.2 a license error will be issued by the Server.</li>
@@ -478,7 +557,9 @@ Javascript strict mode compatibility.</p>
    As a consequence, invocations of setCookieHandlingRequired(true) in class ConnectionOptions
    are now allowed, although they would disable the use of WebSocket, for which cookie handling
    is still not implemented.</li>
-   </ul>
+   </ul></p>
+
+</div>
 
 
 </div>
