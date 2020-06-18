@@ -41,8 +41,8 @@ Revised and improved the layout of the jsdocs.
 
 Made the library available on the public npm service, at the following
 address:\
- [https://www.npmjs.com/package/lightstreamer-client-node](https://www.npmjs.com/package/lightstreamer-client-node)
-Previously the library was available with name "lightstreamer-client".\
+ [https://www.npmjs.com/package/lightstreamer-client-node](https://www.npmjs.com/package/lightstreamer-client-node)\
+ Previously the library was available with name "lightstreamer-client".\
  Moreover, the library is now open source, available on GitHub at the
 following address:\
  [https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
