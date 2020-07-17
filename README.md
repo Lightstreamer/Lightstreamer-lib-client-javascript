@@ -112,8 +112,7 @@ node decode-logs log.txt lightstreamer.min.js.logmap
 
 ## Compatibility ##
 
-The library requires Server 7.1 and breaks the compatibility with Server version 7.0. 
-*However, if Web Push Notifications are not used, compatibility with Server version 7.0 is still ensured.*
+The library requires Server 7.1.1. 
 
 ## Documentation
 
