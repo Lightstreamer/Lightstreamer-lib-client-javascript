@@ -120,7 +120,7 @@ export default /*@__PURE__*/(function() {
         if (!this.isErrorLogEnabled()) {
           return;
         }
-        mex += this.logArguments(arguments,2);
+        mex = this.logArguments([mex || "", exc],0);
         this.error(mex,exc);
       },
       
@@ -243,7 +243,7 @@ export default /*@__PURE__*/(function() {
        */
       logArguments: function(args, _start){ //Joins together all of the elements of an arguments array in a custom string
         _start = _start ? _start : 0;
-        var _line = " {";
+        var _line = " ";
         for (var i = _start; i < args.length; i++) {
           try {
             var element = args[i];
@@ -257,7 +257,7 @@ export default /*@__PURE__*/(function() {
             } else if (element.charAt != null) {
               _line += element;
               
-            } else if (element.message) {
+            } else if (element.message !== undefined) {
               _line += element.message;
               if (element.stack) {
                 _line += "\n"+element.stack+"\n";
@@ -279,7 +279,7 @@ export default /*@__PURE__*/(function() {
             _line += "??? ";
           }
         }
-        return _line + "}";
+        return _line;
       }
       
       

@@ -8,6 +8,7 @@ import MadTester from "./MadTester";
 import WebSocketConnection from "../net/WebSocketConnection";
 import SessionHTTP from "./SessionHTTP";
 import SessionWS from "./SessionWS";
+import NewSessionWS from './NewSessionWS';
 import EnvironmentStatus from "../../src-tool/EnvironmentStatus";
 import Global from "../Global";
 import PushEvents from "./PushEvents";
@@ -19,6 +20,7 @@ import SendMessageHandler from "../control/SendMessageHandler";
 import EvalQueue from "./EvalQueue";
 import Utils from "../Utils";
 import Assertions from "../utils/Assertions";
+import CtrlRequest from "../utils/CtrlRequest";
   
   var _OFF = 1;
   var STREAMING_WS = 2;
@@ -119,10 +121,8 @@ import Assertions from "../utils/Assertions";
   var protocolLogger = LoggerManager.getLoggerProxy(Constants.PROTOCOL);
   var sessionLogger = LoggerManager.getLoggerProxy(Constants.SESSION);
   
-  var objectIdCounter = 1;
-  
   var SessionHandler = function(owner,ppHandler,mpnManager) {
-    this.objectId = objectIdCounter++;
+    this.objectId = Utils.nextObjectId();
     if (sessionLogger.isDebugLogEnabled()) {
         sessionLogger.logDebug("New session handler oid=", this.objectId);
     }
@@ -151,7 +151,7 @@ import Assertions from "../utils/Assertions";
     this.disableXSXHRTime = null;
         
     this.controlHandler = new ControlConnectionHandler(this,owner._policy,this.engineId,false);
-    this.sendMessageHandler = new SendMessageHandler(this.controlHandler,this.pushPagesHandler,this.policyBean);
+    this.sendMessageHandler = new SendMessageHandler(this.controlHandler,this.pushPagesHandler,this.policyBean,this);
     
     this.mpnManager = mpnManager;
     
@@ -268,6 +268,10 @@ import Assertions from "../utils/Assertions";
             
           var nextPH = isPolling ? (isHTTP ? SWITCHING_POLLING_HTTP : SWITCHING_POLLING_WS) : (isHTTP ? SWITCHING_STREAMING_HTTP : SWITCHING_STREAMING_WS);
           this.changeStatus(nextPH);
+          if (this.session instanceof NewSessionWS) {
+              this.session.requestSwitch(this.statusPhase, reason);
+              return;
+          } // else this.session instanceof SessionHTTP || this.session instanceof SessionWS
           this.startSwitchTimeout(reason);
           this.session.requestSwitch(this.statusPhase,reason,isComboForced);
       },
@@ -302,7 +306,7 @@ import Assertions from "../utils/Assertions";
       
       /*private*/ prepareNewSessionInstance: function(isPolling,isForced,isHTTP,prevSession,sessionRecovery) {
         var skipCors = this.disableXSXHRTime !== null;
-        var chosenClass = isHTTP ? SessionHTTP : SessionWS;
+        var chosenClass = isHTTP ? SessionHTTP : isPolling ? SessionWS : NewSessionWS;
         if (sessionRecovery) {
             /*
              * Check added to avoid a bug in HTTP polling.
@@ -646,8 +650,11 @@ import Assertions from "../utils/Assertions";
         this.owner.notifyLSStatus();
       },
       
-      /*public*/ onSessionStart: function(requestLimitLength) {
-        sessionLogger.logInfo("Session started",this.session);
+      /**
+       * @param (Optional) requestLimitLength
+       */
+      onSessionStart: function(requestLimitLength) {
+        sessionLogger.logInfo("Session started");
         
         this.onChangeRequestLimitLength(requestLimitLength);
         
@@ -683,7 +690,7 @@ import Assertions from "../utils/Assertions";
           return null;
         }
         
-        sessionLogger.logDebug("Session closed",this.session);
+        sessionLogger.logDebug("Session closed");
         
         this.resetControlHandlers();
         this.owner.onSessionEnd();
@@ -698,7 +705,7 @@ import Assertions from "../utils/Assertions";
         return this.statusPhase;
       },
 
-      /*public*/ onUpdateReceived: function(args,snap) {
+      /*public*/ onUpdateReceived: function(args) {
         // table number which this update is related to is in args[0]
         this.pushPagesHandler.onSubscriptionEvent(args[0]);
         var ppHandler = this.pushPagesHandler.getPushPageHandlerFromTableNumber(args[0]);
@@ -711,7 +718,7 @@ import Assertions from "../utils/Assertions";
         if (protocolLogger.isDebugLogEnabled()) {
           protocolLogger.logDebug("Received new update",args);
         }
-        ppHandler.onUpdate(args,snap);
+        ppHandler.onUpdate(args);
       },
       
       
@@ -920,7 +927,31 @@ import Assertions from "../utils/Assertions";
 ////////////////////////////////////////////////CONTROLS
 
       /*public*/ sendAMessage: function(msg, sequence, listener, delayTimeout) {
+        // SendMessageHandler._send calls SessionHandler.sendMessage (see below)
         this.sendMessageHandler._send(msg, sequence, listener, delayTimeout);
+      },
+      
+      sendMessage: function(prog,query,bridge) {
+          var sequence = (query['LS_sequence'] == null ? Constants._UNORDERED_MESSAGES : query['LS_sequence']);
+          var ack = query['LS_ack'] != "false";
+          var requestListener = {
+                  onREQOK: function(LS_window) {
+                      /*
+                       * NB1 LS_window is an object defined in EvalQueue, where the listener will be called.
+                       * 
+                       * NB2 LS_w must be called only if the request was expecting an acknowledgment (i.e. LS_ack=true).
+                       * This check is important because in HTTP the server send always a REQOK even if LS_ack was false.
+                       */
+                      if (ack) {                        
+                          LS_window.LS_w(4, prog, sequence, 0, 0);
+                      }
+                  },
+                  
+                  onREQERR: function(LS_window, phase, errorCode, errorMsg) {
+                      LS_window.LS_l(errorCode, prog, "MSG" + sequence, errorMsg, true/*isReqerr*/);
+                  }
+          };
+          this.controlHandler.addRequest(prog, query, ControlRequest.MESSAGE, bridge, null, requestListener); 
       },
       
       /*public*/ sendLog: function(msg,buildNum) {
@@ -931,7 +962,11 @@ import Assertions from "../utils/Assertions";
       
       /*public*/ changeBandwidth: function(newBw) {
         if (this.session) {
-          this.session.changeBandwidth();
+            this.session.changeBandwidth(new CtrlRequest({
+                'LS_op': 'constrain',
+                'LS_reqId': Utils.nextRequestId(),
+                'LS_requested_max_bandwidth': (this.policyBean.requestedMaxBandwidth > 0 ? this.policyBean.requestedMaxBandwidth : "unlimited")
+            }, CtrlRequest.CONS));
         }
       },
       

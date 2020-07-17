@@ -50,6 +50,16 @@ import Constants from "../Constants";
             },
             
             /**
+             * Increase the timeout to the maximum value.
+             */
+            increaseRetryDelayToMax: function() {
+                this.currentRetryDelay = this.maxRetryDelay;
+                if (log.isDebugLogEnabled()) {
+                    log.debug("Increase currentRetryDelay to max: " + this.currentRetryDelay);
+                }
+            },
+            
+            /**
              * Initializes retryDelay and currentRetryDelay.
              */
             initRetryDelay: function(retryDelay) {

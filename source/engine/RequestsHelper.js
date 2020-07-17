@@ -157,7 +157,7 @@ import Constants from "../Constants";
             pushPhase, sessionId, policyBean, connectionBean, 
             isCreate, isPolling, oldSession, reconnectionCause, 
             delay, askCL, askDomain,
-            serverBusy) {
+            serverBusy, reverseHeartbeatMaxIntervalMs) {
       
       var domainParam = askDomain && Environment.isBrowserDocument() && !Utils.hasDefaultDomain() ? "LS_domain=" + Utils.getDomain() + "&" : "";
       
@@ -198,8 +198,10 @@ import Constants from "../Constants";
           LSContextParams += "LS_keepalive_millis=" + policyBean.keepaliveInterval + "&";
         }
         
-        if (policyBean.reverseHeartbeatInterval > 0) {
-          LSContextParams += "LS_inactivity_millis=" + policyBean.reverseHeartbeatInterval + "&";
+        // NB don't use policyBean.reverseHeartbeatInterval. Use reverseHeartbeatMaxIntervalMs instead
+        // in order for Session.reverseHeartbeatTimer and LS_inactivity_millis to be coherent
+        if (reverseHeartbeatMaxIntervalMs > 0) {
+          LSContextParams += "LS_inactivity_millis=" + reverseHeartbeatMaxIntervalMs + "&";
         }
           
         if (askCL) {
@@ -252,7 +254,7 @@ import Constants from "../Constants";
         }
         
         if (serverBusy) {
-            lsUrl += "LS_ttl=unlimited&";
+            lsUrl += "LS_ttl_millis=unlimited&";
         }
         
         protocolLogger.logDebug("Create request generated",lsUrl);

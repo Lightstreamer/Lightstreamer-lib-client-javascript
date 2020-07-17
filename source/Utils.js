@@ -1,6 +1,7 @@
 import Environment from "../src-tool/Environment";
 import Constants from "./Constants";
 import Helpers from "../src-tool/Helpers";
+import ASSERT from "../src-test/ASSERT";
 
 export default /*@__PURE__*/(function() {
   var removeDot = new RegExp("\\.","g");
@@ -14,6 +15,7 @@ export default /*@__PURE__*/(function() {
   
   var requestIdCounter = 1;
   var subscriptionIdCounter = 1;
+  var objectIdCounter = 1;
 
   var Utils = {
 
@@ -261,6 +263,10 @@ export default /*@__PURE__*/(function() {
         return subscriptionIdCounter++;
     },
     
+    nextObjectId: function() {
+        return objectIdCounter++;
+    },
+    
     /**
      * Returns a custom promise with two additional methods resolve and reject.
      */
@@ -273,9 +279,103 @@ export default /*@__PURE__*/(function() {
         p.resolve = res;
         p.reject = rej;
         return p;
-    }
+    },
+    
+    parseUpdates: function(message) {
+        // U,<table>,<item>|<field1>|...|<fieldN>
+        // or U,<table>,<item>,<field1>|^<number of unchanged fields>|...|<fieldN>
+        /* parse table and item */
+        var tableIndex = message.indexOf(',') + 1;
+        ASSERT.verifyOk(tableIndex == 2); // tested by the caller
+        var itemIndex = message.indexOf(',', tableIndex) + 1;
+        if (itemIndex <= 0) {
+            throw new Error("Missing subscription field");
+        }
+        var fieldsIndex = message.indexOf(',', itemIndex) + 1;
+        if (fieldsIndex <= 0) {
+            throw new Error("Missing item field");
+        }
+        ASSERT.verifyOk(message.substring(0, tableIndex) == "U,"); // tested by the caller
+        var table = myParseInt(message.substring(tableIndex, itemIndex - 1), "Invalid subscription");
+        var item = myParseInt(message.substring(itemIndex, fieldsIndex - 1), "Invalid item");
+
+        /* parse fields */
+        var unchangedMarker = {};
+        unchangedMarker.length = -1;
+
+        var values = [];
+        var fieldStart = fieldsIndex - 1; // index of the separator introducing the next field
+        ASSERT.verifyOk(message.charAt(fieldStart) == ','); // tested above
+        while (fieldStart < message.length) {
+
+            var fieldEnd = message.indexOf('|', fieldStart + 1);
+            if (fieldEnd == -1) {
+                fieldEnd = message.length;
+            }
+            /*
+                 Decoding algorithm:
+                     1) Set a pointer to the first field of the schema.
+                     2) Look for the next pipe “|” from left to right and take the substring to it, or to the end of the line if no pipe is there.
+                     3) Evaluate the substring:
+                            A) If its value is empty, the pointed field should be left unchanged and the pointer moved to the next field.
+                            B) Otherwise, if its value corresponds to a single “#” (UTF-8 code 0x23), the pointed field should be set to a null value and the pointer moved to the next field.
+                            C) Otherwise, If its value corresponds to a single “$” (UTF-8 code 0x24), the pointed field should be set to an empty value (“”) and the pointer moved to the next field.
+                            D) Otherwise, if its value begins with a caret “^” (UTF-8 code 0x5E):
+                                    - take the substring following the caret and convert it to an integer number;
+                                    - for the corresponding count, leave the fields unchanged and move the pointer forward;
+                                    - e.g. if the value is “^3”, leave unchanged the pointed field and the following two fields, and move the pointer 3 fields forward;
+                            E) Otherwise, the value is an actual content: decode any percent-encoding and set the pointed field to the decoded value, then move the pointer to the next field.
+                               Note: “#”, “$” and “^” characters are percent-encoded if occurring at the beginning of an actual content.
+                     4) Return to the second step, unless there are no more fields in the schema.
+             */
+            var value = message.substring(fieldStart + 1, fieldEnd);
+            if (value == "") { // step A
+                values.push(unchangedMarker);
+
+            } else if (value.charAt(0) == '#') { // step B
+                if (value.length != 1) {
+                    throw new Error("Wrong field quoting");
+                } // a # followed by other text should have been quoted
+                values.push(null);
+
+            } else if (value.charAt(0) == '$') { // step C
+                if (value.length != 1) {
+                    throw new Error("Wrong field quoting");
+                } // a $ followed by other text should have been quoted
+                values.push("");
+
+            } else if (value.charAt(0) == '^') { // step D
+                var count = myParseInt(value.substring(1), "Invalid field count");
+                while (count-- > 0) {
+                    values.push(unchangedMarker);
+                }
+
+            } else { // step E
+                var unquoted = Utils.unquote(value);
+                values.push(unquoted);
+            }
+            fieldStart = fieldEnd;
+        }
+        return values;
+    },
+    
+    /**
+     * Converts a string containing sequences as {@code %<hex digit><hex digit>} into a new string 
+     * where such sequences are transformed in UTF-8 encoded characters. <br> 
+     * For example the string "a%C3%A8" is converted to "aè" because the sequence 'C3 A8' is 
+     * the UTF-8 encoding of the character 'è'.
+     */
+    unquote: decodeURIComponent
 
   };
+  
+  function myParseInt(field, errorMsg) {
+      var n = parseInt(field, 10);
+      if (isNaN(n)) {
+          throw new Error(errorMsg);
+      }
+      return n;
+  }
 
   return Utils;
 })();

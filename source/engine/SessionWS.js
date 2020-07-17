@@ -43,9 +43,6 @@ import Utils from "../Utils";
     
     this.wsPhase = WS_OFF;
     this.openWSPhase = null;
-    
-    this.forceEarlyWSOff = false;
-    
   };
   
   
@@ -110,10 +107,6 @@ import Utils from "../Utils";
       
       /*public*/ createSent: function() {
         this._callSuperMethod(SessionWS,names['createSent']);
-        
-        if (this.policyBean.earlyWSOpenEnabled && !this.forceEarlyWSOff) {
-          this.openWS();
-        } 
       },
       
       /*public*/ bindSessionExecution: function(ph,bindCause) {
@@ -121,15 +114,13 @@ import Utils from "../Utils";
           return;
         }
         
-        this.forceEarlyWSOff = false;
-       
         if(this.wsPhase == WS_OFF) {
           this.openWS();
         } else if (this.wsPhase == WS_OPEN) {
           //If we opened the ws to the loadbalancer but then we received a control link 
           //then we must close the current ws and open a new one
           if (!this.wsConn.isConnectedToServer(this.getPushServerAddress())) {
-            sessionLogger.logWarn("A control link was received while earlyWSOpenEnabled is set to true, a WebSocket was wasted.");
+            sessionLogger.logError("A control link was received while Websocket was already open: a WebSocket was wasted.");
             this.wsConn._close();
             this.changeWSPhase(WS_OFF);
             this.openWS();
@@ -198,10 +189,6 @@ import Utils from "../Utils";
           return;
         }
       
-        if (this.phase == Session.CREATING) {
-          this.forceEarlyWSOff = true;
-        }
-        
         this._callSuperMethod(SessionWS,names['onTimeout'],[timeoutType,ph,usedTimeout,coreCause,sessionRecovery]);
       },
   
@@ -229,9 +216,7 @@ import Utils from "../Utils";
             this._callSuperMethod(SessionWS,names['onStreamError'],[reason,this.push_phase,fromWS,unableToOpen,possibleLoop]);
           }
         } else {
-          if (this.phase == Session.CREATING) {
-            this.forceEarlyWSOff = true;
-          }
+            
           this._callSuperMethod(SessionWS,names['onStreamError'],arguments);
         }
       },
@@ -255,9 +240,7 @@ import Utils from "../Utils";
             
           }
         } else {
-          if (this.phase == Session.CREATING) {
-            this.forceEarlyWSOff = true;
-          }
+            
           this._callSuperMethod(SessionWS,names['onStreamEnd'],arguments);
         }
       },
@@ -320,9 +303,7 @@ import Utils from "../Utils";
           }
           
         } else {
-          if (this.phase == Session.CREATING) {
-            this.forceEarlyWSOff = true;
-          }
+            
           this._callSuperMethod(SessionWS,names['onErrorEvent'],arguments);
         }
         
@@ -352,6 +333,11 @@ import Utils from "../Utils";
            */
           WebSocketConnection.disableClass(this.getPushServerAddress());
           this._callSuperMethod(SessionWS,names['onSessionGivesUp'],[ph, reason]);
+      },
+      
+      /**@override*/
+      onBindSent: function() {
+          this.reverseHeartbeatTimer.onBindSession(true);
       },
       
       /**@override*/

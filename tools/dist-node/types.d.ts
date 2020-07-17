@@ -136,7 +136,6 @@ export class ConnectionDetails {
     constructor();
     /**
      * Setter method that sets the address of Lightstreamer Server.
-    
      * <BR>Note that the addresses specified must always have the http: or https: scheme.
      * In case WebSockets are used, the specified scheme is
      * internally converted to match the related WebSocket protocol
@@ -147,7 +146,6 @@ export class ConnectionDetails {
      * To know what features are enabled by your license, please see the License tab of the
      * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
-    
      *
      * <p class="lifecycle"><b>Lifecycle:</b>This method can be called at any time. If called while connected,
      * it will be applied when the next session creation request is issued.
@@ -157,7 +155,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "serverAddress" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if the given address is not valid.
@@ -203,7 +200,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "adapterSet" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @param {String} adapterSet The name of the Adapter Set to be used. A null value
@@ -240,7 +236,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "user" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @param {String} user The username to be used for the authentication
@@ -286,7 +281,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "password" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @param {String} password The password to be used for the authentication
@@ -322,7 +316,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "serverInstanceAddress" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @return {String} address used to issue all requests related to the current
@@ -354,7 +347,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "serverSocketName" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @return {String} name configured for the Server instance which is managing the
@@ -371,7 +363,6 @@ export class ConnectionDetails {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "sessionId" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @return {String} ID assigned by the Server to this client session.
@@ -434,7 +425,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "contentLength" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, zero, decimal
@@ -475,7 +465,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "idleTimeout" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative or a decimal
@@ -521,7 +510,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "keepaliveInterval" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative or a decimal
@@ -566,14 +554,12 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a call to
      * {@link ClientListener#onPropertyChange} with argument "requestedMaxBandwidth" on any
      * {@link ClientListener}
-    
      * .
      * <BR>
      * Moreover, upon any change or attempt to change the limit, the Server will notify the client
      * and such notification will be received through a call to
      * {@link ClientListener#onPropertyChange} with argument "realMaxBandwidth" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @param {Number} maxBandwidth A decimal number, which represents the maximum bandwidth requested for the streaming
@@ -653,7 +639,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "pollingInterval" on any
      * {@link ClientListener}
-    
      * </p>
      *
      * @throws {IllegalArgumentException} if a negative or a decimal
@@ -695,7 +680,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "reconnectTimeout" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, zero, or a not-number
@@ -732,7 +716,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "stalledTimeout" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, zero, or a not-number
@@ -834,7 +817,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "retryDelay" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, zero, or a not-number
@@ -876,7 +858,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "firstRetryMaxDelay" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, zero, or a not-number
@@ -919,7 +900,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "slowingEnabled" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a not boolean value is given.
@@ -960,7 +940,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "forcedTransport" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if the given value is not in the list
@@ -1036,7 +1015,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "serverInstanceAddressIgnored" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a not boolean value is given.
@@ -1062,7 +1040,6 @@ export class ConnectionOptions {
      * client side.
      * Enabling this policy will guarantee that cookies pertaining to the
      * Lightstreamer Server will be sent with each request.
-    
     
      * <BR>This holds only for cookies returned by the Server (possibly affinity cookies
      * inserted by a Load Balancer standing in between). If other cookies received
@@ -1104,59 +1081,6 @@ export class ConnectionOptions {
      */
     isCookieHandlingRequired(): boolean;
     /**
-     * Setter method that enables/disables the "early-open" of the WebSocket
-     * connection.<BR/>
-     * When enabled a WebSocket is open to the address specified through
-     * {@link ConnectionDetails#setServerAddress} before a potential server instance
-     * address is received during session creation. In this case if a server instance
-     * address is received, the previously open WebSocket is closed and a new one is open
-     * to the received server instance address.<br/>
-     * If disabled, the session creation is completed to verify if such
-     * a server instance address is configured in the server before opening the
-     * WebSocket.<BR/>
-     * For these reasons this setting should be set to false if the server
-     * configuration specifies a &lt;control_link_address&gt; and/or a
-     * &lt;control_link_machine_name&gt; element in its configuration;
-     * viceversa it should be set to true if such elements are not set on
-     * the target server(s) configuration.
-     *
-     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
-     * an optional feature, available depending on Edition and License Type.
-     * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p>
-     *
-     * <p class="default-value"><b>Default value:</b> false.</p>
-     *
-     * <p class="lifecycle"><b>Lifecycle:</b>This method can be called at any time. If called while
-     * the client already owns a session it will be applied the next time a session
-     * is requested to a server.</p>
-     *
-     * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
-     * call to {@link ClientListener#onPropertyChange} with argument "earlyWSOpenEnabled" on any
-     * {@link ClientListener}
-    
-     * .</p>
-     *
-     * @throws {IllegalArgumentException} if a not boolean value is given.
-     *
-     * @param {boolean} earlyWSOpenEnabled true/false to enable/disable the
-     * early-open of the WebSocket connection.
-     *
-     * @see ConnectionOptions#setServerInstanceAddressIgnored
-     */
-    setEarlyWSOpenEnabled(earlyWSOpenEnabled: boolean): void;
-    /**
-     * Inquiry method that checks if the client is going to early-open the
-     * WebSocket connection to the address specified in
-     * {@link ConnectionDetails#setServerAddress}.
-     *
-     * @return {boolean} true/false if the early-open of the WebSocket connection is
-     * enabled or not.
-     *
-     * @see ConnectionOptions#setEarlyWSOpenEnabled
-     */
-    isEarlyWSOpenEnabled(): boolean;
-    /**
      * Setter method that enables/disables the reverse-heartbeat mechanism
      * by setting the heartbeat interval. If the given value
      * (expressed in milliseconds) equals 0 then the reverse-heartbeat mechanism will
@@ -1196,7 +1120,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "reverseHeartbeatInterval" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, decimal
@@ -1220,7 +1143,6 @@ export class ConnectionOptions {
      * Setter method that enables/disables the setting of extra HTTP headers to all the
      * request performed to the Lightstreamer server by the client.
      * Note that when the value is set WebSockets are disabled
-    
      * unless {@link ConnectionOptions#setHttpExtraHeadersOnSessionCreationOnly}
      * is set to true. <BR> Also note that
      * if the browser/environment does not have the possibility to send extra headers while
@@ -1233,10 +1155,8 @@ export class ConnectionOptions {
      * Lightstreamer Server. Use the static {@link LightstreamerClient.addCookies} instead
      * (and {@link LightstreamerClient.getCookies} for inquiries). <BR>
     
-    
      * The use of custom headers might also cause the
      * browser/environment to send an OPTIONS request to the server before opening the actual connection.
-    
      *
      * <p class="default-value"><b>Default value:</b> null (meaning no extra headers are sent).</p>
      *
@@ -1247,7 +1167,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "httpExtraHeaders" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @param {Object} headersObj a JSON object containing header-name header-value pairs.
@@ -1283,7 +1202,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "httpExtraHeadersOnSessionCreationOnly" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a not boolean value is given.
@@ -1323,7 +1241,6 @@ export class ConnectionOptions {
      * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
      * call to {@link ClientListener#onPropertyChange} with argument "sessionRecoveryTimeout" on any
      * {@link ClientListener}
-    
      * .</p>
      *
      * @throws {IllegalArgumentException} if a negative, decimal
@@ -1766,7 +1683,7 @@ export class ItemUpdate {
      * possible value for a field;</li>
      * <li>no value has been received for the field yet;</li>
      * <li>the item is subscribed to with the COMMAND mode and a DELETE command
-     * is received (only the fields used to carry key and command informations
+     * is received (only the fields used to carry key and command information
      * are valued).</li>
      * </ul>
      *
@@ -1813,7 +1730,7 @@ export class ItemUpdate {
      * Subscription). Snapshot events are sent only if snapshot information
      * was requested for the items through {@link Subscription#setRequestedSnapshot}
      * and precede the real time events.
-     * Snapshot informations take different forms in different subscription
+     * Snapshot information take different forms in different subscription
      * modes and can be spanned across zero, one or several update events.
      * In particular:
      * <ul>
@@ -1870,7 +1787,6 @@ export class ItemUpdate {
  * It is possible to instantiate as many LightstreamerClient as needed.
  * Each LightstreamerClient is the entry point to connect to a Lightstreamer server,
  * subscribe to as many items as needed and to send messages.
-
  * @constructor
  *
  * @exports LightstreamerClient
@@ -1901,7 +1817,6 @@ export class LightstreamerClient {
      * <BR>Properties of this object can be overwritten by values received from a
      * Lightstreamer Server. Such changes will be notified through a
      * {@link ClientListener#onPropertyChange} event on listeners of this instance.
-    
      *
      * @type ConnectionOptions
      *
@@ -1915,7 +1830,6 @@ export class LightstreamerClient {
      * <BR>Properties of this object can be overwritten by values received from a
      * Lightstreamer Server. Such changes will be notified through a
      * {@link ClientListener#onPropertyChange} event on listeners of this instance.
-    
      *
      * @type ConnectionDetails
      *
@@ -2008,7 +1922,6 @@ export class LightstreamerClient {
      * lightstreamer.actions:
      * <BR>logs settings / API calls.
      * </li>
-    
      * </ul>
      *
      * @param {LoggerProvider} provider A LoggerProvider instance that will be used
@@ -2039,7 +1952,6 @@ export class LightstreamerClient {
      * will automatically open a polling connection.
      * <BR>A polling connection may also be opened if the environment is not suitable
      * for a streaming connection.
-    
      * <BR>Note that as "polling connection" we mean a loop of polling
      * requests, each of which requires opening a synchronous (i.e. not
      * streaming) connection to Lightstreamer Server.
@@ -2053,7 +1965,6 @@ export class LightstreamerClient {
      * <BR>When the request to connect is finally being executed, if the current status
      * of the client is not DISCONNECTED, then nothing will be done.</p>
      *
-    
      * @throws {IllegalStateException} if no server address was configured
      * and there is no suitable default address to be used.
      *
@@ -2070,7 +1981,6 @@ export class LightstreamerClient {
      * <BR>Note that active {@link Subscription} instances, associated with this
      * LightstreamerClient instance, are preserved to be re-subscribed to on future
      * Sessions.
-    
      *
      * <p class="lifecycle"><b>Lifecycle:</b>
      * Note that the request to disconnect is accomplished by the client
@@ -2123,7 +2033,6 @@ export class LightstreamerClient {
      * <BR>Upon subsequent calls to the method, the sequential management of
      * the involved messages is guaranteed. The ordering is determined by the
      * order in which the calls to sendMessage are issued
-    
      * .
      * <BR>If a message, for any reason, doesn't reach the Server (this is possible with the HTTP transport),
      * it will be resent; however, this may cause the subsequent messages to be delayed.
@@ -2351,7 +2260,6 @@ export class ClientListener {
      * <li>The Metadata Adapter imposes limits on the overall open sessions
      * for the current user and has requested the closure of the current session
      * upon opening of a new session for the same user
-    
      * (35);</li>
      * <li>An unexpected error occurred on the Server while the session was in
      * activity (33, 34);</li>
@@ -2435,7 +2343,6 @@ export class ClientListener {
      * in "DISCONNECTED:TRYING-RECOVERY" for long time, while further attempts are made.
      * If the recovery is no longer possible, the current session will be abandoned
      * and the status will switch to "DISCONNECTED:WILL-RETRY" before the next attempts.</li>
-    
      * </ul>
      *
      * <BR>By setting a custom handler it is possible to perform
@@ -2483,7 +2390,6 @@ export class ClientListener {
      * Event handler that receives a notification each time  the value of a property of
      * {@link LightstreamerClient#connectionDetails} or {@link LightstreamerClient#connectionOptions}
      * is changed.
-    
      *
      * @param {String} the name of the changed property.
      * <BR>Possible values are:
@@ -2509,7 +2415,6 @@ export class ClientListener {
      * <li>serverInstanceAddressIgnored</li>
      * <li>cookieHandlingRequired</li>
      * <li>reverseHeartbeatInterval</li>
-     * <li>earlyWSOpenEnabled</li>
      * <li>httpExtraHeaders</li>
      * <li>httpExtraHeadersOnSessionCreationOnly</li>
      *

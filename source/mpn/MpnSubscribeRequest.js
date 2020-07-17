@@ -1,5 +1,6 @@
 import Inheritance from "../../src-tool/Inheritance";
 import MpnRequest from "./MpnRequest";
+import CtrlRequest from '../utils/CtrlRequest';
 
     /**
      * An MPN subscription request.
@@ -11,6 +12,7 @@ import MpnRequest from "./MpnRequest";
      */
     var MpnSubscribeRequest = function(subId, deviceId, /*MpnSubscription*/ sub) {
         this._callSuperConstructor(MpnSubscribeRequest);
+        this.type = CtrlRequest.MPN_SUB;
         this.subscriptionId = subId;
         this.addParam('LS_subId', subId);
         this.addParam('LS_op', 'activate');
@@ -40,6 +42,10 @@ import MpnRequest from "./MpnRequest";
         if (sub.getRequestedMaxFrequency() != null) {
             this.addParam('LS_requested_max_frequency', sub.getRequestedMaxFrequency());
         }
+    };
+    
+    MpnSubscribeRequest.prototype.toString = function() {
+        return CtrlRequest.toString(this.query);
     };
     
     Inheritance(MpnSubscribeRequest, MpnRequest);

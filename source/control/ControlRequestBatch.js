@@ -29,14 +29,16 @@ import Constants from "../Constants";
     /*private*/ addRequestInternal: function(tKey,request) {
       this.keys[tKey] = request;
       this.queue.push(tKey);
-      
+      /*
+      // NB This check is broken in so many ways that there is no reason to fix it
       (function(that) {
-          /* check that there is no duplicated message request */
+          // check that there is no duplicated message request
           if (that.batchType == ControlRequest.MESSAGE) {
               var seq = request["LS_sequence"];
               var prog = request["LS_msg_prog"];
               if (seq != null && prog != null) {
-                  for (var i = 0, len = that.queue.length - 1 /* exclude last request */; i < len; i++) {
+                  // exclude last request
+                  for (var i = 0, len = that.queue.length - 1; i < len; i++) {
                       var currentReq = that.queue[i];
                       var currentSeq = currentReq["LS_sequence"];
                       var currentProg = currentReq["LS_msg_prog"];
@@ -52,6 +54,7 @@ import Constants from "../Constants";
               }
           }
       }(this));
+      */
     },
     
     /*private*/ addUniqueRequestInternal: function(tKey,request) {

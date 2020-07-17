@@ -22,12 +22,10 @@ import nodeUtils from 'node-utils';
 
   var JS_PROTOCOL = Constants.TLCP_VERSION + ".lightstreamer.com";
 
-  var objectIdCounter = 1;
-
   function WebSocketConnection(wsSession) {
      this._callSuperConstructor(WebSocketConnection);
 
-     this.objectId = objectIdCounter++;
+     this.objectId = Utils.nextObjectId();
      if (streamLogger.isDebugLogEnabled()) {
          streamLogger.logDebug("New WS connection oid=", this.objectId);
      }
@@ -383,7 +381,6 @@ import nodeUtils from 'node-utils';
       //After a while the connection was broken and since this flag was already true the client did not disable the WS connection
       //and went on retrying the same connection. The loop of failures was broken when a WS did not break for long enough for the
       //stream-sense timeout to be executed
-      //See email from Marc Bracher on 20121010
 
       this.openEvent = true;
       Executor.executeTask(responseCallback, [evt.data,this.exePhase]);

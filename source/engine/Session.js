@@ -14,6 +14,8 @@ import Assertions from "../utils/Assertions";
 import RecoveryBean from "./RecoveryBean";
 import RetryDelayCounter from "./RetryDelayCounter";
 import Environment from "../../src-tool/Environment";
+import Utils from "../Utils";
+import ReverseHeartbeatTimer from "./ReverseHeartbeatTimer";
   
   var _OFF = 1;
   /**
@@ -83,10 +85,8 @@ import Environment from "../../src-tool/Environment";
   
   var PERMISSION_TO_FAIL = 1; //called X in the session machine
   
-  var objectIdCounter = 1;
-  
   var Session = function(isPolling,forced,handler,handlerPhase,originalSession,skipCors,sessionRecovery,mpnManager) {
-    this.objectId = objectIdCounter++;
+    this.objectId = Utils.nextObjectId();
     if (sessionLogger.isDebugLogEnabled()) {
         sessionLogger.logDebug("New session", "oid=" + this.objectId);
     }
@@ -180,6 +180,7 @@ import Environment from "../../src-tool/Environment";
     } 
     
     this.mpnManager = mpnManager;
+    this.reverseHeartbeatTimer = new ReverseHeartbeatTimer(this, this.policyBean);
     
     if (Environment.isBrowser()) {
         var that = this;
@@ -408,7 +409,6 @@ import Environment from "../../src-tool/Environment";
         // to the Server with the bind_session request;
         // moreover, if we switch from HTTP to WS or from WS to HTTP,
         // the reverse heartbeat behavior may change (though currently not)
-        this.handleReverseHeartbeat(true);
         
         this.incPushPhase();
 
@@ -506,15 +506,7 @@ import Environment from "../../src-tool/Environment";
       },
       
       /*public*/ handleReverseHeartbeat: function(force) {
-        if (this.phase == Session._OFF || this.phase == Session.CREATING || this.phase == Session.SLEEP) {
-          return;
-        } else {
-          if (this.policyBean.reverseHeartbeatInterval > 0) {
-            this.controlHandler.startReverseHeartbeats(this.policyBean.reverseHeartbeatInterval, force);
-          } else {
-            this.controlHandler.stopReverseHeartbeats(force);
-          }
-        }
+          this.reverseHeartbeatTimer.onChangeInterval();
       },
       
       /*public*/ closeSession: function(closeReason,alreadyClosedOnServer,noRecoveryScheduled) {
@@ -557,6 +549,7 @@ import Environment from "../../src-tool/Environment";
                 }
             }
         }
+        this.reverseHeartbeatTimer.onClose();
         sessionLogger.logDebug("Session shutdown",this);
       },
       
@@ -967,7 +960,10 @@ import Environment from "../../src-tool/Environment";
         this.launchTimeout("bindTimeout", this.getBindTimeout()); //will be executed if the bind does not return no need to specify the cause
         
         this.evalQueue = this.handler.getEvalQueue();
+        this.onBindSent();
       },
+      
+      /*abstract*/ onBindSent: function() {},
       
       /*protected*/ launchTimeout: function(timeoutType, triggerAfter,timeoutCause) {
           /*
@@ -1206,11 +1202,11 @@ import Environment from "../../src-tool/Environment";
         }
         //this is a nasty android browser bug, that causes a POST to be lost and another one to be reissued 
         //under certain circumnstances (https is fundamental for the issue to appear).
-        //seen on Android: see mail thread with PartyGaming around the 13/12/2010 for further details. 
+        //seen on Android 
 
         //this is also a Sont-Bravia TV Opera bug, that causes frame-made requests to be reissued when the frame changes again
         //sometimes the correct answer reach the client, others the wrong one carrying error 41 does
-        //seen on Opera on bravia TV: see mail thread with Cell-Data around 15/10/2011 for further details.  
+        //seen on Opera on bravia TV  
         this.onErrorEvent("error41",{closedOnServer: true});
       },
       
@@ -1571,7 +1567,7 @@ import Environment from "../../src-tool/Environment";
         
         var requestListener = {
                 onREQOK: function(LS_window) {
-                    // nothing to do: expecting CONS
+                    // nothing to do: expecting LOOP
                 },
 
                 onREQERR: function(LS_window, phase, errorCode, errorMsg) {

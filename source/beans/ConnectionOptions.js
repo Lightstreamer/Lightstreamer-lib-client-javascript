@@ -60,7 +60,6 @@ import ConnectTimeoutCounter from "../engine/ConnectTimeoutCounter";
       serverInstanceAddressIgnored: "serverInstanceAddressIgnored",
       cookieHandlingRequired: "cookieHandlingRequired",
       reverseHeartbeatInterval: "reverseHeartbeatInterval",
-      earlyWSOpenEnabled: "earlyWSOpenEnabled",
       sessionRecoveryTimeout: "sessionRecoveryTimeout",
       spinFixTimeout: "spinFixTimeout",
       spinFixEnabled: "spinFixEnabled",
@@ -166,10 +165,6 @@ import ConnectTimeoutCounter from "../engine/ConnectTimeoutCounter";
      * @private
      */
     this.reverseHeartbeatInterval = 0; //if > 0 is the interval between client sent heartbeats
-    /**
-     * @private
-     */
-    this.earlyWSOpenEnabled = false;
     /**
      * @private
      */
@@ -402,9 +397,9 @@ END_NODE_JSDOC_EXCLUDE
      * furtherly restrict this limit. The limit applies to the bytes received in each streaming or polling connection.
      *
      * <p class="edition-note"><B>Edition Note:</B> Bandwidth Control is
-	 * an optional feature, available depending on Edition and License Type.
-	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p>
+     * an optional feature, available depending on Edition and License Type.
+     * To know what features are enabled by your license, please see the License tab of the
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> "unlimited".</p>
      * 
@@ -1000,9 +995,9 @@ END_NODE_JSDOC_EXCLUDE
      * to a specific Server instance in the cluster.
      *
      * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
-	 * an optional feature, available depending on Edition and License Type.
-	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p>
+     * an optional feature, available depending on Edition and License Type.
+     * To know what features are enabled by your license, please see the License tab of the
+     * Monitoring Dashboard (by default, available at /dashboard).</p>
      *
      * <p class="default-value"><b>Default value:</b> false.</p>
      * 
@@ -1104,69 +1099,6 @@ END_WEB_JSDOC_EXCLUDE
      */
     isCookieHandlingRequired: function() {
       return this.cookieHandlingRequired;
-    },
-    
-    /**
-     * Setter method that enables/disables the "early-open" of the WebSocket 
-     * connection.<BR/>
-     * When enabled a WebSocket is open to the address specified through
-     * {@link ConnectionDetails#setServerAddress} before a potential server instance 
-     * address is received during session creation. In this case if a server instance 
-     * address is received, the previously open WebSocket is closed and a new one is open 
-     * to the received server instance address.<br/> 
-     * If disabled, the session creation is completed to verify if such
-     * a server instance address is configured in the server before opening the
-     * WebSocket.<BR/>
-     * For these reasons this setting should be set to false if the server 
-     * configuration specifies a &lt;control_link_address&gt; and/or a
-     * &lt;control_link_machine_name&gt; element in its configuration;
-     * viceversa it should be set to true if such elements are not set on
-     * the target server(s) configuration.
-     * 
-     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
-	 * an optional feature, available depending on Edition and License Type.
-	 * To know what features are enabled by your license, please see the License tab of the
-	 * Monitoring Dashboard (by default, available at /dashboard).</p>
-     *
-     * <p class="default-value"><b>Default value:</b> false.</p>
-     * 
-     * <p class="lifecycle"><b>Lifecycle:</b>This method can be called at any time. If called while 
-     * the client already owns a session it will be applied the next time a session 
-     * is requested to a server.</p>
-     * 
-     * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
-     * call to {@link ClientListener#onPropertyChange} with argument "earlyWSOpenEnabled" on any 
-     * {@link ClientListener}
-START_NODE_JSDOC_EXCLUDE
-     * listening to any LightstreamerClient sharing the same 
-     * connection with the LightstreamerClient owning the ConnectionOptions upon 
-     * which the setter was called
-END_NODE_JSDOC_EXCLUDE
-     * .</p>
-     *
-     * @throws {IllegalArgumentException} if a not boolean value is given.
-     * 
-     * @param {boolean} earlyWSOpenEnabled true/false to enable/disable the 
-     * early-open of the WebSocket connection.
-     * 
-     * @see ConnectionOptions#setServerInstanceAddressIgnored
-     */
-    setEarlyWSOpenEnabled: function(earlyWSOpenEnabled) {
-      this.heavySetter("earlyWSOpenEnabled",this.checkBool(earlyWSOpenEnabled));
-    },
-    
-    /**  
-     * Inquiry method that checks if the client is going to early-open the
-     * WebSocket connection to the address specified in 
-     * {@link ConnectionDetails#setServerAddress}.
-     *
-     * @return {boolean} true/false if the early-open of the WebSocket connection is 
-     * enabled or not.
-     * 
-     * @see ConnectionOptions#setEarlyWSOpenEnabled
-     */
-    isEarlyWSOpenEnabled: function() {
-      return this.earlyWSOpenEnabled;
     },
     
     /**
@@ -1597,8 +1529,6 @@ END_NODE_JSDOC_EXCLUDE
   ConnectionOptions.prototype["isServerInstanceAddressIgnored"] = ConnectionOptions.prototype.isServerInstanceAddressIgnored;
   ConnectionOptions.prototype["setCookieHandlingRequired"] = ConnectionOptions.prototype.setCookieHandlingRequired;
   ConnectionOptions.prototype["isCookieHandlingRequired"] = ConnectionOptions.prototype.isCookieHandlingRequired;
-  ConnectionOptions.prototype["setEarlyWSOpenEnabled"] = ConnectionOptions.prototype.setEarlyWSOpenEnabled;
-  ConnectionOptions.prototype["isEarlyWSOpenEnabled"] = ConnectionOptions.prototype.isEarlyWSOpenEnabled;
   ConnectionOptions.prototype["setReverseHeartbeatInterval"] = ConnectionOptions.prototype.setReverseHeartbeatInterval;
   ConnectionOptions.prototype["getReverseHeartbeatInterval"] = ConnectionOptions.prototype.getReverseHeartbeatInterval;
   ConnectionOptions.prototype["setHttpExtraHeaders"] = ConnectionOptions.prototype.setHttpExtraHeaders;

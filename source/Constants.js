@@ -5,9 +5,9 @@ export default /*@__PURE__*/(function() {
 
   /**
    * WARNING
-   * if the flag is true, change TLCP_VERSION to 2.1.1 instead of 2.1.0
+   * if the flag is true, change TLCP_VERSION to 2.2.0 instead of 2.1.0
    */
-    handleError5: false,
+    handleError5: true,
       
     REFRESH_STATUS_INTERVAL: 1000,
     REFRESH_STATUS_INTERVAL_TOLERANCE: 200,
@@ -49,7 +49,8 @@ export default /*@__PURE__*/(function() {
     SHARING: "lightstreamer.sharing",  
     CROSSTAB: "lightstreamer.crosstab",  
     STATS: "lightstreamer.stats",  
-    MPN: "lightstreamer.mpn",  
+    MPN: "lightstreamer.mpn",
+    HEARTBEAT_LOG: "lightstreamer.heartbeat",
     
     STORAGE_PREFIX: "Lightstreamer_",
       
@@ -90,7 +91,7 @@ export default /*@__PURE__*/(function() {
 
     MASTER: "MASTER",
     
-    TLCP_VERSION: "TLCP-2.1.0"
+    TLCP_VERSION: "TLCP-2.2.0"
   
   };
     

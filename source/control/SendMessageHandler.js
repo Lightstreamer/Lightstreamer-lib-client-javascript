@@ -6,7 +6,7 @@ import Utils from "../Utils";
   
   var messagesLogger = LoggerManager.getLoggerProxy(Constants.MESSAGES);
   
-  var SendMessageHandler = function(controlHandler,pushPagesHandler,connOptions) {
+  var SendMessageHandler = function(controlHandler,pushPagesHandler,connOptions,sessionHandler) {
     this.active = false;
     this.messagePhase = 0;
     this.sequences = {};
@@ -18,6 +18,7 @@ import Utils from "../Utils";
     this.pushPagesHandler = pushPagesHandler;
     
     this.connOptions = connOptions;
+    this.sessionHandler = sessionHandler;
   };
   
   
@@ -51,7 +52,7 @@ import Utils from "../Utils";
             var query = seqData.messages[num].query;
             if (query != null) {
               var bridge = new SendMessageBridge(this,this.connOptions,this.messagePhase,seqData,num);
-              this.sendExe(num,query,bridge);
+              this.sessionHandler.sendMessage(num,query,bridge);
             }
           }
         }
@@ -142,7 +143,7 @@ import Utils from "../Utils";
       if (this.active) {
         messagesLogger.logInfo("Forward prepared message to control handler",query);
         var bridge = new SendMessageBridge(this,this.connOptions,this.messagePhase,seqData,seqData.messageNum,sequence,needsProg);
-        this.sendExe(seqData.messageNum,query,bridge);
+        this.sessionHandler.sendMessage(seqData.messageNum,query,bridge);
       }
     },
     
@@ -183,30 +184,7 @@ import Utils from "../Utils";
     /*public*/ resend: function(num,bridge) {
       var query = bridge.seqData.messages[num].query;
       messagesLogger.logDebug("No ack was received for a message; forwarding it again to the control handler",query);
-      this.sendExe(num,query,bridge); //resend the message!
-    },
-    
-    /*private*/ sendExe: function(prog,query,bridge) {
-        var sequence = (query['LS_sequence'] == null ? Constants._UNORDERED_MESSAGES : query['LS_sequence']);
-        var ack = query['LS_ack'] != "false";
-        var requestListener = {
-                onREQOK: function(LS_window) {
-                    /*
-                     * NB1 LS_window is an object defined in EvalQueue, where the listener will be called.
-                     * 
-                     * NB2 LS_w must be called only if the request was expecting an acknowledgment (i.e. LS_ack=true).
-                     * This check is important because in HTTP the server send always a REQOK even if LS_ack was false.
-                     */
-                    if (ack) {                        
-                        LS_window.LS_w(4, prog, sequence, 0, 0);
-                    }
-                },
-                
-                onREQERR: function(LS_window, phase, errorCode, errorMsg) {
-                    LS_window.LS_l(errorCode, prog, "MSG" + sequence, errorMsg, true/*isReqerr*/);
-                }
-        };
-        this.controlHandler.addRequest(prog, query, ControlRequest.MESSAGE, bridge, null, requestListener); 
+      this.sessionHandler.sendMessage(num,query,bridge); //resend the message!
     },
 
     //FROM net, needs num translation

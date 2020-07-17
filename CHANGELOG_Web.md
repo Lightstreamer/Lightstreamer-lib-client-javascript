@@ -49,10 +49,12 @@ notes below.</i><br/>
 
 Made the library available on the public npm service, at the following
 address:\
- [https://www.npmjs.com/package/lightstreamer-client-web](https://www.npmjs.com/package/lightstreamer-client-web).\
+
+[https://www.npmjs.com/package/lightstreamer-client-web](https://www.npmjs.com/package/lightstreamer-client-web).\
  Moreover, the library is now open source, available on GitHub at the
 following address:\
- [https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
+
+[https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
  Hence, the non-minified version of the library is also provided.\
  The way the deliverables are provided has also changed on various
 aspects:

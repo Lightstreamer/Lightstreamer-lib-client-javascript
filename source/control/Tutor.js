@@ -1,4 +1,5 @@
 import Executor from "../../src-tool/Executor";
+import NewSessionWS from "../engine/NewSessionWS";
 
   var MIN_TIMEOUT = 4000;
   
@@ -20,6 +21,10 @@ import Executor from "../../src-tool/Executor";
     },
     
     /*private*/ onTimeout: function() {
+      if (this.sessionHandler && this.sessionHandler.session instanceof NewSessionWS) {
+          // NewSessionWS doesn't need Tutors
+          return;
+      }
       if (!(this.discarded || this.verifySuccess())) {
         this.doRecovery();
       } 
@@ -27,6 +32,10 @@ import Executor from "../../src-tool/Executor";
     
     discard: function() {
         this.discarded = true;
+    },
+    
+    setSessionHandler: function(sessionHandler) {
+        this.sessionHandler = sessionHandler;
     }
     
     /*abstract function verifySuccess()*/

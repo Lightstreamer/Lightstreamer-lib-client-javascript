@@ -559,13 +559,13 @@ END_NODE_JSDOC_EXCLUDE
         }
         this.setEngineHandler(new NewEngineHandler(this));
         this.master = new LightstreamerEngine(
-        		this._configuration,
-        		this._policy,
-        		this._connection,
-        		this.sharing,
-        		this.engineHandler,
-        		dontDieFor,
-        		this.mpnManager);
+                this._configuration,
+                this._policy,
+                this._connection,
+                this.sharing,
+                this.engineHandler,
+                dontDieFor,
+                this.mpnManager);
         this.engineHandler.setEngineId(this.master.getEngineId());
         this.engineHandler.setSessionPhase(this.master.getSessionPhase());
 
@@ -1575,7 +1575,6 @@ END_NODE_JSDOC_EXCLUDE
        * <li>serverInstanceAddressIgnored</li>
        * <li>cookieHandlingRequired</li>
        * <li>reverseHeartbeatInterval</li>
-       * <li>earlyWSOpenEnabled</li>
        * <li>httpExtraHeaders</li>
        * <li>httpExtraHeadersOnSessionCreationOnly</li>
        *

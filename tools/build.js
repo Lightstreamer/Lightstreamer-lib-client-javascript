@@ -122,6 +122,7 @@ function web_esm() {
                     'virtual-entrypoint': namedExports(config.web.modules, config.web.polyfills) }),
                 alias({ 
                     'node-utils': fullpath('source/platform/DummyNodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Web'),
                     './ls_sbc': sbcModulePath(),
                     './mpn/MpnManager': mpnModulePath() })]
         },
@@ -152,6 +153,7 @@ function web_cjs() {
                     'virtual-entrypoint': namedExports(config.web.modules, config.web.polyfills) }),
                 alias({ 
                     'node-utils': fullpath('source/platform/DummyNodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Web'),
                     './ls_sbc': sbcModulePath(),
                     './mpn/MpnManager': mpnModulePath() })]
         },
@@ -182,6 +184,7 @@ function web_umd() {
                     'virtual-entrypoint': defaultExports(config.web.modules, config.web.polyfills) }),
                 alias({ 
                     'node-utils': fullpath('source/platform/DummyNodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Web'),
                     './ls_sbc': sbcModulePath(),
                     './mpn/MpnManager': mpnModulePath() })]
         },
@@ -214,6 +217,7 @@ function web_umd_min() {
                     'virtual-entrypoint': defaultExports(config.web.modules, config.web.polyfills) }),
                 alias({ 
                     'node-utils': fullpath('source/platform/DummyNodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Web'),
                     './ls_sbc': sbcModulePath(),
                     './mpn/MpnManager': mpnModulePath() }),
                 compiler({
@@ -254,6 +258,7 @@ function node_cjs() {
                     'virtual-entrypoint': defaultExports(config.node.modules) }),
                 alias({ 
                     'node-utils': fullpath('source/platform/NodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Node'),
                     './ls_sbc': fullpath('source/alt/dummy_ls_sbc'),
                     './mpn/MpnManager': fullpath('source/alt/DummyMpnManager')})]
         },
@@ -285,6 +290,7 @@ function node_cjs_min() {
                     'virtual-entrypoint': defaultExports(config.node.modules) }),
                 alias({ 
                     'node-utils': fullpath('source/platform/NodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Node'),
                     './ls_sbc': fullpath('source/alt/dummy_ls_sbc'),
                     './mpn/MpnManager': fullpath('source/alt/DummyMpnManager') }),
                 compiler({

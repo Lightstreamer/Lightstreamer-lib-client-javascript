@@ -28,12 +28,10 @@ import nodeUtils from 'node-utils';
     NodeXHR = nodeUtils.NodeXHR;
   }
   
-  var objectIdCounter = 1;
-
   function XSXHRConnection() {
      this._callSuperConstructor(XSXHRConnection);
      
-     this.objectId = objectIdCounter++;
+     this.objectId = Utils.nextObjectId();
      if (streamLogger.isDebugLogEnabled()) {
          streamLogger.logDebug("New CORS-XHR connection oid=", this.objectId);
      }

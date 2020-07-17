@@ -3112,7 +3112,6 @@ export class ConnectionOptions {
      * Likewise, cookies set by Lightstreamer Server and with a domain
      * specification which includes other sites will be forwarded to them.
     
-    
      * <BR>On the other hand enabling this setting may prevent the client from
      * opening a streaming connection or even to connect at all depending on the
      * browser/environment.
@@ -3144,63 +3143,6 @@ export class ConnectionOptions {
      * @see ConnectionOptions#setCookieHandlingRequired
      */
     isCookieHandlingRequired(): boolean;
-    /**
-     * Setter method that enables/disables the "early-open" of the WebSocket
-     * connection.<BR/>
-     * When enabled a WebSocket is open to the address specified through
-     * {@link ConnectionDetails#setServerAddress} before a potential server instance
-     * address is received during session creation. In this case if a server instance
-     * address is received, the previously open WebSocket is closed and a new one is open
-     * to the received server instance address.<br/>
-     * If disabled, the session creation is completed to verify if such
-     * a server instance address is configured in the server before opening the
-     * WebSocket.<BR/>
-     * For these reasons this setting should be set to false if the server
-     * configuration specifies a &lt;control_link_address&gt; and/or a
-     * &lt;control_link_machine_name&gt; element in its configuration;
-     * viceversa it should be set to true if such elements are not set on
-     * the target server(s) configuration.
-     *
-     * <p class="edition-note"><B>Edition Note:</B> Server Clustering is
-     * an optional feature, available depending on Edition and License Type.
-     * To know what features are enabled by your license, please see the License tab of the
-     * Monitoring Dashboard (by default, available at /dashboard).</p>
-     *
-     * <p class="default-value"><b>Default value:</b> false.</p>
-     *
-     * <p class="lifecycle"><b>Lifecycle:</b>This method can be called at any time. If called while
-     * the client already owns a session it will be applied the next time a session
-     * is requested to a server.</p>
-     *
-     * <p class="notification"><b>Notification:</b> A change to this setting will be notified through a
-     * call to {@link ClientListener#onPropertyChange} with argument "earlyWSOpenEnabled" on any
-     * {@link ClientListener}
-    
-     * listening to any LightstreamerClient sharing the same
-     * connection with the LightstreamerClient owning the ConnectionOptions upon
-     * which the setter was called
-    
-     * .</p>
-     *
-     * @throws {IllegalArgumentException} if a not boolean value is given.
-     *
-     * @param {boolean} earlyWSOpenEnabled true/false to enable/disable the
-     * early-open of the WebSocket connection.
-     *
-     * @see ConnectionOptions#setServerInstanceAddressIgnored
-     */
-    setEarlyWSOpenEnabled(earlyWSOpenEnabled: boolean): void;
-    /**
-     * Inquiry method that checks if the client is going to early-open the
-     * WebSocket connection to the address specified in
-     * {@link ConnectionDetails#setServerAddress}.
-     *
-     * @return {boolean} true/false if the early-open of the WebSocket connection is
-     * enabled or not.
-     *
-     * @see ConnectionOptions#setEarlyWSOpenEnabled
-     */
-    isEarlyWSOpenEnabled(): boolean;
     /**
      * Setter method that enables/disables the reverse-heartbeat mechanism
      * by setting the heartbeat interval. If the given value
@@ -3279,7 +3221,6 @@ export class ConnectionOptions {
      * Also note that the Content-Type header is reserved by the client library itself,
      * while other headers might be refused by the browser/environment and others might cause the
      * connection to the server to fail.
-    
     
      * <BR>For instance, you cannot use this method to specify custom cookies to be sent to
      * Lightstreamer Server. They can only be set and inquired through the browser's
@@ -5077,7 +5018,7 @@ export class ItemUpdate {
      * possible value for a field;</li>
      * <li>no value has been received for the field yet;</li>
      * <li>the item is subscribed to with the COMMAND mode and a DELETE command
-     * is received (only the fields used to carry key and command informations
+     * is received (only the fields used to carry key and command information
      * are valued).</li>
      * </ul>
      *
@@ -5124,7 +5065,7 @@ export class ItemUpdate {
      * Subscription). Snapshot events are sent only if snapshot information
      * was requested for the items through {@link Subscription#setRequestedSnapshot}
      * and precede the real time events.
-     * Snapshot informations take different forms in different subscription
+     * Snapshot information take different forms in different subscription
      * modes and can be spanned across zero, one or several update events.
      * In particular:
      * <ul>
@@ -6037,7 +5978,6 @@ export class ClientListener {
      * <li>serverInstanceAddressIgnored</li>
      * <li>cookieHandlingRequired</li>
      * <li>reverseHeartbeatInterval</li>
-     * <li>earlyWSOpenEnabled</li>
      * <li>httpExtraHeaders</li>
      * <li>httpExtraHeadersOnSessionCreationOnly</li>
      *
@@ -8961,7 +8901,6 @@ export class StatusWidget extends ClientListener {
      * <li>serverInstanceAddressIgnored</li>
      * <li>cookieHandlingRequired</li>
      * <li>reverseHeartbeatInterval</li>
-     * <li>earlyWSOpenEnabled</li>
      * <li>httpExtraHeaders</li>
      * <li>httpExtraHeadersOnSessionCreationOnly</li>
      *

@@ -243,7 +243,7 @@ import XSXHRConnection from "../net/XSXHRConnection";
                     this.push_phase, this.sessionId, this.policyBean, this.connectionBean, 
                     isCreate, this.isPolling, oldSession, reconnectionCause, 
                     this.slowing.getDelay(), askCL, askDomain,
-                    this.serverBusy);
+                    this.serverBusy, this.reverseHeartbeatTimer.getMaxIntervalMs());
         }
         req.setData(pushCommand);
         
@@ -349,6 +349,11 @@ import XSXHRConnection from "../net/XSXHRConnection";
         if (this.needsHourglassTrick()) {
           this.myGlass.prepare(this.activeConnection.constr);
         }
+      },
+      
+      /**@override*/
+      onBindSent: function() {
+          this.reverseHeartbeatTimer.onBindSession(false);
       },
       
       /*private*/ needsHourglassTrick: function() {

@@ -7,6 +7,9 @@ import Executor from "../../src-tool/Executor";
 import ConnectionSelector from "../net/ConnectionSelector";
 import Constants from "../Constants";
 import ASSERT from "../../src-test/ASSERT";
+import Utils from "../Utils";
+import NewSessionWS from "../engine/NewSessionWS";
+import CtrlRequest from '../utils/CtrlRequest';
   
   var requestsLogger = LoggerManager.getLoggerProxy(Constants.REQUESTS);
   var streamLogger = LoggerManager.getLoggerProxy(Constants.STREAM);
@@ -79,13 +82,6 @@ import ASSERT from "../../src-test/ASSERT";
     this.hbQueue = null;
     this.mpnQueue = null;
     
-    this.currentReverseHeartbeatInterval = 0;
-    this.grantedReverseHeartbeatInterval = 0;
-    // grantedReverseHeartbeatInterval was declared in a streaming bind_session,
-    // so, it must be maintained as long as the streaming connection is active;
-    // hence the invariant:
-        // grantedReverseHeartbeatInterval == 0 || 0 != currentReverseHeartbeatInterval <= grantedReverseHeartbeatInterval
-    
     this.requestLimit = 0; 
 
     this.statusPhase = 1;
@@ -121,7 +117,7 @@ import ASSERT from "../../src-test/ASSERT";
   ControlConnectionHandler.prototype = {
     
     /*public*/ toString: function() {
-      return ["[","ControlConnectionHandler",phToStr(this.status),this.lastBatch,this.requestLimit,this.currentReverseHeartbeatInterval,"]"].join("|");
+      return ["[","ControlConnectionHandler",phToStr(this.status),this.lastBatch,this.requestLimit,"]"].join("|");
     },
     
     /*public*/ setRequestLimit: function(newLimit) {
@@ -129,53 +125,9 @@ import ASSERT from "../../src-test/ASSERT";
       requestsLogger.logDebug("Batch length limit changed",this);
     },
     
-    /*public*/ startReverseHeartbeats: function(newInterval, force) {
-      if (force) {
-          this.currentReverseHeartbeatInterval = newInterval;
-          this.grantedReverseHeartbeatInterval = newInterval;
-          requestsLogger.logInfo("Start sending reverse heartbeat to the server",this);
-      } else {
-          if (this.grantedReverseHeartbeatInterval == 0 || newInterval < this.grantedReverseHeartbeatInterval) {
-              this.currentReverseHeartbeatInterval = newInterval;
-              requestsLogger.logInfo("Start sending reverse heartbeat to the server",this);
-          } else {
-              this.currentReverseHeartbeatInterval = this.grantedReverseHeartbeatInterval;
-              requestsLogger.logInfo("Keep sending reverse heartbeat to the server",this);
-          }
-      }
-      if (this.status == _IDLE) {
-        this.sendReverseHeartbeat(this.statusPhase);
-        // this may be redundant in many cases, for instance if we are sending a bind request,
-        // but the case is rare and we don't want to complicate things with a check
-      }
-    },
-    
     sendReverseHeartbeat: function(sc) {
-      if (this.status != _IDLE || this.statusPhase != sc || this.currentReverseHeartbeatInterval == 0) {
-        return;
-      }
-      
       requestsLogger.logDebug("Preparing reverse heartbeat",this);
       this.addRequest(null, "", ControlRequest.HEARTBEAT);
-   
-    },
-    
-    /*public*/ stopReverseHeartbeats: function(force) {
-      if (force) {
-          requestsLogger.logInfo("Stop sending reverse heartbeat to the server",this);
-          this.currentReverseHeartbeatInterval = 0;
-          this.grantedReverseHeartbeatInterval = 0;
-          //do nothing, the next heartbeat will not be sent because of the 0 interval
-      } else {
-          if (this.grantedReverseHeartbeatInterval == 0) {
-              requestsLogger.logInfo("Stop sending reverse heartbeat to the server",this);
-              this.currentReverseHeartbeatInterval = 0;
-              //do nothing, the next heartbeat will not be sent because of the 0 interval
-          } else {
-              requestsLogger.logInfo("Keep sending reverse heartbeat to the server",this);
-              this.currentReverseHeartbeatInterval = this.grantedReverseHeartbeatInterval;
-          }
-      }
     },
     
     /*public*/ resetConnectionList: function(skipCors) {
@@ -191,11 +143,8 @@ import ASSERT from "../../src-test/ASSERT";
     },
     
     /*private*/ changeStatus: function(newStatus, caller) {
-      this.statusPhase++; //used to verify deque and sendHeartbeats calls
+      this.statusPhase++; //used to verify deque
             
-      if (newStatus == _IDLE && this.currentReverseHeartbeatInterval > 0) {
-        Executor.addTimedTask(this.sendReverseHeartbeat,this.currentReverseHeartbeatInterval,this,[this.statusPhase]);
-      }
       if (requestsLogger.isDebugLogEnabled()) {          
           requestsLogger.logDebug("ControlConnectionHandler state change '", caller + phNames[this.status] + " -> " + phNames[newStatus]);
       }
@@ -213,8 +162,7 @@ import ASSERT from "../../src-test/ASSERT";
       
       this.wsConn = null;
       
-      this.currentReverseHeartbeatInterval = 0;
-      this.grantedReverseHeartbeatInterval = 0;
+      this.requestListenerMap = {};
 
       //log and destroy are not session bound
       if (!this.logQueue) {
@@ -321,14 +269,27 @@ import ASSERT from "../../src-test/ASSERT";
      * @param num table index for add & delete, session number for destroy, null for everything else
      * @param request request query LS_table=...LS_sanpshot...
      * @param _type one of the request type constants (@see ControlRequest)
-     * @param related request-related listener
+     * @param related Tutor associated to the request
      * @param flag that shows if this is the first time this request is sent for this session or not,
      *   (for add requests) or host to be forced for this request (for DESTROY)
      * @param listener managing REQOK/REQERR response
      */
     /*public*/ addRequest: function(num, request, _type, related, retryingOrHost, requestListener) {
-        this.addRequestListener(request, requestListener);
-        Executor.addTimedTask(this.addRequestExe,0,this,[this.phase, num, request, _type, related, retryingOrHost]);
+        if (related && related.setSessionHandler) {
+            related.setSessionHandler(this._owner);
+        }
+        if (this.isDirectlyDispatchedBySession()) {
+            var req = new ControlRequest(request, related, _type, num, retryingOrHost);
+            this.dispatchDirectlyToSession(req);
+        }
+        else {
+            this.addRequestListener(request, requestListener);
+            Executor.addTimedTask(this.addRequestExe,0,this,[this.phase, num, request, _type, related, retryingOrHost]);
+        }
+    },
+    
+    isDirectlyDispatchedBySession: function() {
+        return this._owner.session instanceof NewSessionWS;
     },
   
     /**
@@ -529,8 +490,11 @@ import ASSERT from "../../src-test/ASSERT";
     },
     
     /*private*/ sendBatch: function(queueToSend) {
+      /*
+      // NB This check is broken in so many ways that there is no reason to fix it
+      // NB queueToSend can have type either ControlRequestBatch or LastBatch
       (function(){
-          /* check that there is no duplicated message request */
+          // check that there is no duplicated message request
           if (queueToSend.batchType == ControlRequest.MESSAGE) {
               for (var i = 0, ilen = queueToSend.queue.length; i < ilen; i++) {
                   var request = queueToSend.queue[i];
@@ -554,6 +518,7 @@ import ASSERT from "../../src-test/ASSERT";
               }
           }
       }());
+      */
       
       var serverToUse = this._owner.getPushServerAddress();
       var mainRequest = firstRequestToRequest(queueToSend,serverToUse,this.policyBean.isCookieHandlingRequired(),this.policyBean.extractHttpExtraHeaders(false));
@@ -567,6 +532,17 @@ import ASSERT from "../../src-test/ASSERT";
       requestsLogger.logDebug("Ready to send batch, choosing connection");
       
       var sent = false;
+      
+//////////////////////////////NEW WS CASE
+      
+      // NB NewSessionWS doesn't use ControlConnectionHandler to send requests
+      if (this.isDirectlyDispatchedBySession()) {
+          while (queueToSend.getLength() > 0) {
+              var /*ControlRequest*/ req = queueToSend.shift();
+              this.dispatchDirectlyToSession(req);
+          }
+          return SENT_WS;
+      }
       
 //////////////////////////////WS CASE      
       
@@ -695,6 +671,61 @@ import ASSERT from "../../src-test/ASSERT";
       return NO_CONN;
       
     },
+    
+    dispatchDirectlyToSession: function(/*ControlRequest*/ req) {
+        var session = this._owner.session;
+        var query = req.getRequest();
+        switch (req.getType()) {
+        case ControlRequest.ADD:
+            session.subscribe(new CtrlRequest(query, CtrlRequest.SUB));
+            break;
+        case ControlRequest.REMOVE:
+            session.unsubscribe(new CtrlRequest(query, CtrlRequest.UNSUB));
+            break;
+        case ControlRequest.CONSTRAINT:
+            session.changeBandwidth(new CtrlRequest(query, CtrlRequest.CONS));
+            break;
+        case ControlRequest.MESSAGE:
+            var req2 = new CtrlRequest(query, CtrlRequest.MSG);
+            req2.sequence = (query['LS_sequence'] == null ? Constants._UNORDERED_MESSAGES : query['LS_sequence']);
+            req2.prog = req.getKey();
+            req2.ack = query['LS_ack'] != "false";
+            req2.reqId = query['LS_reqId'];
+            session.sendMessage(req2);
+            break;
+        case ControlRequest.LOG:
+            session.sendLog(new CtrlRequest(query, CtrlRequest.LOG));
+            break;
+        case ControlRequest.CHANGE_SUB:
+            session.reconf(new CtrlRequest(query, CtrlRequest.RECONF));
+            break;
+        case ControlRequest.MPN:
+            var op = query['LS_op'];
+            if (op === 'register') {
+                var req2 = new CtrlRequest(query, CtrlRequest.MPN_REG);
+                req2.reqId = query['LS_reqId'];
+                session.register(req2);
+            }
+            else if (op === 'activate') {
+                var req2 = new CtrlRequest(query, CtrlRequest.MPN_SUB)
+                req2.reqId = query['LS_reqId'];
+                req2.subscriptionId = query['LS_subId'];
+                session.subscribeMpn(req2);
+            }
+            else if (op === 'deactivate' && query['PN_subscriptionId'] != null) {
+                var req2 = new CtrlRequest(query, CtrlRequest.MPN_UNSUB);
+                req2.reqId = query['LS_reqId'];
+                req2.subscriptionId = query['PN_subscriptionId'];
+                session.unsubscribeMpn(req2);
+            }
+            else if (op === 'deactivate' && query['PN_subscriptionId'] == null) {
+                var req2 = new CtrlRequest(query, CtrlRequest.MPN_UNSUB_FILTER);
+                req2.reqId = query['LS_reqId'];
+                session.unsubscribeFilterMpn(req2);
+            }
+            break;
+        }
+    },
 
     
     /**
@@ -710,7 +741,7 @@ import ASSERT from "../../src-test/ASSERT";
       //especially now as the FormConnection is much more difficult to reach and is the only one with a different overhead calculation
       if (this.lastBatch == null) {      
         
-        this.lastBatch = new LastBatch();
+        this.lastBatch = new LastBatch(this);
         this.lastBatch.setEncoder(encoder);
         this.lastBatch.fill(queueToSend,this.requestLimit,this._owner.getSessionId(),this.policyBean.isCookieHandlingRequired(),this.policyBean.extractHttpExtraHeaders(false));
         
@@ -806,7 +837,8 @@ import ASSERT from "../../src-test/ASSERT";
   };
   
   
-  var LastBatch = function() {
+  var LastBatch = function(handler) {
+    this.handler = handler;
     this.batch = null;
     this.encoder = null;
     this.request = null; 
@@ -912,6 +944,14 @@ import ASSERT from "../../src-test/ASSERT";
       }, 
       
       notifySenders: function(failed) {
+        try {
+            // NB NewSessionWS handles heartbeats by itself
+            if (! failed && ! this.handler.isDirectlyDispatchedBySession()) {
+                this.handler._owner.session.reverseHeartbeatTimer.onControlRequest();
+            }
+        } catch (e) {
+            requestsLogger.logError("CCH error", e);
+        }
         var i = 0;
         var sentReq = null;
         while(sentReq = this.batch.getRequestObject(i)) {
