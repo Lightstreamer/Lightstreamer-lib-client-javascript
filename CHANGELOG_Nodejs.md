@@ -1,5 +1,39 @@
 # SDK for Node.js Clients (Unified API) CHANGELOG
 
+## 8.1.0-beta1
+
+<i>Compatible with Lightstreamer Server since 7.1.1.</i><br/>
+<i>May not be compatible with code developed with the previous version; see
+compatibility notes below.</i><br/>
+<i>Made available as a prerelease on 17 Jul 2020</i>
+
+Fully revised and improved the session establishment process and the
+Stream-Sense algorithm. Now a websocket connection will be tried immediately,
+without a pre-flight http request; only if websockets turn out to be not
+supported by the environment will http streaming be tried.<br/>
+This should significantly reduce the average session establishment time in
+most scenarios.<br/>
+The possible cases of wrong diagnosis of websocket unavailability and
+unnecessary resort to http streaming should also be reduced.<br/>
+A noticeable consequence of the change is that, when a Load Balancer is
+in place and a "control link address" is configured on the Server, most of the
+streaming activity will now be expected on sockets opened towards the balancer
+endpoint, whereas, before, the whole streaming activity flowed on sockets
+opened towards the control link address.
+
+As a consequence of the new Stream-Sense algorithm, the possibile sequences
+of states (as reported by onStatusChange on the ClientListener) that can be
+expected has changed. See the onStatusChange documentation for details.<br/>
+<b>COMPATIBILITY NOTE:</b> <i>Client applications that implement onStatusChange
+and take decisions based on the sequence of states should be aligned.</i>
+
+As a consequence of the new Stream-Sense algorithm, the "EarlyWSOpenEnabled"
+property of the ConnectionOptions bean has been removed. This affects its
+getter and setter and also the invocations of onPropertyChange
+on the ClientListener.<br/>
+<b>COMPATIBILITY NOTE:</b> <i>Custom code using "EarlyWSOpenEnabled" in any
+of the mentioned forms has to be modified by removing all references.</i>
+
 ## 8.0.2 build 1784
 
 <i>Compatible with Lightstreamer Server since 7.0.</i><br/>
