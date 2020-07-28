@@ -896,16 +896,13 @@ END_NODE_JSDOC_EXCLUDE
      * Setter method that can be used to disable/enable the 
      * Stream-Sense algorithm and to force the client to use a fixed transport or a
      * fixed combination of a transport and a connection type. When a combination is specified the
-     * Stream-Sense algorithm is completely disabled.
+     * Stream-Sense algorithm is completely disabled and only the desired transport
+     * will be tried.
      * <BR>The method can be used to switch between streaming and polling connection 
      * types and between HTTP and WebSocket transports.
      * <BR>In some cases, the requested status may not be reached, because of 
      * connection or environment problems. In that case the client will continuously
      * attempt to reach the configured status.
-     * <BR>Note that if the Stream-Sense algorithm is disabled, the client may still
-     * enter the "CONNECTED:STREAM-SENSING" status; however, in that case,
-     * if it eventually finds out that streaming is not possible, no recovery will
-     * be tried.
      * 
      * <p class="default-value"><b>Default value:</b> null (full Stream-Sense enabled).</p>
      * 

@@ -602,9 +602,10 @@ END_NODE_JSDOC_EXCLUDE
        * Operation method that requests to open a Session against the configured
        * Lightstreamer Server.
        * <BR>When connect() is called, unless a single transport was forced through
-       * {@link ConnectionOptions#setForcedTransport}, a connection via WebSocket
-       * is tried first; if unsuccessful,
-       * the so called "Stream-Sense" mechanism is started: if the client does not
+       * {@link ConnectionOptions#setForcedTransport},
+       * the so called "Stream-Sense" mechanism is started:
+       * a connection via WebSocket is tried first;
+       * if unsuccessful, then http streaming is tried; but if the client does not
        * receive any answer for some seconds from the streaming connection, then it
        * will automatically open a polling connection.
        * <BR>A polling connection may also be opened if the environment is not suitable
@@ -707,8 +708,7 @@ END_NODE_JSDOC_EXCLUDE
       /**
        * Operation method that requests to close the Session opened against the
        * configured Lightstreamer Server (if any).
-       * <BR>When disconnect() is called, any ongoing connection attempt and/or
-       * "Stream-Sense" mechanism is stopped.
+       * <BR>When disconnect() is called, the "Stream-Sense" mechanism is stopped.
        * <BR>Note that active {@link Subscription} instances, associated with this
        * LightstreamerClient instance, are preserved to be re-subscribed to on future
        * Sessions.
@@ -755,9 +755,10 @@ END_NODE_JSDOC_EXCLUDE
        * <ul>
        * <li>"CONNECTING" the client is waiting for a Server's response in order
        * to establish a connection;</li>
-       * <li>"CONNECTED:STREAM-SENSING" the client is trying an http streaming
-       * connection, it has received a preliminary response from the server and
-       * it is currently verifying if a streaming connection is possible;</li>
+       * <li>"CONNECTED:STREAM-SENSING" the client has received a preliminary
+       * response from the server and it is currently verifying if a WebSocket connection
+       * is possible or, if it is not, whether a http streaming connection
+       * is possible;</li>
        * <li>"CONNECTED:WS-STREAMING" a streaming connection over WebSocket is active;</li>
        * <li>"CONNECTED:HTTP-STREAMING" a streaming connection over HTTP is active;</li>
        * <li>"CONNECTED:WS-POLLING" a polling connection over WebSocket is in progress;</li>
@@ -1440,14 +1441,17 @@ END_NODE_JSDOC_EXCLUDE
        * <BR/><BR/>The normal cases are the following:
        * <ul>
        * <li>After issuing connect(), if the current status is "DISCONNECTED*", the
-       * client will switch to "CONNECTING" first. Then,<ul>
-       * <li>if the browser/environment permits WebSockets, it will switch to
-       * "CONNECTED:WS-STREAMING";</li>
-       * <li>otherwise a pre-flight http request will be issued and, as soon as
-       * it receives its answer, the status will switch to "CONNECTED:STREAM-SENSING"
-       * and, finally, to "CONNECTED:HTTP-STREAMING" (unless the browser/environment
-       * doesn't permit streaming at all, in which case it will switch to
-       * "CONNECTED:HTTP-POLLING" as a last resort).</li></ul>
+       * client will switch to "CONNECTING" first. Then it will try to open a
+       * connection to the Server, by trying WebSocket first, then bare http.
+       * After a successful connection, the status will switch to "CONNECTED:STREAM-SENSING".
+       * <ul><li>Now, if a WebSocket is available, the client will still check
+       * if the browser/environment permits the communication; then the status
+       * will switch to "CONNECTED:WS-STREAMING", otherwise the client will
+       * resort to http.</li>
+       * <li>If only http is available, the Client will check if the
+       * browser/environment permits streaming at all; then the status will
+       * switch to "CONNECTED:HTTP-STREAMING", otherwise it will switch
+       * to "CONNECTED:HTTP-POLLING" as a last resort.</li></ul>
        * <BR>On the other hand if the status is already "CONNECTED:*" a
        * switch to "CONNECTING" is usually not needed.</li>
        * <li>After issuing disconnect(), the status will switch to "DISCONNECTED".</li>
@@ -1480,7 +1484,8 @@ END_NODE_JSDOC_EXCLUDE
        * "CONNECTED:*-STREAMING" case, when a rebind is needed.</li>
        * <li>In case a forced transport was set through
        * {@link ConnectionOptions#setForcedTransport}, only the related final
-       * status or statuses are possible. In this case, attempts for different
+       * status or statuses are possible, but the preliminary switch to
+       * "CONNECTED:STREAM-SENSING" will still take place. Anyway, attempts for different
        * types of connection are skipped.</li>
        * <li>In case of connection problems, the status may switch from any value
        * to "DISCONNECTED:WILL-RETRY" (see {@link ConnectionOptions#setRetryDelay}),
@@ -1511,9 +1516,10 @@ END_NODE_JSDOC_EXCLUDE
        * <ul>
        * <li>"CONNECTING" the client has started a connection attempt and is
        * waiting for a Server answer.</li>
-       * <li>"CONNECTED:STREAM-SENSING" the client is trying an http streaming
-       * connection, it has received a preliminary response from the server and
-       * it is currently verifying if a streaming connection is possible;</li>
+       * <li>"CONNECTED:STREAM-SENSING" the client has received a preliminary
+       * response from the server and it is currently verifying if a WebSocket connection
+       * is possible or, if it is not, whether a http streaming connection
+       * is possible;</li>
        * <li>"CONNECTED:WS-STREAMING" a streaming connection over WebSocket has
        * been established.</li>
        * <li>"CONNECTED:HTTP-STREAMING" a streaming connection over HTTP has

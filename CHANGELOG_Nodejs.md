@@ -21,12 +21,6 @@ streaming activity will now be expected on sockets opened towards the balancer
 endpoint, whereas, before, the whole streaming activity flowed on sockets
 opened towards the control link address.
 
-As a consequence of the new Stream-Sense algorithm, the possibile sequences
-of states (as reported by onStatusChange on the ClientListener) that can be
-expected has changed. See the onStatusChange documentation for details.<br/>
-<b>COMPATIBILITY NOTE:</b> <i>Client applications that implement onStatusChange
-and take decisions based on the sequence of states should be aligned.</i>
-
 As a consequence of the new Stream-Sense algorithm, the "EarlyWSOpenEnabled"
 property of the ConnectionOptions bean has been removed. This affects its
 getter and setter and also the invocations of onPropertyChange
