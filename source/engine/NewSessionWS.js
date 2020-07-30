@@ -1237,6 +1237,7 @@ NewSessionWS.prototype = {
                         this.next(State.Recovering);
                         this.doSendWsok();
                         this.doSendRecovery();
+                        this.doNotifySTREAM_SENSING();
                         break;
                     case Event.WSOK:
                         // WSOK: Recovering -> Recovering
@@ -1701,12 +1702,14 @@ NewSessionWS.prototype = {
         enter_Probing_Creating: function() {
             this.doSendWsok();
             this.doSendCreate();
+            this.doNotifySTREAM_SENSING();
             this.doSendWaitingRequests();
         },
         
         enter_Probing_Binding: function() {
             this.doSendWsok();
             this.doSendBind();
+            this.doNotifySTREAM_SENSING();
             this.doSendWaitingRequests();
         },
         
@@ -3033,6 +3036,10 @@ NewSessionWS.prototype = {
         
         doNotifySTREAMING: function() {
             this.notifyStatus(Constants.CONNECTED + Constants.WS_STREAMING);
+        },
+        
+         doNotifySTREAM_SENSING: function() {
+            this.notifyStatus(Constants.CONNECTED + Constants.SENSE);
         },
         
         doNotifyDISCONNECTED: function() {
