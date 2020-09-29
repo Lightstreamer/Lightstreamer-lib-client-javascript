@@ -1,4 +1,4 @@
-# SDK for Web Clients (Unified API) CHANGELOG
+# SDK for Web Clients CHANGELOG
 
 ## 8.0.2 build 1797
 

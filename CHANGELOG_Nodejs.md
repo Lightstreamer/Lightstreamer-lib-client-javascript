@@ -1,4 +1,4 @@
-# SDK for Node.js Clients (Unified API) CHANGELOG
+# SDK for Node.js Clients CHANGELOG
 
 ## 8.0.2 build 1784
 
