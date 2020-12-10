@@ -1,5 +1,15 @@
 # SDK for Web Clients CHANGELOG
 
+## 8.0.3 build 1800
+
+<i>Compatible with Lightstreamer Server since 7.1.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 10 Dec 2020</i>
+
+<!---id=3168--->
+Fixed a bug introduced in version 7.2.1 and affecting the ItemUpdate.isSnapshot method. In case of a subscription of multiple items with a single Subscription object, the method returned true only for the first snapshot received. After that, the method returned false even when the updates were indeed snapshots.
+
+
 ## 8.0.2 build 1797
 
 <i>Compatible with Lightstreamer Server since 7.1.</i><br/>
@@ -49,10 +59,12 @@ notes below.</i><br/>
 
 Made the library available on the public npm service, at the following
 address:\
- [https://www.npmjs.com/package/lightstreamer-client-web](https://www.npmjs.com/package/lightstreamer-client-web).\
+
+[https://www.npmjs.com/package/lightstreamer-client-web](https://www.npmjs.com/package/lightstreamer-client-web).\
  Moreover, the library is now open source, available on GitHub at the
 following address:\
- [https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
+
+[https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
  Hence, the non-minified version of the library is also provided.\
  The way the deliverables are provided has also changed on various
 aspects:

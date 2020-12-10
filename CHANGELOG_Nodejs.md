@@ -1,5 +1,15 @@
 # SDK for Node.js Clients CHANGELOG
 
+## 8.0.3 build 1787
+
+<i>Compatible with Lightstreamer Server since 7.0.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 10 Dec 2020</i>
+
+<!---id=3168--->
+Fixed a bug introduced in version 7.2.1 and affecting the ItemUpdate.isSnapshot method. In case of a subscription of multiple items with a single Subscription object, the method returned true only for the first snapshot received. After that, the method returned false even when the updates were indeed snapshots.
+
+
 ## 8.0.2 build 1784
 
 <i>Compatible with Lightstreamer Server since 7.0.</i><br/>
@@ -42,10 +52,11 @@ Revised and improved the layout of the jsdocs.
 Made the library available on the public npm service, at the following
 address:\
  [https://www.npmjs.com/package/lightstreamer-client-node](https://www.npmjs.com/package/lightstreamer-client-node)\
- Previously the library was available with name "lightstreamer-client".\
+Previously the library was available with name "lightstreamer-client".\
  Moreover, the library is now open source, available on GitHub at the
 following address:\
- [https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
+
+[https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript](https://github.com/Lightstreamer/Lightstreamer-lib-client-javascript).\
  Hence, the non-minified version of the library is also provided.\
  The way the deliverables are provided has also changed: the library
 module name is now "lightstreamer-client-node" for the non-minified
