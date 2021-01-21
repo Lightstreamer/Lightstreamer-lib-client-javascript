@@ -283,6 +283,7 @@ export default /*@__PURE__*/(function() {
       
       this.oldValuesByItem = new Matrix(); 
       this.oldValuesByKey = new Matrix(); 
+      this.snapshotByItem = null;
       
       //resets the schema size
       this.fieldDescriptor.setSize(0);
@@ -316,7 +317,6 @@ export default /*@__PURE__*/(function() {
       Assertions.verifyValue(this.onCount,1,"Wrong count while adding");
     //>>excludeEnd("debugExclude");
       
-      this.snapshotManager = new SnapshotManager(this);
 
       subscriptionsLogger.logInfo("Subscription entered the active state",this);
       
@@ -399,6 +399,11 @@ export default /*@__PURE__*/(function() {
       
       this.itemDescriptor.setSize(itms);
       this.fieldDescriptor.setSize(flds);
+      
+      this.snapshotByItem = [];
+      for (var i = 1; i <= itms; i++) {
+        this.snapshotByItem[i] = new SnapshotManager(this);  
+      }
       
       //notify table start
       this.dispatchEvent("onSubscription");
@@ -1578,7 +1583,8 @@ export default /*@__PURE__*/(function() {
     endOfSnapshot: function(_item) {
       var _name = this.itemDescriptor.getName(_item);
       
-      this.snapshotManager.endOfSnapshot();
+      Assertions.assertNotNull(this.snapshotByItem[_item], "Item index out of range");
+      this.snapshotByItem[_item].endOfSnapshot();
       this.dispatchEvent("onEndOfSnapshot",[_name,_item]);
     },
     
@@ -1623,8 +1629,9 @@ export default /*@__PURE__*/(function() {
       // number of the item of the current update
       var _item = args[1];
       
-      this.snapshotManager.update();
-      var isSnapshot = this.snapshotManager.isSnapshot();
+      Assertions.assertNotNull(this.snapshotByItem[_item], "Item index out of range");
+      this.snapshotByItem[_item].update();
+      var isSnapshot = this.snapshotByItem[_item].isSnapshot();
       
       //OLD for METAPUSH (old is the new value)
       //for item|key and not for per item.
