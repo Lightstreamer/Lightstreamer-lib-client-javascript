@@ -400,7 +400,7 @@ import XSXHRConnection from "../net/XSXHRConnection";
       
       /**@override*/
       forwardDestroyRequestToTransport: function(sessionId, request, type, related, retryingOrHost, requestListener) {
-          this.controlHandler.addRequest(sessionId, request, type, related, retryingOrHost, requestListener);
+          // don't send destroy request when transport is http
       }
   };
     
