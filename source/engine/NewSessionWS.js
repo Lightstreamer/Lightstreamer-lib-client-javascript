@@ -378,15 +378,14 @@ NewSessionWS.prototype = {
                         });
                         break;
                     case Event.onRetryTimeout_NOTisWsForced:
-                        // onRetryTimeout[WS not forced]: Opening -> SwitchAndCreatingHTTP
-                        this.next(State.SwitchAndCreatingHTTP);
-                        this.doDisableWs();
-                        this.enter_SwitchAndCreatingHTTP("ws2.unavailable");
+                        // onRetryTimeout[WS not forced]: Opening -> SwitchAndCreating
+                        this.next(State.SwitchAndCreating);
+                        this.doSuspendWS();
+                        this.enter_SwitchAndCreating("ws2.unavailable");
                         break;
                     case Event.onRetryTimeout_isWsForced:
                         // onRetryTimeout[WS forced]: Opening -> Disconnected
                         this.next(State.Disconnected);
-                        this.doDisableWs();
                         this.enter_Disconnected();
                         break;
                     case Event.onWsErrorOrClose:
@@ -400,15 +399,14 @@ NewSessionWS.prototype = {
                         });
                         break;
                     case Event.onWsErrorOrClose_NOTisWsForced:
-                        // onWsErrorOrClose[WS not forced]: Opening -> SwitchAndCreatingHTTP
-                        this.next(State.SwitchAndCreatingHTTP);
-                        this.doDisableWs();
-                        this.enter_SwitchAndCreatingHTTP("ws2.unavailable");
+                        // onWsErrorOrClose[WS not forced]: Opening -> SwitchAndCreating
+                        this.next(State.SwitchAndCreating);
+                        this.doSuspendWS();
+                        this.enter_SwitchAndCreating("ws2.unavailable");
                         break;
                     case Event.onWsErrorOrClose_isWsForced:
                         // onWsErrorOrClose[WS forced]: Opening -> Disconnected
                         this.next(State.Disconnected);
-                        this.doDisableWs();
                         this.enter_Disconnected();
                         break;
                     case Event.retry:
@@ -422,7 +420,7 @@ NewSessionWS.prototype = {
                     case Event.retry_switch:
                         // retry_switch: Opening -> SwitchAndCreating
                         this.next(State.SwitchAndCreating);
-                        this.enter_SwitchAndCreating();
+                        this.enter_SwitchAndCreating("api.switch");
                         break;
                     default:
                         this.handleWrongState();
@@ -1659,18 +1657,23 @@ NewSessionWS.prototype = {
             return ft === Constants.WS_STREAMING || ft === Constants.WS_ALL || ft === null;
         },
         
-        enter_SwitchAndCreating: function() {
-            this.doNotifyOnSessionRetry();
-            this.doStopTimer();
-            this.doCleanUp();
-            this.doInvokeCreate();
+        doSuspendWS: function() {
+            this.handler.suspendWS();
         },
         
-        doInvokeCreate: function() {
+        enter_SwitchAndCreating: function(LS_cause) {
+            this.doNotifyOnSessionRetry();
+            this.doCloseWS();
+            this.doStopTimer();
+            this.doCleanUp();
+            this.doInvokeCreate(LS_cause);
+        },
+        
+        doInvokeCreate: function(LS_cause) {
             var ft = this.policyBean.forcedTransport;
             var isHTTP = ft === Constants.HTTP_STREAMING || ft === Constants.HTTP_POLLING || ft === Constants.HTTP_ALL;
             var isPolling = ft === Constants.HTTP_POLLING || ft === Constants.WS_POLLING;
-            this.handler.createSession(false, false, false, isPolling, isHTTP, "api.switch");
+            this.handler.createSession(false, false, false, isPolling, isHTTP, LS_cause);
         },
         
         doSendForceRebind: function(cause) {
@@ -1931,7 +1934,7 @@ NewSessionWS.prototype = {
                     this.doSendDestroy("ws2.loop.timeout");
                     this.doCloseWS();
                     this.doNotifyWILL_RETRY();
-                    this.enter_SwitchAndCreating();
+                    this.enter_SwitchAndCreating("api.switch");
                     break;
                 case Event.requestSlow:
                     // ignore

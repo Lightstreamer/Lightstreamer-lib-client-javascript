@@ -1,4 +1,4 @@
-# SDK for Web Clients (Unified API) CHANGELOG
+# SDK for Web Clients CHANGELOG
 
 ## 8.1.0-beta1
 
@@ -27,6 +27,17 @@ getter and setter and also the invocations of onPropertyChange
 on the ClientListener.<br/>
 <b>COMPATIBILITY NOTE:</b> <i>Custom code using "EarlyWSOpenEnabled" in any
 of the mentioned forms has to be modified by removing all references.</i>
+
+
+## 8.0.3 build 1800
+
+<i>Compatible with Lightstreamer Server since 7.1.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 10 Dec 2020</i>
+
+<!---id=3168--->
+Fixed a bug introduced in version 7.2.1 and affecting the ItemUpdate.isSnapshot method. In case of a subscription of multiple items with a single Subscription object, the method returned true only for the first snapshot received. After that, the method returned false even when the updates were indeed snapshots.
+
 
 ## 8.0.2 build 1797
 

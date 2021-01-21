@@ -344,6 +344,7 @@ import Utils from "../Utils";
       onSessionBound: function() {
           this._callSuperMethod(SessionWS,names['onSessionBound']);
           this.wsConn.setDefaultSessionId(this.sessionId);
+          this.handler.resumeWS();
       },
       
       /**@override*/

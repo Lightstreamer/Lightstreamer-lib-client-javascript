@@ -159,6 +159,8 @@ import CtrlRequest from "../utils/CtrlRequest";
      * Counts the bind_session requests following the corresponding create_session.
      */
     this.nBindAfterCreate = 0;
+    
+    this.isSuspendedWS = false;
   };
 
   SessionHandler.prototype = {
@@ -187,6 +189,10 @@ import CtrlRequest from "../utils/CtrlRequest";
       /*public*/ closeSession: function(fromAPI,reason,noRecoveryScheduled) {
         if (this.status == _OFF || this.status == END) {
           return;
+        }
+        
+        if (fromAPI) {
+            this.resumeWS();
         }
         
         if (this.session) {
@@ -306,7 +312,7 @@ import CtrlRequest from "../utils/CtrlRequest";
       
       /*private*/ prepareNewSessionInstance: function(isPolling,isForced,isHTTP,prevSession,sessionRecovery) {
         var skipCors = this.disableXSXHRTime !== null;
-        var chosenClass = isHTTP ? SessionHTTP : isPolling ? SessionWS : NewSessionWS;
+        var chosenClass = isHTTP ? SessionHTTP : (isPolling ? SessionWS : (this.isSuspendedWS || sessionRecovery ? SessionWS : NewSessionWS));
         if (sessionRecovery) {
             /*
              * Check added to avoid a bug in HTTP polling.
@@ -1131,6 +1137,14 @@ import CtrlRequest from "../utils/CtrlRequest";
           if (this.session) {
               this.session.onFatalError(61, "Internal error: " + error);
           }
+      },
+      
+      suspendWS: function() {
+        this.isSuspendedWS = true;
+      },
+      
+      resumeWS: function() {
+        this.isSuspendedWS = false;
       }
       
   };

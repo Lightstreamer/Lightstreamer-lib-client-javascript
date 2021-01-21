@@ -1582,7 +1582,7 @@ import ReverseHeartbeatTimer from "./ReverseHeartbeatTimer";
       // NB: you should never call sendDestroySession directly, call closeSession instead 
       // (sendDestroySession does not make checks on the situation) 
       /*private*/ sendDestroySession: function(reason) { 
-        sessionLogger.logInfo("Sending request to the server to destroy the current session",this);
+        sessionLogger.logInfo("Destroy the current session",this);
     
         //we always destroy the last session: if we need to destroy a session 
         //is on a browser were we don't permit the buffering of a second session
