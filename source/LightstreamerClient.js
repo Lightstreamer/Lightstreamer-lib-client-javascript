@@ -1484,9 +1484,9 @@ END_NODE_JSDOC_EXCLUDE
        * "CONNECTED:*-STREAMING" case, when a rebind is needed.</li>
        * <li>In case a forced transport was set through
        * {@link ConnectionOptions#setForcedTransport}, only the related final
-       * status or statuses are possible, but the preliminary switch to
-       * "CONNECTED:STREAM-SENSING" will still take place. Anyway, attempts for different
-       * types of connection are skipped.</li>
+       * status or statuses are possible. Note that if the transport is forced
+       * while a Session is active and this requires a reconnection, the status
+       * may do a preliminary switch to CONNECTED:STREAM-SENSING.</li>
        * <li>In case of connection problems, the status may switch from any value
        * to "DISCONNECTED:WILL-RETRY" (see {@link ConnectionOptions#setRetryDelay}),
        * then to "CONNECTING" and a new attempt will start.
@@ -1495,8 +1495,10 @@ END_NODE_JSDOC_EXCLUDE
        * and the recovery attempt will start.</li>
        * <li>In case of connection problems during a recovery attempt, the status may stay
        * in "DISCONNECTED:TRYING-RECOVERY" for long time, while further attempts are made.
-       * If the recovery is no longer possible, the current session will be abandoned
-       * and the status will switch to "DISCONNECTED:WILL-RETRY" before the next attempts.</li>
+       * On the other hand, if the connection is successful, the status will do
+       * a preliminary switch to CONNECTED:STREAM-SENSING. If the recovery is finally
+       * unsuccessful, the current session will be abandoned and the status
+       * will switch to "DISCONNECTED:WILL-RETRY" before the next attempts.</li>
 START_NODE_JSDOC_EXCLUDE
        * <li>In case the local LightstreamerClient is exploiting the connection of a
        * different LightstreamerClient (see {@link ConnectionSharing}) and such
