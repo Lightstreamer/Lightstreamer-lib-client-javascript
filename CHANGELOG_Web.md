@@ -1,11 +1,11 @@
 # SDK for Web Clients CHANGELOG
 
-## 8.1.0-beta1
+## 8.1.0-beta3
 
 <i>Compatible with Lightstreamer Server since 7.1.1.</i><br/>
 <i>May not be compatible with code developed with the previous version; see
 compatibility notes below.</i><br/>
-<i>Made available as a prerelease on 17 Jul 2020</i>
+<i>Made available as a prerelease on 21 Jan 2021</i>
 
 Fully revised and improved the session establishment process and the
 Stream-Sense algorithm. Now a websocket connection will be tried immediately,
