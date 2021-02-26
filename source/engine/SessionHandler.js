@@ -295,6 +295,9 @@ import Assertions from "../utils/Assertions";
           var nextPH = isPolling ? (isHTTP ? POLLING_HTTP : POLLING_WS) : (isHTTP ? STREAMING_HTTP : STREAMING_WS);
           this.changeStatus(nextPH);
 
+          if (this.session != null) {
+            this.session.shutdown(false);
+          }
           this.prepareNewSessionInstance(isPolling,isComboForced,isHTTP);
           
           this.session.createSession(currSessionId,reason,serverBusy);
