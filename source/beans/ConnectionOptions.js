@@ -1087,10 +1087,6 @@ END_WEB_JSDOC_EXCLUDE
      * cookies-are-required policy.
      */
     setCookieHandlingRequired: function(cookieHandlingRequired) {
-      if (cookieHandlingRequired && ( !Environment.isBrowser() && !Environment.isNodeJS() )) {
-        throw new IllegalArgumentException(IMPOSSIBLE_COOKIES);
-      }
-      
       this.heavySetter("cookieHandlingRequired",this.checkBool(cookieHandlingRequired));
     },
     
