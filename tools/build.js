@@ -25,13 +25,23 @@ const argv = require('minimist')(process.argv.slice(2), {
     default: {
         'platform': ['web', 'node'],
         'format': ['esm', 'cjs', 'cjs_min', 'umd', 'umd_min'],
-        'version': '0.1.0',
-        'build': '1',
         'config': 'build.config.js'}});
 
+const defaultWebVersion = '8.0.3';
+const defaultWebBuild = '1800';
+const defaultNodeVersion = '8.0.3';
+const defaultNodeBuild = '1787';
+
 const config = require(path.resolve(argv.config));
-config.version = argv.version;
-config.build = argv.build;
+config.webVersion = argv.version ? argv.version : defaultWebVersion;
+config.webBuild = argv.build ? argv.build : defaultWebBuild;
+config.nodeVersion = argv.version ? argv.version : defaultNodeVersion;
+config.nodeBuild = argv.build ? argv.build : defaultNodeBuild;
+
+const defaultWebCid = 'pcYgxn8m8%20feOojyA1U661i3g2.pz47Af63nBwCvsw'
+const defaultNodeCid = 'tqGko0tg4pkpW3DAK3P4hwLri8LBUE4eXyyz3a'
+const webCid = argv.LS_web_cid ? argv.LS_web_cid : defaultWebCid
+const nodeCid = argv.LS_node_cid ? argv.LS_node_cid : defaultNodeCid
 
 const platforms = [].concat(argv.platform);
 const formats = [].concat(argv.format);
@@ -40,7 +50,8 @@ const options = []
     .filter(o => ({ web: ['esm', 'cjs', 'umd', 'umd_min'], node: ['cjs', 'cjs_min']})[o.platform].includes(o.format));
 
 console.log('Formats:', options.map(o => o.platform + '+' + o.format));
-console.log('Version:', config.version, "build", config.build);
+console.log('Web - Version:', config.webVersion, "build", config.webBuild);
+console.log('Node.js - Version:', config.nodeVersion, "build", config.nodeBuild);
 
 build(...options);
 
@@ -112,11 +123,11 @@ function web_esm() {
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
+                    version: config.webVersion,
+                    build: config.webBuild,
                     library_name: 'javascript',
                     library_tag: 'javascript_client',
-                    LS_cid: encrypt('javascript_client ' + config.version + ' build ' + config.build)
+                    LS_cid: webCid
                 }),
                 virtual({ 
                     'virtual-entrypoint': namedExports(config.web.modules, config.web.polyfills) }),
@@ -142,11 +153,11 @@ function web_cjs() {
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
+                    version: config.webVersion,
+                    build: config.webBuild,
                     library_name: 'javascript',
                     library_tag: 'javascript_client',
-                    LS_cid: encrypt('javascript_client ' + config.version + ' build ' + config.build)
+                    LS_cid: webCid
                 }),
                 virtual({ 
                     'virtual-entrypoint': namedExports(config.web.modules, config.web.polyfills) }),
@@ -172,11 +183,11 @@ function web_umd() {
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
+                    version: config.webVersion,
+                    build: config.webBuild,
                     library_name: 'javascript',
                     library_tag: 'javascript_client',
-                    LS_cid: encrypt('javascript_client ' + config.version + ' build ' + config.build)
+                    LS_cid: webCid
                 }),
                 virtual({ 
                     'virtual-entrypoint': defaultExports(config.web.modules, config.web.polyfills) }),
@@ -204,11 +215,11 @@ function web_umd_min() {
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
+                    version: config.webVersion,
+                    build: config.webBuild,
                     library_name: 'javascript',
                     library_tag: 'javascript_client',
-                    LS_cid: encrypt('javascript_client ' + config.version + ' build ' + config.build)
+                    LS_cid: webCid
                 }),
                 virtual({ 
                     'virtual-entrypoint': defaultExports(config.web.modules, config.web.polyfills) }),
@@ -244,11 +255,11 @@ function node_cjs() {
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
+                    version: config.nodeVersion,
+                    build: config.nodeBuild,
                     library_name: 'nodejs',
                     library_tag: 'nodejs_client',
-                    LS_cid: encrypt('nodejs_client ' + config.version + ' build ' + config.build)
+                    LS_cid: nodeCid
                 }),
                 virtual({ 
                     'virtual-entrypoint': defaultExports(config.node.modules) }),
@@ -275,11 +286,11 @@ function node_cjs_min() {
                 replace({
                     include: fullpath('source/Constants'),
                     delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
+                    version: config.nodeVersion,
+                    build: config.nodeBuild,
                     library_name: 'nodejs',
                     library_tag: 'nodejs_client',
-                    LS_cid: encrypt('nodejs_client ' + config.version + ' build ' + config.build)
+                    LS_cid: nodeCid
                 }),
                 virtual({ 
                     'virtual-entrypoint': defaultExports(config.node.modules) }),
@@ -364,53 +375,6 @@ if (typeof module === 'object' && module.exports) {
     };
 }
 
-function encrypt(version) {
-    var key = [6,2,42,6,5,11,20,4,22,7];
-    var intervals = [
-        [32,32,45-32-1,32-122-1],
-        [45,46,48-46-1,45-32-1],
-        [48,57,65-57-1,48-46-1],
-        [65,90,95-90-1,65-57-1],
-        [95,95,97-95-1,95-90-1],
-        [97,122,32-122-1,97-95-1]
-        ];
-    if (version == null || version.length < 1) {
-        throw "Unexpected empty string";
-    }
-    var k = 0;
-    var result = [];
-    var checksum = 0;
-    for(var i=0; i<version.length; i++) {
-        var character = version.charCodeAt(i);
-        checksum += character;
-        var simple = character+key[k];
-        k++;
-        if (k >= key.length) {
-            k=0;
-        }
-        for (var n=0; n<intervals.length; n++) {
-            if (character > intervals[n][1]) {
-                continue;
-            } else if (character < intervals[n][0]) {
-                throw "Unexpected character in string";
-            }
-            while (simple > intervals[n][1]) {
-                simple+= intervals[n][2];
-                n++;
-                if (n >= intervals.length) {
-                    n=0;
-                }
-            }
-            result.push(simple);
-            break;
-        }
-    }
-    checksum = (checksum%25) + 97;
-    result.push(checksum);
-
-    return String.fromCharCode.apply(String,result);
-}
-
 function umdHeader() {
     return `
 ;(function() {
@@ -483,7 +447,7 @@ function copyright(tag) {
  * @preserve
  * LIGHTSTREAMER - www.lightstreamer.com
  * Lightstreamer ${tag} Client
- * Version ${config.version} build ${config.build}
+ * Version ${tag == 'Web' ? config.webVersion: config.nodeVersion} build ${tag == 'Web' ? config.webBuild: config.nodeBuild}
  * Copyright (c) Lightstreamer Srl. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0
  *   See http://www.apache.org/licenses/LICENSE-2.0
