@@ -12,11 +12,6 @@ Target API: Lightstreamer Web Client (Unified) v8.0.0
 :sectnums:
 :toc:
 :toclevels: 3
-ifdef::backend-pdf[]
-:title-logo-image: image:img/logo.jpg[align=center]
-// Syntax highlighter (https://asciidoctor.org/docs/user-manual/#rouge)
-:source-highlighter: rouge
-endif::[]
 
 == Introduction
 
