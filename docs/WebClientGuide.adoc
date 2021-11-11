@@ -113,7 +113,7 @@ myClient.connect();
 .  *Create a Subscription object*
 A simple https://lightstreamer.com/api/ls-web-client/latest/Subscription.html[Subscription] containing three items and
 three fields to be subscribed in MERGE mode is easily created (see
-https://www.lightstreamer.com/docs/base/General%20Concepts.pdf[Lightstreamer General Concepts]):
+https://www.lightstreamer.com/docs/General%20Concepts.pdf[Lightstreamer General Concepts]):
 +
 [source, javascript]
 ----
@@ -208,7 +208,7 @@ document.
 
 In the following description the term *cell* is used to refer to the
 atomic unity of visualization for data pushed by Lightstreamer and
-associated to a *field* (see https://www.lightstreamer.com/docs/base/General%20Concepts.pdf[General Concepts]).
+associated to a *field* (see https://www.lightstreamer.com/docs/General%20Concepts.pdf[General Concepts]).
 
 In order to declare a cell, a special *DIV* element or a special *SPAN*
 element should be used. It is possible to choose between a DIV and a
