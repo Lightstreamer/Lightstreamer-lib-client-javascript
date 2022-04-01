@@ -1,5 +1,22 @@
 # SDK for Node.js Clients CHANGELOG
 
+## 8.0.4 build 1790
+
+<i>Compatible with Lightstreamer Server since 7.0.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 1 Apr 2022</i>
+
+<!--29/7/2021-->
+Fixed a bug about message sending that, upon a message retransmission, could have caused the client to trigger ClientListener.onServerError with error code 32 or 33.
+
+<!--15/12/2012-->
+Fixed a bug that could have caused the client to not unsubscribe from an item when the user
+called the methods LightstreamerClient.subscribe and LightstreamerClient.unsubscribe in rapid sequence or more in general when the server received a subscription request and the corresponding unsubscription request at the same time.
+
+<!--31/3/2022-->
+Fixed a compatibility issue with Server versions 7.1.0 and later, related with the support of the `<service_url_prefix>` Server configuration element. In case a non-lowercase prefix had been used, the websocket connections would have failed.
+
+
 ## 8.0.3 build 1787
 
 <i>Compatible with Lightstreamer Server since 7.0.</i><br/>
