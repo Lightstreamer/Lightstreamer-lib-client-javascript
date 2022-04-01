@@ -1387,33 +1387,35 @@ import Environment from "../../src-tool/Environment";
           }
       },
       
-      /**
-       * Manages REQERR/ERROR errors.
-       */
-      forwardControlResponseError: function(errorCode, errorMsg, listenerCallback) {
-          if (errorCode == 20) { // sync error
-              this.onSyncError("syncerror");
-          } else if (errorCode == 11) {
-              // error 11 is managed as CONERR 21
-              this.onFatalError(21, errorMsg);              
-          } else if (listenerCallback != null && errorCode != 65 /*65 is a fatal error*/) {
-              /*
-               * since there is a listener (because it is a REQERR message), 
-               * don't fall-back to fatal error case
-               */
-              try {
-                  listenerCallback();
-              } catch (e) {
-                  this.handler.onFatalError(e);
-              }
-          } else {
-              /*
-               * fall-back case handles fatal errors, i.e. ERROR messages: 
-               * close current session, don't create a new session, notify client listeners
-               */
-              this.onFatalError(errorCode, errorMsg);
-          }
-      },
+	forwardREQERR: function(errorCode, errorMsg, listenerCallback) {
+        if (errorCode == 20) { // sync error
+            this.onSyncError("syncerror");
+        } else if (errorCode == 11 || errorCode == 65 || errorCode == 67) {
+            // error 11 is managed as CONERR 21
+            if (errorCode == 11) {
+                this.onFatalError(21, errorMsg);
+            } else {
+                this.onFatalError(errorCode, errorMsg);
+            }
+        } else if (listenerCallback != null) {
+            try {
+                listenerCallback();
+            } catch (e) {
+                this.handler.onFatalError(e);
+            }
+        } else {
+            if (protocolLogger.isWarnLogEnabled()) {
+                protocolLogger.logWarn("Ignore error", errorCode, errorMsg);
+            }
+        }
+	},
+    
+    forwardERROR: function(errorCode, errorMsg) {
+        /*
+         * close current session, don't create a new session, notify client listeners
+         */
+        this.onFatalError(errorCode, errorMsg);
+    },
       
       onMetadataAdapterError: function() {
           MadTester.rollbackLastMadTest();

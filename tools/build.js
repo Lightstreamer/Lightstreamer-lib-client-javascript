@@ -27,10 +27,10 @@ const argv = require('minimist')(process.argv.slice(2), {
         'format': ['esm', 'cjs', 'cjs_min', 'umd', 'umd_min'],
         'config': 'build.config.js'}});
 
-const defaultWebVersion = '8.0.3';
-const defaultWebBuild = '1800';
-const defaultNodeVersion = '8.0.3';
-const defaultNodeBuild = '1787';
+const defaultWebVersion = '8.0.4';
+const defaultWebBuild = '1803';
+const defaultNodeVersion = '8.0.4';
+const defaultNodeBuild = '1789';
 
 const config = require(path.resolve(argv.config));
 config.webVersion = argv.version ? argv.version : defaultWebVersion;
@@ -38,8 +38,8 @@ config.webBuild = argv.build ? argv.build : defaultWebBuild;
 config.nodeVersion = argv.version ? argv.version : defaultNodeVersion;
 config.nodeBuild = argv.build ? argv.build : defaultNodeBuild;
 
-const defaultWebCid = 'pcYgxn8m8%20feOojyA1U661i3g2.pz47Af63nBwCvsw'
-const defaultNodeCid = 'tqGko0tg4pkpW3DAK3P4hwLri8LBUE4eXyyz3a'
+const defaultWebCid = 'pcYgxn8m8%20feOojyA1U661j3g2.pz47Af93nBwCvsb'
+const defaultNodeCid = 'tqGko0tg4pkpW3DAK3Q4hwLri8LBUG4eXyyz3d'
 const webCid = argv.LS_web_cid ? argv.LS_web_cid : defaultWebCid
 const nodeCid = argv.LS_node_cid ? argv.LS_node_cid : defaultNodeCid
 

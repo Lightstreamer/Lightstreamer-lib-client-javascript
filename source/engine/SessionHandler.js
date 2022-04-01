@@ -958,7 +958,17 @@ import Assertions from "../utils/Assertions";
                   },
 
                   onREQERR: function(LS_window, phase, errorCode, errorMsg) {
-                      tutor.discard();
+                      // it is possible that if an unsubscription request immediately follows 
+                      // a subscription request, the server, which processes the requests 
+                      // in parallel, processes the unsubscription before the subscription. 
+                      // but since there is no active subscription at the moment, the server returns 
+                      // the error 19 to the client. 
+                      // in that case the client should resend the unsubscription request in order to 
+                      // free resources on the server. 
+                      // this is achieved by not discarding the retransmission tutor.
+                      if (errorCode != 19) {
+                        tutor.discard();
+                      }
                       sessionLogger.logError("unsubscription request " + printObj(delBody) + " caused the error: ", errorCode, errorMsg);
                   }
           };

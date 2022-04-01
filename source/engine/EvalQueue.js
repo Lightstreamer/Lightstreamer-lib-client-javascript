@@ -377,7 +377,7 @@ import EncodingUtils from "./EncodingUtils";
             };
         }
         if (this.session != null) {
-            this.session.forwardControlResponseError(errorCode, errorMsg, listenerCallback);
+            this.session.forwardREQERR(errorCode, errorMsg, listenerCallback);
         }
     },
     
@@ -386,7 +386,7 @@ import EncodingUtils from "./EncodingUtils";
         var errorCode = msg.getFieldAsInt(1);
         var errorMsg = msg.getFieldUnquoted(2);
         if (this.session != null) {
-            this.session.forwardControlResponseError(errorCode, errorMsg, null);
+            this.session.forwardERROR(errorCode, errorMsg);
         }
     },
     

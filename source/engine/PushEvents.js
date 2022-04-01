@@ -328,6 +328,10 @@ import Constants from "../Constants";
     },
 
     /**
+     * @param _code error code
+     * @param num sequence number
+     * @param messageCode sequence
+     * @param msg error message
      * @param isReqerr when true, the error comes from a REQERR; when false, the error comes form a MSGFAIL.
      */
     onMessageErrorEvent: function(_code, num, messageCode, msg, isReqerr) {
