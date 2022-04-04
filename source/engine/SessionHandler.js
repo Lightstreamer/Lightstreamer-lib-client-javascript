@@ -305,6 +305,9 @@ import CtrlRequest from "../utils/CtrlRequest";
           var nextPH = isPolling ? (isHTTP ? POLLING_HTTP : POLLING_WS) : (isHTTP ? STREAMING_HTTP : STREAMING_WS);
           this.changeStatus(nextPH);
 
+          if (this.session != null) {
+            this.session.shutdown(false);
+          }
           this.prepareNewSessionInstance(isPolling,isComboForced,isHTTP);
           
           this.session.createSession(currSessionId,reason,serverBusy);
@@ -996,7 +999,17 @@ import CtrlRequest from "../utils/CtrlRequest";
                   },
 
                   onREQERR: function(LS_window, phase, errorCode, errorMsg) {
-                      tutor.discard();
+                      // it is possible that if an unsubscription request immediately follows 
+                      // a subscription request, the server, which processes the requests 
+                      // in parallel, processes the unsubscription before the subscription. 
+                      // but since there is no active subscription at the moment, the server returns 
+                      // the error 19 to the client. 
+                      // in that case the client should resend the unsubscription request in order to 
+                      // free resources on the server. 
+                      // this is achieved by not discarding the retransmission tutor.
+                      if (errorCode != 19) {
+                        tutor.discard();
+                      }
                       sessionLogger.logError("unsubscription request " + printObj(delBody) + " caused the error: ", errorCode, errorMsg);
                   }
           };

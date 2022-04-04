@@ -139,6 +139,7 @@ var Event = {}; var eventNames = [];
     Event.REQERR_isFatalError = ++i; eventNames[i] = "REQERR_isFatalError";
     Event.REQERR_isMessageError = ++i; eventNames[i] = "REQERR_isMessageError";
     Event.REQERR_isSubscriptionError = ++i; eventNames[i] = "REQERR_isSubscriptionError";
+    Event.REQERR_isUnsubscriptionError19 = ++i; eventNames[i] = "REQERR_isUnsubscriptionError19";
     Event.REQERR_isRegistrationError = ++i; eventNames[i] = "REQERR_isRegistrationError";
     Event.REQERR_isMpnSubscriptionError = ++i; eventNames[i] = "REQERR_isMpnSubscriptionError";
     Event.REQERR_isMpnUnsubscriptionError = ++i; eventNames[i] = "REQERR_isMpnUnsubscriptionError";
@@ -812,7 +813,8 @@ NewSessionWS.prototype = {
                                 this.dispatch(Event.REQERR_isFatalError, data);
                             }
                             else {
-                                switch (this.getRequestType(data)) {
+                                var reqType = this.getRequestType(data);
+                                switch (reqType) {
                                 case CtrlRequest.SUB:
                                     this.dispatch(Event.REQERR_isSubscriptionError, data);
                                     break;
@@ -829,7 +831,11 @@ NewSessionWS.prototype = {
                                     this.dispatch(Event.REQERR_isMpnUnsubscriptionError, data);
                                     break;
                                 default:
-                                    this.dispatch(Event.REQERR_isOtherError, data);
+                                    if (reqType == CtrlRequest.UNSUB && data.causeCode == 19) {
+                                        this.dispatch(Event.REQERR_isUnsubscriptionError19, data);
+                                    } else {
+                                        this.dispatch(Event.REQERR_isOtherError, data);
+                                    }
                                 }
                             }
                         });
@@ -859,6 +865,12 @@ NewSessionWS.prototype = {
                         this.dispatch_StreamingMain(Event.any_server_msg, data);
                         this.dispatch_Prog(Event.any_server_msg, data);
                         this.doNotifyOnSubscriptionError_REQERR(data);
+                        break;
+                    case Event.REQERR_isUnsubscriptionError19:
+                        // REQERR_isUnsubscriptionError19: Streaming
+                        this.dispatch_StreamingMain(Event.any_server_msg, data);
+                        this.dispatch_Prog(Event.any_server_msg, data);
+                        this.doResendUnsubscriptionAfterREQERR19(data);
                         break;
                     case Event.REQERR_isRegistrationError:
                         // REQERR_isRegistrationError: Streaming
@@ -1235,7 +1247,6 @@ NewSessionWS.prototype = {
                         this.next(State.Recovering);
                         this.doSendWsok();
                         this.doSendRecovery();
-                        this.doNotifySTREAM_SENSING();
                         break;
                     case Event.WSOK:
                         // WSOK: Recovering -> Recovering
@@ -1576,7 +1587,6 @@ NewSessionWS.prototype = {
             var that = this;
             var version =  Constants.TLCP_VERSION + ".lightstreamer.com";
             var url = this.sessionServerAddress + Constants.LIGHTSTREAMER_PATH;
-            url = url.toLowerCase();
             if (url.indexOf("http://") === 0) {
                 url = url.replace("http://", "ws://");
             } 
@@ -1705,14 +1715,12 @@ NewSessionWS.prototype = {
         enter_Probing_Creating: function() {
             this.doSendWsok();
             this.doSendCreate();
-            this.doNotifySTREAM_SENSING();
             this.doSendWaitingRequests();
         },
         
         enter_Probing_Binding: function() {
             this.doSendWsok();
             this.doSendBind();
-            this.doNotifySTREAM_SENSING();
             this.doSendWaitingRequests();
         },
         
@@ -1737,6 +1745,9 @@ NewSessionWS.prototype = {
             }
             if (this.policyBean.keepaliveInterval > 0) {
                 data += "&LS_keepalive_millis=" + this.policyBean.keepaliveInterval;
+            }
+            if (!this.policyBean.slowingEnabled) {
+                data += "&LS_send_sync=false";
             }
             this.grantedReverseHeartbeatInterval = this.policyBean.reverseHeartbeatInterval;
             if (this.policyBean.reverseHeartbeatInterval > 0) {
@@ -1776,6 +1787,9 @@ NewSessionWS.prototype = {
             data += "&LS_cause=" + this.getCause();
             if (this.policyBean.keepaliveInterval > 0) {
                 data += "&LS_keepalive_millis=" + this.policyBean.keepaliveInterval;
+            }
+            if (!this.policyBean.slowingEnabled) {
+                data += "&LS_send_sync=false";
             }
             this.grantedReverseHeartbeatInterval = this.policyBean.reverseHeartbeatInterval;
             if (this.policyBean.reverseHeartbeatInterval > 0) {
@@ -2827,7 +2841,10 @@ NewSessionWS.prototype = {
         
         doSendMessage: function(request) {
             assertDefined(request.query, request.sequence, request.prog, request.ack, request.reqId);
-            
+            assertDefined(request.query['LS_message']);
+
+            // NB LS_message is the only parameter that is not url-encoded by the caller
+            request.query['LS_message'] = encodeURIComponent(request.query['LS_message']);
             var data = "msg\r\n" + this.toFormBody(request.query);
             this.sendData(data);
             
@@ -2900,7 +2917,7 @@ NewSessionWS.prototype = {
         
         removeFromPendings: function(reqId) {
             var request = this.pendingReqs[reqId]; 
-            assert(request);
+            // request can be null if the reqId is unknown
             
             delete this.pendingReqs[reqId];
             return request;
@@ -2910,6 +2927,9 @@ NewSessionWS.prototype = {
             assertDefined(msg.reqId);
             
             var request = this.pendingReqs[msg.reqId];
+            if (request == null) {
+                return null;
+            }
             assertDefined(request.type);
             return request.type;
         },
@@ -2919,6 +2939,10 @@ NewSessionWS.prototype = {
             assertDefined(msg.reqId);
             
             var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
             
             assertDefined(request.type);
             if (request.type === CtrlRequest.MSG) {
@@ -2944,7 +2968,11 @@ NewSessionWS.prototype = {
             // REQERR,<reqId>,<error-code>,<error-message>
             assertDefined(msg.reqId);
             
-            this.removeFromPendings(msg.reqId);
+            var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
         },
         
         doNotifyOnSubscriptionError_REQERR: function(msg) {
@@ -2952,9 +2980,37 @@ NewSessionWS.prototype = {
             assertDefined(msg.reqId, msg.causeCode, msg.causeMsg);
             
             var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
             
             assertDefined(request.query['LS_subId']);
             this.handler.onTableError(request.query['LS_subId'], msg.causeCode, msg.causeMsg);
+        },
+
+        doResendUnsubscriptionAfterREQERR19: function(msg) {
+            // it is possible that if an unsubscription request immediately follows 
+            // a subscription request, the server, which processes the requests 
+            // in parallel, processes the unsubscription before the subscription. 
+            // but since there is no active subscription at the moment, the server returns 
+            // the error 19 to the client. 
+            // in that case the client should resend the unsubscription request in order to 
+            // free resources on the server. 
+
+            // REQERR,<reqId>,<error-code>,<error-message>
+            assertDefined(msg.reqId, msg.causeCode, msg.causeMsg);
+
+            var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
+
+            var that = this;
+            setTimeout(function() {
+                that.dispatch(Event.unsubscribe, request);
+            }, 4000);
         },
         
         doNotifyOnMessageError_REQERR: function(msg) {
@@ -2962,6 +3018,10 @@ NewSessionWS.prototype = {
             assertDefined(msg.reqId, msg.causeCode, msg.causeMsg);
             
             var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
             
             assertDefined(request.sequence, request.prog);
             this.handler.onMessageError(request.sequence, msg.causeCode, request.prog, msg.causeMsg);
@@ -2971,7 +3031,11 @@ NewSessionWS.prototype = {
             // REQERR,<reqId>,<error-code>,<error-message>
             assertDefined(msg.reqId, msg.causeCode, msg.causeMsg);
             
-            this.removeFromPendings(msg.reqId);
+            var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
             
             this.mpnManager.eventManager.onRegisterError(msg.causeCode, msg.causeMsg);
         },
@@ -2981,6 +3045,10 @@ NewSessionWS.prototype = {
             assertDefined(msg.reqId, msg.causeCode, msg.causeMsg);
             
             var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
             
             assertDefined(request.subscriptionId);
             this.mpnManager.eventManager.onSubscribeError(request.subscriptionId, msg.causeCode, msg.causeMsg);
@@ -2991,6 +3059,10 @@ NewSessionWS.prototype = {
             assertDefined(msg.reqId, msg.causeCode, msg.causeMsg);
             
             var request = this.removeFromPendings(msg.reqId);
+            if (request == null) {
+                this.logUnknownRequest(msg);
+                return;
+            }
             
             assertDefined(request.subscriptionId);
             this.mpnManager.eventManager.onUnsubscribeError(request.subscriptionId, msg.causeCode, msg.causeMsg);
@@ -3039,10 +3111,6 @@ NewSessionWS.prototype = {
         
         doNotifySTREAMING: function() {
             this.notifyStatus(Constants.CONNECTED + Constants.WS_STREAMING);
-        },
-        
-         doNotifySTREAM_SENSING: function() {
-            this.notifyStatus(Constants.CONNECTED + Constants.SENSE);
         },
         
         doNotifyDISCONNECTED: function() {
@@ -3148,6 +3216,9 @@ NewSessionWS.prototype = {
             data += "&LS_recovery_from=" + this.dataNotificationCount;
             if (this.policyBean.keepaliveInterval > 0) {
                 data += "&LS_keepalive_millis=" + this.policyBean.keepaliveInterval;
+            }
+            if (!this.policyBean.slowingEnabled) {
+                data += "&LS_send_sync=false";
             }
             this.grantedReverseHeartbeatInterval = this.policyBean.reverseHeartbeatInterval;
             if (this.policyBean.reverseHeartbeatInterval > 0) {
@@ -3505,6 +3576,10 @@ NewSessionWS.prototype = {
             }
             s += " }";
             return s;
+        },
+
+        logUnknownRequest: function(data) {
+            log.logWarn("oid=" + this.oid, "Ignore response of unknown request", data, "in state", stateNames[this.state]);
         }
 };
 

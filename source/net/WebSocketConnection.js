@@ -82,7 +82,6 @@ import nodeUtils from 'node-utils';
   //this must become a factory that is able to give me the same websocket on different instances of WebSocketConnection (create/bind and control
   function getWebSocket(_url) {
 
-    _url = _url.toLowerCase();
     if (_url.indexOf("http://") == 0) {
       _url = _url.replace("http://","ws://");
     } else {

@@ -324,13 +324,13 @@ import Utils from "../Utils";
             };
         }
         if (this.session != null) {
-            this.session.forwardControlResponseError(msg.causeCode, msg.causeMsg, listenerCallback);
+            this.session.forwardREQERR(msg.causeCode, msg.causeMsg, listenerCallback);
         }
     },
     
     processERROR: function(msg) {
         if (this.session != null) {
-            this.session.forwardControlResponseError(msg.causeCode, msg.causeMsg, null);
+            this.session.forwardERROR(msg.causeCode, msg.causeMsg);
         }
     },
     

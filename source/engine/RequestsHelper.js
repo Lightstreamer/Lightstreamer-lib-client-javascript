@@ -197,6 +197,9 @@ import Constants from "../Constants";
         if (policyBean.keepaliveInterval > 0) {
           LSContextParams += "LS_keepalive_millis=" + policyBean.keepaliveInterval + "&";
         }
+        if (!policyBean.slowingEnabled) {
+          LSContextParams += "LS_send_sync=false&";
+        }
         
         // NB don't use policyBean.reverseHeartbeatInterval. Use reverseHeartbeatMaxIntervalMs instead
         // in order for Session.reverseHeartbeatTimer and LS_inactivity_millis to be coherent
