@@ -437,11 +437,22 @@ function umdFooter(exportVar) {
         ${modules.map(m => `exports['${m}'] = ${exportVar}['${m}'];`).join('\n')}
     }
     else {
-        var namespace = createNs(extractNs(), window);
+        var namespace = createNs(extractNs(), lsGlobalObject());
         ${modules.map(m => `namespace['${m}'] = ${exportVar}['${m}'];`).join('\n')}
+    }
+
+    function lsIsBrowser() {
+        return typeof(window) !== 'undefined' && typeof(window.document) !== 'undefined';
+    }
+
+    function lsGlobalObject() {
+        return lsIsBrowser() ? window : self;
     }
     
     function extractNs() {
+        if (!lsIsBrowser()) {
+            return null;
+        }
         var scripts = window.document.getElementsByTagName("script");
         for (var i = 0, len = scripts.length; i < len; i++) {
             if ('data-lightstreamer-ns' in scripts[i].attributes) {        

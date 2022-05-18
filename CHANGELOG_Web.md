@@ -1,5 +1,16 @@
 # SDK for Web Clients CHANGELOG
 
+## 8.1.0-beta5
+
+<i>Compatible with Lightstreamer Server since 7.1.1.</i><br/>
+<i>May not be compatible with code developed with the previous version; see
+compatibility notes below.</i><br/>
+<i>Made available as a prerelease on 18 May 2022</i>
+
+<!---17/05/2022--->
+Fixed a bug that prevented the library in UMD format from being loaded by Web Workers. 
+
+
 ## 8.1.0-beta4
 
 <i>Compatible with Lightstreamer Server since 7.1.1.</i><br/>

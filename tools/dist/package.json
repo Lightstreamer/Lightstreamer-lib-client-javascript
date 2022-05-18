@@ -1,6 +1,6 @@
 {
   "name": "lightstreamer-client-web",
-  "version": "8.1.0-beta4",
+  "version": "8.1.0-beta5",
   "description": "This package includes the resources needed to write a Lightstreamer client.",
   "license": "Apache-2.0",
   "keywords": [
