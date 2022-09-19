@@ -1,5 +1,15 @@
 # SDK for Web Clients CHANGELOG
 
+## 8.0.6 build 1807
+
+<i>Compatible with Lightstreamer Server since 7.1.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 19 Sep 2022</i>
+
+<!---13/09/2022--->
+Revised the provided status widget with new colors and logo. However, the logo is now static, with no color changes or blinking in response to connection events.
+
+
 ## 8.0.5 build 1805
 
 <i>Compatible with Lightstreamer Server since 7.1.</i><br/>

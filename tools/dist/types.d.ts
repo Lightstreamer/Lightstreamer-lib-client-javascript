@@ -8733,12 +8733,11 @@ export class StaticGridListener {
  * @exports StatusWidget
  * @class This class is a simple implementation of the ClientListener interface, which will display a
  * small widget with details about the status of the connection. The widget contains the "S" logo
- * and three tiny leds. The "S" logo changes color and luminosity to reflect the current connection status
- * (connecting, disconnected, connected, and stalled).
+ * and three tiny leds.
  * <ul>
  * <li>The left led indicates the transport in use: green if WS/WSS; yellow if HTTP/HTTPS.</li>
  * <li>The center led indicates the mode in use: green if streaming; yellow if polling.</li>
- * <li>The right led indicates where the physical connection in held: green if this LightstreamerClient
+ * <li>The right led indicates where the physical connection is held: green if this LightstreamerClient
  * is the master instance, holding the connection; yellow if this LightstreamerClient instance is a slave
  * attached to the master Lightstreamer Client instance.</li>
  * </ul>
