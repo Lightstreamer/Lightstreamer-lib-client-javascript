@@ -1,5 +1,8 @@
 function require() {}
 
+var jsonpatch = {};
+jsonpatch.apply_patch = function() {};
+
 var module = {};
 module.config = function() {}; // requirejs module configuration (see https://requirejs.org/docs/api.html#config-moduleconfig)
 module.exports = {};

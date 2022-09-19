@@ -112,7 +112,7 @@ node decode-logs log.txt lightstreamer.min.js.logmap
 
 ## Compatibility ##
 
-The library requires Server 7.1.1. 
+The library requires Server 7.3.0. 
 
 ## Documentation
 

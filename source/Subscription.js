@@ -1,5 +1,6 @@
 import SecondLevelSubscriptionListener from "./subscriptions/SecondLevelSubscriptionListener";
 import ItemUpdate from "./subscriptions/ItemUpdate";
+import ItemUpdateJsonPatch from "./subscriptions/ItemUpdateJsonPatch";
 import ListDescriptor from "./descriptors/ListDescriptor";
 import NameDescriptor from "./descriptors/NameDescriptor";
 import Inheritance from "../src-tool/Inheritance";
@@ -17,6 +18,7 @@ import Helpers from "../src-tool/Helpers";
 import RealMaxFrequencyManager from "./subscriptions/RealMaxFrequencyManager";
 import ValidationUtils from "./utils/ValidationUtils";
 import ASSERT from "../src-test/ASSERT";
+import ItemUpdater from "./subscriptions/ItemUpdater";
 
 export default /*@__PURE__*/(function() {
   var TABLE_OFF = 1;
@@ -216,6 +218,7 @@ export default /*@__PURE__*/(function() {
     
     this.oldValuesByKey = new Matrix(); 
     
+    this.itemUpdater = new ItemUpdater();
 /////////////////    
     
     this.handler = null;
@@ -283,6 +286,7 @@ export default /*@__PURE__*/(function() {
       
       this.oldValuesByItem = new Matrix(); 
       this.oldValuesByKey = new Matrix(); 
+      this.itemUpdater = new ItemUpdater();
       this.snapshotByItem = null;
       
       //resets the schema size
@@ -497,6 +501,10 @@ export default /*@__PURE__*/(function() {
         if (rbs == "unlimited" || rbs > 0) {
           req["LS_requested_buffer_size"]=rbs;
         }
+      }
+
+      if (this.behavior != SIMPLE || this.subTableFlag) {
+        req["LS_supported_diffs"] = "";
       }
       
       subscriptionsLogger.logDebug("Subscription request generated",this);
@@ -1663,6 +1671,10 @@ export default /*@__PURE__*/(function() {
         //organizeMPUpdate has already updated the oldValuesByItem array
       }
       var updateObj =  new ItemUpdate(this.itemDescriptor.getName(_item), _item, this.fieldDescriptor, isSnapshot, args);
+      if (this.behavior == SIMPLE) {
+        this.itemUpdater.updateItem(this.tableNumber, updateObj);
+        updateObj = new ItemUpdateJsonPatch(updateObj, this.itemUpdater);
+      }
       this.dispatchEvent("onItemUpdate",[updateObj]);
  
       if (this.oldValuesByKey.get(_key,this.commandCode) == "DELETE") {

@@ -6,6 +6,7 @@ module.exports = {
         
         web: {
             esm: path.resolve(__dirname, 'dist/lightstreamer.esm.js'),
+            esm_min: path.resolve(__dirname, 'dist/lightstreamer.min.esm.js'),
             cjs: path.resolve(__dirname, 'dist/lightstreamer.common.js'),
             umd: path.resolve(__dirname, 'dist/lightstreamer.js'),
             umd_min: path.resolve(__dirname, 'dist/lightstreamer.min.js'),

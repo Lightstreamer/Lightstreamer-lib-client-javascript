@@ -1763,6 +1763,7 @@ NewSessionWS.prototype = {
             if (this.connectionBean.user !== null) {
                 data += "&LS_user=" + encodeURIComponent(this.connectionBean.user);
             }
+            data += "&LS_supported_diffs=P";
             data += "&LS_cid=" + Constants.LS_CID;
             
             log.logDebug("oid=" + this.oid, "WebSocket transport sending", data);

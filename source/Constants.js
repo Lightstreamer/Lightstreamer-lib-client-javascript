@@ -51,6 +51,7 @@ export default /*@__PURE__*/(function() {
     STATS: "lightstreamer.stats",  
     MPN: "lightstreamer.mpn",
     HEARTBEAT_LOG: "lightstreamer.heartbeat",
+    INTERNAL: "lightstreamer.internal",
     
     STORAGE_PREFIX: "Lightstreamer_",
       
@@ -91,7 +92,7 @@ export default /*@__PURE__*/(function() {
 
     MASTER: "MASTER",
     
-    TLCP_VERSION: "TLCP-2.2.0"
+    TLCP_VERSION: "TLCP-2.4.0"
   
   };
     

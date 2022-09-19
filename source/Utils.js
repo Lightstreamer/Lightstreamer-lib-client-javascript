@@ -345,9 +345,16 @@ export default /*@__PURE__*/(function() {
                 values.push("");
 
             } else if (value.charAt(0) == '^') { // step D
-                var count = myParseInt(value.substring(1), "Invalid field count");
-                while (count-- > 0) {
-                    values.push(unchangedMarker);
+                if (value.charAt(1) == 'P') {
+                  var unquoted = Utils.unquote(value.substring(2));
+                  unquoted = new String(unquoted);
+                  unquoted.isJSONPatch = true;
+                  values.push(unquoted);
+                } else {
+                  var count = myParseInt(value.substring(1), "Invalid field count");
+                  while (count-- > 0) {
+                      values.push(unchangedMarker);
+                  }
                 }
 
             } else { // step E

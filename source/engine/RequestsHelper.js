@@ -19,9 +19,9 @@ import Constants from "../Constants";
   var validIP = new RegExp("^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?![\d])");
   var validIPv6 = new RegExp("^[a-f0-9:]+$");
   
-   
-  
-  export default {
+  function RequestsHelper() {}
+
+  RequestsHelper.prototype = {
     
     /**
      * 
@@ -260,6 +260,8 @@ import Constants from "../Constants";
             lsUrl += "LS_ttl_millis=unlimited&";
         }
         
+        lsUrl += "LS_supported_diffs=P&";
+
         protocolLogger.logDebug("Create request generated",lsUrl);
         
         //first log the request, then attach the password...
@@ -408,6 +410,7 @@ import Constants from "../Constants";
       }
     
   };
+
+  var singleton = new RequestsHelper();
   
-  
-  
+  export default singleton;

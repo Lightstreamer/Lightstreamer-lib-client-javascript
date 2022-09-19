@@ -16,6 +16,8 @@ const alias = require('rollup-plugin-alias');
 const path = require('path');
 const MagicString = require('magic-string');
 const fs = require('fs');
+const commonjs = require('rollup-plugin-commonjs');
+const nodeResolve = require('rollup-plugin-node-resolve');
 
 const argv = require('minimist')(process.argv.slice(2), {
     alias: {
@@ -65,7 +67,7 @@ async function build(...options) {
 function configurations(...options) {
     return options
     .filter(o => o.platform in config && o.format in config[o.platform])
-    .map(o => {
+    .flatMap(o => {
         switch (o.platform) {
         case 'web':
             switch (o.format) {
@@ -76,7 +78,7 @@ function configurations(...options) {
             case 'umd':
                 return web_umd();
             case 'umd_min':
-                return web_umd_min();
+                return [web_esm_min(), web_umd_min()];
             }
             break;
         case 'node':
@@ -108,6 +110,8 @@ function web_esm() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
+                nodeResolve(), 
+                commonjs(),
                 extractLogsPlugin(config.web.esm),
                 replace({
                     include: fullpath('source/Constants'),
@@ -139,6 +143,8 @@ function web_cjs() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
+                nodeResolve(), 
+                commonjs(),
                 extractLogsPlugin(config.web.cjs),
                 replace({
                     include: fullpath('source/Constants'),
@@ -170,6 +176,8 @@ function web_umd() {
         inputOptions: {
             input: 'virtual-entrypoint',
             plugins: [
+                nodeResolve(), 
+                commonjs(),
                 extractLogsPlugin(config.web.umd),
                 replace({
                     include: fullpath('source/Constants'),
@@ -201,31 +209,11 @@ function web_umd() {
 function web_umd_min() {
     return {
         inputOptions: {
-            input: 'virtual-entrypoint',
+            input: config.web.esm_min,
             plugins: [
-                extractLogsPlugin(config.web.umd_min),
-                replace({
-                    include: fullpath('source/Constants'),
-                    delimiters: ['$', '$'],
-                    version: config.version,
-                    build: config.build,
-                    library_name: 'javascript',
-                    library_tag: 'javascript_client',
-                    LS_cid: encrypt('javascript_client ' + config.version + ' build ' + config.build)
-                }),
-                virtual({ 
-                    'virtual-entrypoint': defaultExports(config.web.modules, config.web.polyfills) }),
-                alias({ 
-                    'node-utils': fullpath('source/platform/DummyNodeUtils'),
-                    'PIToolkit': fullpath('source/platform/PIToolkit_Web'),
-                    './ls_sbc': sbcModulePath(),
-                    './mpn/MpnManager': mpnModulePath() }),
-                compiler({
-                    compilation_level: 'ADVANCED',
-                    //warning_level: 'QUIET',
-                    language_in: 'ECMASCRIPT5',
-                    language_out: 'ECMASCRIPT5',
-                    externs: path.resolve(__dirname, 'externs.js')})]
+                nodeResolve(), 
+                commonjs(),
+            ]
         },
         outputOptions: {
             file: config.web.umd_min,
@@ -242,7 +230,7 @@ function node_cjs() {
     return {
         inputOptions: {
             input: 'virtual-entrypoint',
-            external: ['faye-websocket', 'xmlhttprequest-cookie', 'url'],
+            external: ['faye-websocket', 'xmlhttprequest-cookie', 'url', 'jsonpatch/jsonpatch.min'],
             plugins: [
                 extractLogsPlugin(config.node.cjs),
                 replace({
@@ -274,7 +262,7 @@ function node_cjs_min() {
     return {
         inputOptions: {
             input: 'virtual-entrypoint',
-            external: ['faye-websocket', 'xmlhttprequest-cookie', 'url'],
+            external: ['faye-websocket', 'xmlhttprequest-cookie', 'url', 'jsonpatch/jsonpatch.min'],
             plugins: [
                 extractLogsPlugin(config.node.cjs_min),
                 replace({
@@ -298,7 +286,9 @@ function node_cjs_min() {
                     //warning_level: 'QUIET',
                     language_in: 'ECMASCRIPT5',
                     language_out: 'ECMASCRIPT5',
-                    externs: path.resolve(__dirname, 'externs.js')
+                    externs: path.resolve(__dirname, 'externs.js'),
+                    // see https://stackoverflow.com/a/8358980
+                    output_wrapper: "var jsonpatch=require('jsonpatch/jsonpatch.min');%output%"
                 })]
         },
         outputOptions: {
@@ -311,6 +301,44 @@ function node_cjs_min() {
         }
     };
 }
+
+function web_esm_min() {
+    return {
+        inputOptions: {
+            input: 'virtual-entrypoint',
+            external: ['jsonpatch/jsonpatch.min'],
+            plugins: [
+                extractLogsPlugin(config.web.esm_min),
+                replace({
+                    include: fullpath('source/Constants'),
+                    delimiters: ['$', '$'],
+                    version: config.version,
+                    build: config.build,
+                    library_name: 'javascript',
+                    library_tag: 'javascript_client',
+                    LS_cid: encrypt('javascript_client ' + config.version + ' build ' + config.build)
+                }),
+                virtual({ 
+                    'virtual-entrypoint': namedExports(config.web.modules, config.web.polyfills) }),
+                alias({ 
+                    'node-utils': fullpath('source/platform/DummyNodeUtils'),
+                    'PIToolkit': fullpath('source/platform/PIToolkit_Web'),
+                    './ls_sbc': sbcModulePath(),
+                    './mpn/MpnManager': mpnModulePath() }),
+                compiler({
+                    compilation_level: 'ADVANCED',
+                    //warning_level: 'QUIET',
+                    language_in: 'ECMASCRIPT5',
+                    language_out: 'ECMASCRIPT5',
+                    externs: path.resolve(__dirname, 'externs.js')})]
+        },
+        outputOptions: {
+            file: config.web.esm_min,
+            banner: copyright('Web'),
+            format: 'esm'
+        }
+    };
+  }
 
 function namedExports(modules, polyfills = []) {
     return `

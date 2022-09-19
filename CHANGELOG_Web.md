@@ -1,11 +1,21 @@
 # SDK for Web Clients CHANGELOG
 
-## 8.1.0-beta5
+## 8.2.0-beta2
 
-<i>Compatible with Lightstreamer Server since 7.1.1.</i><br/>
-<i>May not be compatible with code developed with the previous version; see
-compatibility notes below.</i><br/>
-<i>Made available as a prerelease on 18 May 2022</i>
+<i>Compatible with Lightstreamer Server since 7.3.0</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Made available as a prerelease on 20 Sep 2022</i>
+
+<!---13/09/2022--->
+Revised the provided status widget with new colors and logo. However, the logo is now static, with no color changes or blinking in response to connection events.
+
+<!--23/6/2022-->
+Improved the "delta delivery" mechanism, by adding the support for value differences, as per the extension introduced in Server version 7.3.0.
+Currently only differences in JSON Patch format are supported.
+
+<!--23/6/2022-->
+Added the getValueAsJSONPatchIfAvailable function in the ItemUpdate class, to take advantage of the new support for JSON Patch differences, which may prove useful in some use cases.
+See the JSDocs for details.
 
 <!---17/05/2022--->
 Fixed a bug that prevented the library in UMD format from being loaded by Web Workers. 
