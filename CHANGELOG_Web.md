@@ -1,5 +1,15 @@
 # SDK for Web Clients CHANGELOG
 
+## 8.2.0-beta3
+
+<i>Compatible with Lightstreamer Server since 7.3.0</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Made available as a prerelease on 14 Oct 2022</i>
+
+<!--10/10/2022-->
+Fixed a bug that, upon a session recovery, could have caused a memory leak.
+
+
 ## 8.2.0-beta2
 
 <i>Compatible with Lightstreamer Server since 7.3.0</i><br/>

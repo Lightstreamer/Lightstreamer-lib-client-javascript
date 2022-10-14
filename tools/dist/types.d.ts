@@ -5032,7 +5032,9 @@ export class ItemUpdate {
      * compression for this field;</li>
      * <li>both the previous and new value are suitable for the JSON Patch computation
      * (i.e. they are valid JSON representations);</li>
-     * <li>the item was subscribed to in MERGE or DISTINCT mode;</li>
+     * <li>the item was subscribed to in MERGE or DISTINCT mode (note that, in case of
+     * two-level behavior, this holds for all fields related with second-level items,
+     * as these items are in MERGE mode);</li>
      * <li>sending the JSON Patch difference has been evaluated by the Server as more
      * efficient than sending the full new value.</li>
      * </ul>
@@ -5040,7 +5042,7 @@ export class ItemUpdate {
      * &lt;jsonpatch_min_length&gt; configuration flag, so that the availability of the
      * JSON Patch form would only depend on the Client and the Data Adapter.
      * <BR>When the above conditions are not met, the method just returns null; in this
-     * case, the new value can only be determined through getValue. For instance,
+     * case, the new value can only be determined through {@link ItemUpdate#getValue}. For instance,
      * this will always be needed to get the first value received.
      *
      * @throws {IllegalArgumentException} if the specified field is not
@@ -5053,7 +5055,7 @@ export class ItemUpdate {
      * the new value and the previous one, or null if the difference in JSON Patch format
      * is not available for any reason.
      *
-     * @see Subscription#getValue
+     * @see ItemUpdate#getValue
      */
     getValueAsJSONPatchIfAvailable(fieldNameOrPos: string): any;
     /**
@@ -8712,12 +8714,11 @@ export class StaticGridListener {
  * @exports StatusWidget
  * @class This class is a simple implementation of the ClientListener interface, which will display a
  * small widget with details about the status of the connection. The widget contains the "S" logo
- * and three tiny leds. The "S" logo changes color and luminosity to reflect the current connection status
- * (connecting, disconnected, connected, and stalled).
+ * and three tiny leds.
  * <ul>
  * <li>The left led indicates the transport in use: green if WS/WSS; yellow if HTTP/HTTPS.</li>
  * <li>The center led indicates the mode in use: green if streaming; yellow if polling.</li>
- * <li>The right led indicates where the physical connection in held: green if this LightstreamerClient
+ * <li>The right led indicates where the physical connection is held: green if this LightstreamerClient
  * is the master instance, holding the connection; yellow if this LightstreamerClient instance is a slave
  * attached to the master Lightstreamer Client instance.</li>
  * </ul>

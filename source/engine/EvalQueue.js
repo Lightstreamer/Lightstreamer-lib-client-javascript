@@ -30,12 +30,6 @@ import Utils from "../Utils";
     this.LS_MPNOK = this.LS_window['LS_MPNOK'];
     this.LS_MPNDEL = this.LS_window['LS_MPNDEL'];
     this.dequeueAction = this.generateClosure(this["lsc"]);
-    /*
-     * If the server sends PROGs, the client captures messages between two consecutive PROGs
-     * to ease debugging in case of mismatch between the server and the client counters.
-     */
-    this.messageCaptureEnabled = false;
-    this.capturedMessages = [];
   };
   
   EvalQueue.prototype = {
@@ -133,9 +127,6 @@ import Utils from "../Utils";
             }
             try {
                 var msg = new TlcpServerMessage(line);
-                if (this.messageCaptureEnabled) {
-                    this.capturedMessages.push(msg.getRawMsg());
-                }
                 switch (msg.getField(0)) {
 
                 case "U":
@@ -360,10 +351,7 @@ import Utils from "../Utils";
     },
     
     processPROG: function(msg) {
-        this.LS_e(7, null, msg.prog, this.capturedMessages);
-        /* */
-        this.messageCaptureEnabled = true;
-        this.capturedMessages = [];
+        this.LS_e(7, null, msg.prog);
     },
     
     processPROBE: function(msg) {
