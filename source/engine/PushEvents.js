@@ -226,17 +226,14 @@ import Constants from "../Constants";
         this.sessionHandler.onSyncReceived(arg3);
 
       } else if (flag == 7) {
-        // NB when PROG, the fourth argument is not the control link but an array with the messages 
-        // received between the previous and the current PROG
-        var capturedMessages = controlLink;
-        this.onProg(arg3, capturedMessages);
+        this.onProg(arg3);
 
       } else {
         this.sessionHandler.onEnd("Unsupported Server version");
       }
     },
     
-    onProg: function(prog, capturedMessages) {
+    onProg: function(prog) {
         if (this.sessionHandler.getSessionId() != this.currentIdForProg) {
             // the associated sessionHandler object can be reused without notice
             this.currentProg = null;
@@ -249,7 +246,7 @@ import Constants from "../Constants";
                 //>>excludeStart("debugExclude", pragmas.debugExclude);
                 ASSERT.fail();
                 //>>excludeEnd("debugExclude");
-                protocolLogger.logError("Received event prog higher than expected",prog,sessionProg,capturedMessages);
+                protocolLogger.logError("Received event prog higher than expected",prog,sessionProg);
                 this.sessionHandler.onPROGCounterMismatch();
             }
         } else {
@@ -260,13 +257,13 @@ import Constants from "../Constants";
                 //>>excludeStart("debugExclude", pragmas.debugExclude);
                 ASSERT.fail();
                 //>>excludeEnd("debugExclude");
-                protocolLogger.logError("Received event prog different than expected",prog,this.currentProg,capturedMessages);
+                protocolLogger.logError("Received event prog different than expected",prog,this.currentProg);
                 this.sessionHandler.onPROGCounterMismatch();
             } else if (prog != sessionProg) {
                 //>>excludeStart("debugExclude", pragmas.debugExclude);
                 ASSERT.fail();
                 //>>excludeEnd("debugExclude");
-                protocolLogger.logError("Received event prog different than actual",prog,sessionProg,capturedMessages);
+                protocolLogger.logError("Received event prog different than actual",prog,sessionProg);
                 this.sessionHandler.onPROGCounterMismatch();
             }
         }

@@ -1,5 +1,15 @@
 # SDK for Node.js Clients CHANGELOG
 
+## 8.0.5 build 1791
+
+<i>Compatible with Lightstreamer Server since 7.0.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 14 Oct 2022</i>
+
+<!--10/10/2022-->
+Fixed a bug that, upon a session recovery, could have caused a memory leak.
+
+
 ## 8.0.4 build 1790
 
 <i>Compatible with Lightstreamer Server since 7.0.</i><br/>
