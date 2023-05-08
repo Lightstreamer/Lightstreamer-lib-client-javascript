@@ -1,5 +1,14 @@
 # SDK for Web Clients CHANGELOG
 
+## 8.0.8 build 1809
+
+<i>Compatible with Lightstreamer Server since 7.1.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 8 May 2023</i>
+
+Adjusted the session sharing preliminary checks so that if the sharing is not used, no cookie is created.
+
+
 ## 8.0.7 build 1808
 
 <i>Compatible with Lightstreamer Server since 7.1.</i><br/>

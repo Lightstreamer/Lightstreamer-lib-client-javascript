@@ -74,7 +74,7 @@ export default /*@__PURE__*/(function() {
     
  */
   
-  var cookiesEnabled = false;
+  var cookiesEnabled = null;
   
   /**
    * This module contains some utility methods to read and write cookies.
@@ -90,6 +90,9 @@ export default /*@__PURE__*/(function() {
      * @returns {Boolean}
      */
     areCookiesEnabled: function() {
+      if (cookiesEnabled === null) {
+        CookieManager.checkCookiesFunctionality();
+      }
       return cookiesEnabled;
     },
     
@@ -203,6 +206,8 @@ export default /*@__PURE__*/(function() {
           //no cookie
         }
       }*/
+
+      cookiesEnabled = false;
       
       if (!Environment.isBrowserDocument()) {
         return;
@@ -244,8 +249,6 @@ export default /*@__PURE__*/(function() {
     }
      
   };
-  
-  CookieManager.checkCookiesFunctionality();
   
   //closure compiler exports
   CookieManager["areCookiesEnabled"] = CookieManager.areCookiesEnabled;
