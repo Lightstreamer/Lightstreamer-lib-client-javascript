@@ -1,6 +1,6 @@
-# Lightstreamer Client SDK
+# Lightstreamer Web/Node.js Client SDKs
 
-> ⚠️ This library has been superseded by a new Lightstreamer Client SDK and is no longer actively maintained. Please find the updated library in [🔥this project🔥](https://github.com/Lightstreamer/Lightstreamer-lib-client-haxe)
+> ⚠️ **This library has been superseded by a new Lightstreamer Client SDK and is no longer actively maintained. Please find the updated library in [🔥this project🔥](https://github.com/Lightstreamer/Lightstreamer-lib-client-haxe)**
 
 Lightstreamer Client SDK enables any JavaScript application running in a web browser or in a Node.js container to communicate bidirectionally with a **Lightstreamer Server**. The API allows to subscribe to real-time data pushed by the server, to display such data, and to send any message to the server.
 
