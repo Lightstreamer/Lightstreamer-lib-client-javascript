@@ -241,6 +241,10 @@ import UnsubscribeManager from "./UnsubscribeManager";
 					this.next(StateMachine.REGISTERED, event);
 					break;
 
+                case StateMachine.REGISTERED:
+                    // ignore MPNREG duplicates
+                    break;
+
 				default:
 				    this.throwError(event);
 				}

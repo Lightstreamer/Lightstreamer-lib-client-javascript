@@ -1,5 +1,14 @@
 # SDK for Web Clients CHANGELOG
 
+## 8.0.9 build 1811
+
+<i>Compatible with Lightstreamer Server since 7.1.</i><br/>
+<i>Compatible with code developed with the previous version.</i><br/>
+<i>Released on 18 Apr 2024</i>
+
+Fixed an issue where receiving multiple MPN registration acknowledgments (more than one) from the Server triggered a Client disconnection with error code 61 (internal error).
+
+
 ## 8.0.8 build 1809
 
 <i>Compatible with Lightstreamer Server since 7.1.</i><br/>
@@ -36,7 +45,7 @@ Revised the provided status widget with new colors and logo. However, the logo i
 <i>Released on 18 May 2022</i>
 
 <!---17/05/2022--->
-Fixed a bug that prevented the library in UMD format from being loaded by Web Workers.
+Fixed a bug that prevented the library in UMD format from being loaded by Web Workers. 
 
 
 ## 8.0.4 build 1803

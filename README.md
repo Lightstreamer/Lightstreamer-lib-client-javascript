@@ -10,7 +10,7 @@ The library also offers support for Web Push Notifications on Apple platforms vi
 
 ## Quickstart
 
-To connect to a Lightstreamer Server, a [LightstreamerClient](https://lightstreamer.com/api/ls-web-client/latest/LightstreamerClient.html) object has to be created, configured, and instructed to connect to the Lightstreamer Server. 
+To connect to a Lightstreamer Server, a [LightstreamerClient](https://lightstreamer.com/api/ls-web-client/8.0.9/LightstreamerClient.html) object has to be created, configured, and instructed to connect to the Lightstreamer Server. 
 A minimal version of the code that creates a LightstreamerClient and connects to the Lightstreamer Server on *https://push.lightstreamer.com* will look like this:
 
 ```
@@ -18,7 +18,7 @@ var client = new LightstreamerClient("https://push.lightstreamer.com/","DEMO");
 client.connect();
 ```
 
-For each subscription to be subscribed to a Lightstreamer Server a [Subscription](https://lightstreamer.com/api/ls-web-client/latest/Subscription.html) instance is needed.
+For each subscription to be subscribed to a Lightstreamer Server a [Subscription](https://lightstreamer.com/api/ls-web-client/8.0.9/Subscription.html) instance is needed.
 A simple Subscription containing three items and two fields to be subscribed in *MERGE* mode is easily created (see [Lightstreamer General Concepts](https://lightstreamer.com/docs/ls-server/latest/General%20Concepts.pdf)):
 
 ```
@@ -28,7 +28,7 @@ sub.setRequestedSnapshot("yes");
 client.subscribe(sub);
 ```
 
-Before sending the subscription to the server, usually at least one [SubscriptionListener](https://lightstreamer.com/api/ls-web-client/latest/SubscriptionListener.html) is attached to the Subscription instance in order to consume the real-time updates. The following code shows the values of the fields *stock_name* and *last_price* each time a new update is received for the subscription:
+Before sending the subscription to the server, usually at least one [SubscriptionListener](https://lightstreamer.com/api/ls-web-client/8.0.9/SubscriptionListener.html) is attached to the Subscription instance in order to consume the real-time updates. The following code shows the values of the fields *stock_name* and *last_price* each time a new update is received for the subscription:
 
 ```
 sub.addListener({
@@ -66,7 +66,7 @@ Below is the complete JavaScript code embedded in an HTML page:
 
 ## Logging
 
-To enable the internal client logger, create a [LoggerProvider](https://lightstreamer.com/api/ls-web-client/latest/LoggerProvider.html) and set it as the default provider of [LightstreamerClient](https://lightstreamer.com/api/ls-web-client/latest/LightstreamerClient.html).
+To enable the internal client logger, create a [LoggerProvider](https://lightstreamer.com/api/ls-web-client/8.0.9/LoggerProvider.html) and set it as the default provider of [LightstreamerClient](https://lightstreamer.com/api/ls-web-client/8.0.9/LightstreamerClient.html).
 
 ```
 var loggerProvider = new SimpleLoggerProvider();
@@ -74,7 +74,7 @@ loggerProvider.addLoggerAppender(new ConsoleAppender("DEBUG", "*"));
 LightstreamerClient.setLoggerProvider(loggerProvider);
 ```
 
-If you want to make a customized build of the client library, make sure the classes [SimpleLoggerProvider](https://lightstreamer.com/api/ls-web-client/latest/SimpleLoggerProvider.html) and [ConsoleAppender](https://lightstreamer.com/api/ls-web-client/latest/ConsoleAppender.html) are included in the configuration file *build.config.js*.
+If you want to make a customized build of the client library, make sure the classes [SimpleLoggerProvider](https://lightstreamer.com/api/ls-web-client/8.0.9/SimpleLoggerProvider.html) and [ConsoleAppender](https://lightstreamer.com/api/ls-web-client/8.0.9/ConsoleAppender.html) are included in the configuration file *build.config.js*.
 
 ## npm Packages ##
 
@@ -121,11 +121,11 @@ The library requires Server 7.1 and breaks the compatibility with Server version
 
 - [Live demos](https://demos.lightstreamer.com/)
 
-- [Web API Reference](https://lightstreamer.com/api/ls-web-client/latest/)
+- [Web API Reference](https://lightstreamer.com/api/ls-web-client/8.0.9/)
 
 - [Web Client Guide](docs/WebClientGuide.adoc)
 
-- [Node.js API Reference](https://www.lightstreamer.com/api/ls-nodejs-client/latest/)
+- [Node.js API Reference](https://www.lightstreamer.com/api/ls-nodejs-client/8.0.5/)
 
 ## Support
 
